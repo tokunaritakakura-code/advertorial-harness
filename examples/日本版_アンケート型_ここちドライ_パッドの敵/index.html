@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>パッドの横もれ、それ全部「受け口」が原因!? | ここちドライ</title>
+<!-- テスト用の値: 権威の人・客の声・評価の数・先着の数は Claude がテスト用に決めた。一覧は同じフォルダの「テスト用に決めた値.md」 -->
+<!-- 参考: refs/02 てんらい黄望皇（段の並び35段をそのまま写した）。data-dan は 型.md の固定16段の番号、data-tasu は _必ず入れる物.md の番号 -->
+<style>
+:root{--red:#e60012;--blue:#1d4fd6;--pink:#e5738d;--green:#3aa52b;--ink:#222;--yl:#fff35c}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#fff;color:var(--ink);font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;font-size:16px;line-height:1.85}
+.wrap{max-width:390px;margin:0 auto;overflow:hidden}
+.pr{font-size:11px;color:#555;text-align:right;padding:6px 14px 4px;margin:0;line-height:1.4}
+section{padding:0}
+p{margin:0 18px 18px;font-weight:700}
+.c{text-align:center}
+.s{font-size:13px;font-weight:500}
+.lg{font-size:21px;line-height:1.6}
+.xl{font-size:25px;line-height:1.5}
+.r{color:var(--red)}
+.bl{color:var(--blue)}
+.pk{color:#e2349a}
+mark,.mk{background:linear-gradient(transparent 58%,var(--yl) 58%);color:inherit;padding:0 1px}
+b{font-weight:900}
+figure{margin:0 0 18px}
+figure img,.full{display:block;width:100%;height:auto}
+.inset{padding:0 20px}
+.note{display:block;font-size:10px;color:#666;text-align:right;margin:-12px 18px 16px;font-weight:400;line-height:1.5}
+.bubble{display:flex;align-items:center;gap:8px;margin:0 18px 18px}
+.bubble .ic{flex:0 0 44px;height:44px;border-radius:50%;background:#2ac3b5;position:relative}
+.bubble .ic:after{content:"";position:absolute;left:13px;top:8px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 16px 0 4px #fff}
+.bubble .tx{background:#cfeefe;color:var(--blue);font-weight:900;border-radius:18px;padding:10px 16px;font-size:17px;line-height:1.5;box-shadow:0 2px 3px rgba(0,0,0,.12)}
+.bubble.gray .tx{background:#f2f2f2;color:var(--blue);border-radius:4px;border:1px solid #ccc}
+.thought{margin:0 18px 18px;background:#e3f1ff;color:var(--blue);font-weight:900;border-radius:24px;padding:12px 18px;font-size:18px}
+.blackbar{background:#333;color:#fff;font-size:30px;font-weight:700;text-align:center;margin:0 18px 18px;padding:6px 0;letter-spacing:.1em}
+.blackbox{background:#000;color:#fff;font-weight:900;font-size:19px;text-align:center;margin:0 20px 22px;padding:22px 12px;position:relative;line-height:1.6}
+.blackbox:after{content:"";position:absolute;left:50%;bottom:-10px;margin-left:-10px;border:10px solid transparent;border-bottom:0;border-top-color:#000}
+.arrows{display:flex;justify-content:center;gap:10px;margin:0 0 18px}
+.arrows i{width:0;height:0;border-left:34px solid transparent;border-right:34px solid transparent;border-top:44px solid #c20d0d;position:relative;margin-top:30px}
+.arrows i:before{content:"";position:absolute;left:-14px;top:-74px;width:28px;height:32px;background:#c20d0d}
+.yellowbox{background:var(--yl);color:#c9a400;font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-weight:900;font-size:34px;text-align:center;margin:0 20px 22px;padding:8px 0;letter-spacing:.06em}
+.chev{display:block;width:44px;height:14px;margin:4px auto 22px;border-left:3px solid #e2477f;border-bottom:3px solid #e2477f;transform:rotate(-45deg) skew(10deg,10deg);width:22px;height:22px}
+.frame{margin:0 18px 18px;padding:4px;border-radius:14px;background:linear-gradient(135deg,#8aa3e8,#e34b4b)}
+.frame .in{background:#fff;border-radius:11px;padding:10px 14px}
+.frame h3{margin:0 0 4px;font-size:16px;color:var(--red);text-align:center;line-height:1.5}
+.chk{display:flex;gap:10px;align-items:flex-start;font-weight:700;font-size:15px;line-height:1.5;margin:8px 0;cursor:pointer}
+.chk .bx{flex:0 0 26px;height:26px;border:2px solid #333;background:#fff9b0;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--red)}
+.chk.on .bx:after{content:"✔"}
+.worst{font-size:16px;line-height:1.45;margin:3px 0;font-weight:700;letter-spacing:-.02em}
+.worst span{color:var(--red)}
+.count{text-align:center;font-weight:900;font-size:18px;margin:0 18px 18px}
+.count b{font-size:30px;color:var(--red)}
+.tag{display:inline-block;background:#e9356f;color:#fff;font-size:12px;font-weight:900;padding:1px 8px;border-radius:4px 4px 0 0}
+.point{margin:0 20px 22px;border-top:2px solid #e9356f;border-bottom:2px solid #e9356f;padding:8px 6px;font-weight:900;font-size:19px;line-height:1.55}
+.vcard{margin:0 18px 18px;border:3px solid #e4d27a;border-radius:8px;overflow:hidden;background:#fff}
+.vcard p{margin:8px 10px 10px;font-size:15.5px;line-height:1.6}
+.vcard2{margin:0 20px 10px;border:1px solid #f08080;background:#fff}
+.vcard2 .hd{background:#f26b6b;color:#fff;text-align:center;font-weight:900;padding:10px 6px;line-height:1.5;font-size:16px}
+.vcard2 figure{margin:10px}
+.vcard2 p{margin:0 10px 12px;font-size:15.5px;line-height:2}
+.redframe{margin:0 20px 22px;border:3px solid var(--red);padding:18px 10px;text-align:center}
+.redframe p{margin:0 0 6px}
+.coupon{margin:0 18px 18px;border:3px dashed #e8a400;background:#fffbe0;border-radius:6px;padding:12px 10px;text-align:center;font-weight:900}
+.coupon .lab{display:inline-block;background:var(--red);color:#fff;font-size:13px;padding:1px 10px;border-radius:3px}
+.coupon .p1{font-size:16px;margin:6px 0 0}
+.coupon .p1 s{color:#777}
+.coupon .p2{font-size:15px}
+.coupon .p2 b{font-size:34px;color:var(--red);letter-spacing:.02em}
+.coupon .p3{font-size:12.5px;font-weight:700;color:#444}
+table.cmp{border-collapse:collapse;margin:0 18px 6px;width:calc(100% - 36px);font-weight:900}
+table.cmp th,table.cmp td{border:2px solid #333;padding:8px 6px;text-align:center;font-size:15px}
+table.cmp td.n{font-size:16px}
+table.cmp tr.hi td{background:var(--yl);color:var(--red);font-size:18px}
+.qwrap{margin:0 0 10px}
+.qh{margin:0 20px 12px;padding-bottom:10px;border-bottom:2px solid #a8dcd6;font-size:21px;font-weight:900;line-height:1.75}
+.ans{display:block;width:calc(100% - 40px);margin:0 20px 12px;padding:12px 14px;text-align:left;background:#fff;border:2px solid #333;border-radius:4px;font:inherit;font-weight:900;font-size:16px;line-height:1.5;color:#222;cursor:pointer}
+.ans:active{background:#fffbd0}
+.bar{margin:0 20px 10px;border:2px solid #333;border-radius:4px;position:relative;overflow:hidden;font-weight:900;font-size:15px;padding:10px 12px;line-height:1.5}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:#ffe7a0;z-index:0;transition:width .8s}
+.bar span{position:relative;z-index:1}
+.bar.me{border-color:var(--red)}
+.loading{text-align:center;font-weight:900;color:#888;margin:0 0 18px;display:none}
+[data-q][hidden],[data-dan][hidden]{display:none!important}
+.cta{display:block;margin:0 18px 10px}
+.timer{margin:0 18px 22px;background:#c5ea19;border-radius:4px;padding:8px 10px 10px;text-align:center;font-weight:900;font-size:16px;line-height:1.5}
+.timer .t{background:#2a2f36;color:#fff;margin-top:6px;border-radius:3px;padding:6px 0;font-size:14px}
+.timer .t b{font-size:24px;color:#c5ea19}
+.tsuiki{margin:0 18px 18px;border-left:5px solid #1c3c8a;padding:4px 10px;font-weight:900;font-size:21px;color:var(--red);line-height:1.5;border-bottom:1px solid #ccc}
+.foot{text-align:center;font-size:13px;margin:26px 18px 40px;font-weight:500}
+.foot a{color:#222}
+.src{font-size:10.5px;color:#666;line-height:1.6;margin:0 18px 30px;font-weight:400}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- 段1 頭の絵（参考 1） -->
+<section data-dan="1">
+<p class="pr">PR：ここちドライ(各コメント含む)</p>
+<figure><img class="full" src="img/d01_head.jpg" width="800" height="1200" alt="＜泌尿器科医が暴露＞ 横もれ・ムレ・かぶれ・におい… それ全部 パッドの“受け口”が原因!? パッドに頼るのは危険 横からあふれ出す!? 今だけ40%OFF ※画像はイメージ"></figure>
+<!-- 必ず入れる物1: 最初の画面に、読まなかった時の最悪の結末（参考の段4・段6の地の文と同じ形: 真ん中寄せの青字の前振り＋赤字の行。頭に✅） -->
+<div data-tasu="1" style="margin:10px 0 14px">
+<p class="c bl" style="margin-bottom:2px">このままパッドに頼り続けると…</p>
+<p class="worst c" style="margin:0 12px">✅ パッドの受け口は<span>幅約8cmの一点</span>だけ</p>
+<p class="worst c" style="margin:0 12px">✅ くしゃみ1回で<span>横からあふれ</span>、服にしみ</p>
+<p class="worst c" style="margin:0 12px">✅ ぬれた肌は<span>かぶれ</span>、<span>外出もやめてしまう</span></p>
+</div>
+<p class="c xl r">横もれ<span class="s" style="color:#222">（よこもれ）</span></p>
+<p>この“横もれ”は、毎日パッドを当てている女性の間で、よく耳にする悩みです。</p>
+<p>実は、パッドをやめた女性の多くが気づいたのも、この「受け口」の話でした。</p>
+</section>
+
+<!-- 参考 2 言葉の説明 -->
+<section data-dan="3">
+<figure><img class="full" src="img/d02_ukeguchi.jpg" width="800" height="533" alt="“尿を受け止める”大事な所 パッドの受け口（うけぐち） ※画像はイメージ"></figure>
+<p class="c">パッドの<b class="r">受け口</b>は、尿を受け止めるいちばん大事な所なのですが、</p>
+<figure><img class="full" src="img/d02_zu.jpg" width="800" height="533" alt="尿を一点で受け止める 幅約8cm ここから横もれ ここから横もれ パッドの受け口"></figure>
+</section>
+
+<!-- 参考 3 今の対策を切る（パッドを敵にする） -->
+<section data-dan="4">
+<div class="bubble"><div class="ic"></div><div class="tx">厚いパッドに替えれば<br>いいでしょ…</div></div>
+<p class="c">と、受け口が小さいままのパッドに頼り続けると、一体何が起こるのか。</p>
+<span class="chev"></span>
+<div class="blackbar">実は・・・</div>
+<p>最近の研究で、<br><span class="bl">ぬれたパッドが肌に触れて15分</span>で、</p>
+<p class="c lg"><mark class="r">肌がアルカリ性に傾き、<br>かぶれやすくなる</mark></p>
+<p class="c">ことが分かりました！<span class="s">※1</span></p>
+<figure><img class="full" src="img/d03_alkali.jpg" width="800" height="533" alt="教えて！泌尿器科 尿もれパッドの長時間使用には注意 肌がアルカリ性に傾き かぶれやすくなる ※画像はイメージ"></figure>
+</section>
+
+<!-- 参考 4 最悪の結果 -->
+<section data-dan="2">
+<p>そのまま放っておいて、ぬれた肌のダメージがたまると、</p>
+<p class="c lg"><mark class="r">肌が赤くただれる</mark></p>
+<p class="c">なんてことに…!?</p>
+<figure><img class="full" src="img/d04_tadare.jpg" width="800" height="533" alt="肌がただれる?! ※画像はイメージ"></figure>
+<p>それだけでなく、受け口が小さいままなので、くしゃみのたびに不安がつきまといます。</p>
+<p class="c lg bl">横もれはもちろん、<br>様々な弊害が…！</p>
+<figure><img class="full" src="img/d04_grid.jpg" width="800" height="800" alt="横もれ ムレ・におい"></figure>
+<p>軽い尿もれの女性114人を調べた、日本の調査があります。</p>
+<p>そのうち36人に、かぶれがありました。<span class="s">※2</span></p>
+<p class="c lg bl">放っておけば最悪…</p>
+<figure><img class="full" src="img/d04_taekirezu.jpg" width="800" height="533" alt="教えて！泌尿器科 パッドのかぶれ、放置は危険 肌が耐えきれず ※画像はイメージです。"></figure>
+</section>
+
+<!-- 参考 5 セルフチェック6項目 -->
+<section data-dan="3">
+<p>だからこそ、今の自分をチェックしましょう。</p>
+<div class="frame"><div class="in">
+<h3>⚠️ 横もれ危険度チェック</h3>
+<div class="chk" data-chk><span class="bx"></span><span><span class="bl">くしゃみ</span>で横から漏れたことがある</span></div>
+<div class="chk" data-chk><span class="bx"></span><span>1日に<span class="bl">3枚以上</span>パッドを替える</span></div>
+<div class="chk" data-chk><span class="bx"></span><span>パッドの当たる所が<span class="bl">かゆい・赤い</span></span></div>
+<div class="chk" data-chk><span class="bx"></span><span>夕方になると<span class="bl">におい</span>が気になる</span></div>
+<div class="chk" data-chk><span class="bx"></span><span>パッドが<span class="bl">ずれて</span>直しにトイレへ行く</span></div>
+<div class="chk" data-chk><span class="bx"></span><span>パッド代が月に<span class="bl">3,000円</span>を超える</span></div>
+</div></div>
+<div class="count">当てはまった数 <b id="cnt">0</b> 個！</div>
+<p>一つでも当てはまる方は、</p>
+<p class="c"><mark>パッドの受け口では受けきれていない黄色信号</mark>なので、今すぐ対処が必要なのです。</p>
+</section>
+
+<!-- 参考 6 専門家の念押し -->
+<section data-dan="3">
+<figure><img class="full" src="img/d06_doctor.jpg" width="800" height="533" alt="現役泌尿器科医 見逃さないで 危険なサイン 解説 パッドの横もれ 放置は危険 ※画像はイメージです"></figure>
+<p class="c xl">なんですが…。</p>
+</section>
+
+<!-- 参考 7 筋トレを切る -->
+<section data-dan="4">
+<div class="blackbox">横もれを自力で止めるのは<br>至難の業!?</div>
+<p>骨盤底筋トレは、続ければ意味があります。</p>
+<p>でも、<span class="r">効くまでに何か月も</span>かかるので、</p>
+<p class="c lg bl">明日の外出には間に合わない</p>
+<figure><img class="full" src="img/d07_kintore.jpg" width="800" height="533" alt="骨盤底筋トレーニング"></figure>
+<p>おまけに、筋トレを続けるのも大変です…。</p>
+<figure><img class="full" src="img/d07_illust.jpg" width="800" height="533" alt="お尻を持ち上げる体操をする女性のイラスト"></figure>
+<p class="c lg bl">「一体どうすれば…!?(泣)」</p>
+</section>
+
+<!-- 参考 8 朗報 -->
+<section data-dan="5">
+<div class="arrows"><i></i><i></i><i></i></div>
+<div class="yellowbox">そこに朗報！！</div>
+<p>それは、泌尿器科の専門機関と共同で開発し、下着づくりの職人が縫い上げた方法です。</p>
+</section>
+
+<!-- 参考 9 作った会社（権威） -->
+<section data-dan="5">
+<figure><img class="full" src="img/d09_clinic.jpg" width="800" height="533" alt="泌尿器科の専門機関と共同開発"></figure>
+<p class="c">多くの女性の悩みを聞いてきた開発チームが、<span class="r">ついにやり遂げました！！</span></p>
+<figure><img class="full" src="img/d09_factory.jpg" width="800" height="533" alt="1986年 1998年 2010年 創業40年の縫製技術 下着づくりの職人"></figure>
+<p>なんでも、繊維の研究室で、<span class="r">吸水テストを何度も重ねて</span>作られた方法で、</p>
+<figure><img class="full" src="img/d09_lab.jpg" width="800" height="533" alt="繊維の研究室 学会でも大注目 吸水テストを重ねて開発"></figure>
+</section>
+
+<!-- 参考 10 方法の名前 -->
+<section data-dan="5">
+<p class="c r">＼パッドなし！はくだけ！／</p>
+<figure><img class="full" src="img/d10_title.jpg" width="800" height="533" alt="股の全面で受け止める方法"></figure>
+<figure><img class="full" src="img/d10_3d.jpg" width="800" height="533" alt="股の全面が光るショーツの3D図"></figure>
+<span class="chev"></span>
+<figure><img class="full" src="img/d10_stop.jpg" width="800" height="533" alt="横もれを ピタッとストップ！"></figure>
+<p>今、<span class="r">泌尿器科医</span>や<span class="r">看護師</span>の間でも、<b>大注目の下着</b>なんです。</p>
+</section>
+
+<!-- 参考 11 専門家と街の声 -->
+<section data-dan="7">
+<figure><img class="full" src="img/d11_experts.jpg" width="800" height="533" alt="泌尿器科医・開発協力 高瀬医師も注目!! 皮膚・排せつケア看護師 中川看護師も注目!! 下着の縫製技術者 森本技師も注目!! ※PR"></figure>
+<p>体を動かすプロ、ヨガ講師の木村さんも！</p>
+<figure><img class="full" src="img/d11_yoga.jpg" width="800" height="554" alt="ヨガ講師も注目の 横もれしない下着とは パッドだとヨガで横から漏れて困っていました。 ※PR ※内容自由でコメントを依頼したものです"></figure>
+<p>「はくだけ♪簡単なのに漏れないのがすごい」と、じわじわと人気が広がっていて、</p>
+<p class="c r">＼巷でもすでに話題に！／</p>
+<figure><img class="full" src="img/d11_street1.jpg" width="800" height="533" alt="あなたも損してるかも!?知っておきたい尿もれのお悩みSP 教えて！泌尿器科 はい！知っています！"></figure>
+<span class="chev"></span>
+<figure><img class="full" src="img/d11_street2.jpg" width="800" height="533" alt="あなたも損してるかも!?知っておきたい尿もれのお悩みSP 教えて！泌尿器科 パッドを買わなくなって本当によかったです！"></figure>
+<p class="c r">年齢を問わず、</p>
+<p class="c"><mark>多くの女性達から喜びの声が！</mark></p>
+<figure><img class="full" src="img/d11_ages.jpg" width="800" height="533" alt="55歳 森谷さん 62歳 足立さん ※撮影当時の年齢"></figure>
+<p class="c pk">「こんなに簡単なんて！」<br>「はくだけだから私でもできる！」</p>
+<p>と一躍話題になり、</p>
+</section>
+
+<!-- 参考 12 売れている数 -->
+<section data-dan="7">
+<p>発売からわずかの間に、累計<b class="r">10,000件</b>※3の大ヒットを記録中なんです！</p>
+<figure><img class="full" src="img/d12_count.jpg" width="800" height="533" alt="累計販売数 10,000件 突破! ※2026年10月時点の累計"></figure>
+<figure><img class="full" src="img/d12_women.jpg" width="800" height="533" alt="ここちドライを持って笑う女性2人 ※2026年9月〜10月の累計販売数"></figure>
+</section>
+
+<!-- 参考 13 効く理由 -->
+<section data-dan="6">
+<span class="tag">POINT</span>
+<div class="point">股の全面で受け止める、<span class="r">その秘密は…</span></div>
+<div class="bubble"><div class="ic"></div><div class="tx" style="font-size:15px">でも、なんで「横もれ」が<br>下着だけで止まるの？</div></div>
+<p>それは、介護の現場の声を聞き続けてきた開発チームが、</p>
+<figure><img class="full" src="img/d13_genba.jpg" width="800" height="533" alt="介護の現場の声から生まれた 実績のあるつくり"></figure>
+<p class="c"><span class="r">40年の縫製技術</span>を武器に、</p>
+<p>横もれに悩む女性のために、長年の研究成果を総動員し、</p>
+<p class="c">なんと<b class="r">200種類以上</b>の生地の中から、最適な<span style="white-space:nowrap">組み合わせ</span>を厳選。</p>
+<figure><img class="full" src="img/d13_lab.jpg" width="800" height="533" alt="生地のサンプルを見比べる研究者"></figure>
+<p>独自の開発力で、開発チーム史上初※4！股の全面で受け止める</p>
+<p class="c lg"><mark class="r">「4層で横にも広げて吸うつくり」</mark>を実現したから！</p>
+<figure><img class="full" src="img/d13_pentagon.jpg" width="800" height="800" alt="様々な悩みに効く！ 横もれ ムレ におい かぶれ・かゆみ ガサガサ音・下着の線 ※個人の感想です"></figure>
+<p class="c">なんと！現役の医師もすすめるほどの<mark class="r"><span style="white-space:nowrap">“実績のある構造”</span></mark>！</p>
+<figure><img class="full" src="img/d13_doctor.jpg" width="800" height="533" alt="排尿ケア外来 泌尿器科医もすすめる “股の全面で受ける構造”"></figure>
+</section>
+
+<!-- 参考 14 商品の登場 -->
+<section data-dan="6">
+<p class="c">そんな開発チームの集大成を、<span class="pk">ギュギュッと</span>詰め込んだのが…！</p>
+<p class="c lg r">女性の横もれ対策術<br>『ここちドライ 吸水ショーツ』</p>
+<figure><img class="full" src="img/d14_product.jpg" width="800" height="533" alt="吸水ショーツ ここちドライ"></figure>
+</section>
+
+<!-- 参考 15 仕組みの図 -->
+<section data-dan="6">
+<p>この選び抜かれた構造が、毎日の不安を受け止めながら、</p>
+<p class="c xl"><mark class="r">①股の全面で受け止める</mark></p>
+<figure class="inset"><img class="full" src="img/d15_zenmen.jpg" width="800" height="800" alt="股の全面が水色に塗られたショーツの線画"></figure>
+<span class="note">※ショーツの吸水部の作用のイメージ</span>
+<p class="c xl"><mark class="r">②吸った水を肌に戻さない</mark></p>
+<figure><img class="full" src="img/d15_layers.jpg" width="800" height="533" alt="吸水ショーツの4層の断面 ※イメージ"></figure>
+<p class="c"><span class="bl">ぐしょぐしょだった肌</span>を、<span class="r">さらっとした状態</span>に保ってくれるんです！</p>
+<figure><img class="full" src="img/d15_4sou.jpg" width="800" height="533" alt="4層の吸水層が 横にも広げて吸う！"></figure>
+<p>もちろん、股の全面で受け止めるから、肌に当たる面はさらっとしたまま。</p>
+<p class="c"><span class="bl">ムレ・かぶれ・におい</span>などの悩みまで、まるっと減らしてくれる！</p>
+<figure><img class="full" src="img/d15_ureshii.jpg" width="800" height="533" alt="ムレ・かぶれ・におい・ガサガサ音・横もれなど 嬉しい変化が盛りだくさん!!"></figure>
+</section>
+
+<!-- 参考 16 やさしさと品質 -->
+<section data-dan="6">
+<p class="c">女性の身体のことを想った、やさしい綿の生地で、<span class="r">肌へのやさしさもしっかり考慮◎</span></p>
+<figure><img class="full" src="img/d16_kenpin.jpg" width="800" height="533" alt="徹底した品質検査の元 1枚ずつ検品"></figure>
+<p class="c">よくある紙パンツとも違い、<span class="r">紙もビニールも使っていません。</span></p>
+<figure><img class="full" src="img/d16_men.jpg" width="800" height="533" alt="綿80%の生地が肌にやさしい! 蒸れにくい かぶれにくい よく伸びる 音がしない 約100回洗える 8サイズ"></figure>
+<p>しかも、約100回洗えて、XSから4XLまでの8サイズから選べるから、</p>
+<p class="c"><b>お母さんとも一緒にはけます！</b></p>
+<figure><img class="full" src="img/d16_family.jpg" width="800" height="533" alt="80代の母と50代の娘とここちドライ"></figure>
+</section>
+
+<!-- 参考 17 売れ行き -->
+<section data-dan="7">
+<p class="c">ここまでこだわり抜かれただけあって、</p>
+<p class="c">レビュー2,657件で <b class="r">★4.7</b> を獲得し、</p>
+<figure><img class="full" src="img/d17_review.jpg" width="800" height="800" alt="実力が認められて レビュー2,657件で★4.7獲得! 高評価 ★4.7 ※2026年10月時点の公式ストアのレビュー"></figure>
+<p class="c"><mark class="r">業界を驚かせるほどのスピードで売れ続けて<span style="white-space:nowrap">いるんです！</span></mark></p>
+<figure><img class="full" src="img/d17_24h.jpg" width="800" height="533" alt="24時間で250件の注文 ここちドライ ※2026年10月の公式ストアの過去24時間の注文数"></figure>
+</section>
+
+<!-- 参考 18 使っている人の声 -->
+<section data-dan="7">
+<p>実際に、仕事柄トイレに行けない<span class="mk">デパートの販売員さん</span>や、体を動かす<span class="mk">介護福祉士さん</span>も愛用するほど…！</p>
+<div class="vcard">
+<figure style="margin:0"><img class="full" src="img/d18_matsuda.jpg" width="800" height="533" alt="絶対試してみて欲しいです! デパート販売員 松田由美子さん(47歳)"></figure>
+<p>仕事柄、長い時間トイレに行けず、パッドの横もれが怖かったのでとても助かっています。<span class="r">毎日欠かせないです。</span>もう替えのパッドを持ち歩かないくらいですね（笑）</p>
+</div>
+<span class="note">※撮影当時の年齢 ※画像はイメージ ※PR</span>
+<div class="vcard">
+<figure style="margin:0"><img class="full" src="img/d18_sakamoto.jpg" width="800" height="533" alt="重宝しています 介護福祉士 坂本みどりさん(53歳)"></figure>
+<p>体を動かす仕事なので、パッドがずれて困っていました。<span class="r">股の全面で受けてくれる</span>この下着を重宝しています。</p>
+</div>
+<span class="note">※撮影当時の年齢 ※画像はイメージ ※PR</span>
+<p class="s">その他にも、、、</p>
+<p class="c">「下着1枚でここまで変わるの!?」なんて驚きの声も続々と…✨</p>
+<div class="vcard2"><div class="hd">「やっと答えに辿り着けた!?」<br>井上和子さん(58歳)</div>
+<figure><img class="full" src="img/d18_inoue.jpg" width="800" height="533" alt="ショーツを引き出しにしまう女性と伸びをする女性"></figure>
+<p>くしゃみをすると横から漏れてしまい、なんとかしたいけど、相談するのも恥ずかしい状態でした。でも、<span class="pk">ようやく答えに辿り着けた<span style="white-space:nowrap">気がします！</span></span>一人で悩む前に、まずこれを試してみるべきだと思います。</p></div>
+<p class="s c" style="font-size:10px">※個人の感想です ※内容自由で感想を依頼したものです ※年齢・画像・内容は取材当時</p>
+<div class="vcard2"><div class="hd">「もっと早く始めれば良かった…！」<br>中村恵子さん(56歳)</div>
+<figure><img class="full" src="img/d18_nakamura.jpg" width="800" height="533" alt="ここちドライを持つ女性"></figure>
+<p>パッドなしで漏れないなんて、初めは半信半疑でした。でも、はいてびっくり！まさかこんな方法があったなんて驚きです。<span class="pk">家でこっそり洗えるのもいいですね！</span>もっと早く始めればよかったです！</p></div>
+<p class="s c" style="font-size:10px">※個人の感想です ※内容自由で感想を依頼したものです ※年齢・画像・内容は取材当時</p>
+</section>
+
+<!-- 参考 19 お礼のハガキと電話 -->
+<section data-dan="7">
+<p class="c">開発チームにも、毎日のように<span class="r">感謝の声</span>が届き、</p>
+<figure><img class="full" src="img/d19_letters.jpg" width="800" height="533" alt="感謝のお便りも 日々続々と!! ※画像はイメージ"></figure>
+<p>女性の敏感な悩みに寄り添った会社で、<span class="pk">お客様窓口にも嬉しい声が届く</span>んだとか！</p>
+<figure><img class="full" src="img/d19_center.jpg" width="800" height="533" alt="『本当に漏れないの？』って思うくらい"></figure>
+</section>
+
+<!-- 参考 20 早く始める理由 -->
+<section data-dan="7">
+<p class="c bl">肌のかぶれは、繰り返すほど治りにくくなってしまうので、</p>
+<p class="c lg"><mark class="r">1日でも早く始めるのがカギ！</mark></p>
+<figure><img class="full" src="img/d20_illust.jpg" width="800" height="533" alt="外出先で不安な女性と、友達と笑う女性のイラスト"></figure>
+<p class="c r">1人で抱え込まず、はくだけのお手軽習慣で、サクッとお悩みを解消しちゃいましょう！</p>
+<figure><img class="full" src="img/d20_ages.jpg" width="800" height="533" alt="知っているか知らないか たったそれだけ 48歳 56歳 63歳 ※撮影当時の年齢です"></figure>
+</section>
+
+<!-- 参考 21 値段の予告と完売 -->
+<section data-dan="8">
+<span class="tag">POINT</span>
+<div class="point"><span class="r">【速報】40%OFF</span>で購入できる方法！無料プレゼントも付いてくる!?</div>
+<p class="c"><mark>泌尿器科医も注目している構造</mark>※5を採用し、</p>
+<p class="c lg r">＼累計10,000件突破／</p>
+<p class="c lg">「ここちドライ」</p>
+<figure><img class="full" src="img/d21_review.jpg" width="800" height="533" alt="レビュー★4.7獲得 ※2026年10月時点の公式ストアのレビュー"></figure>
+<p>となれば、</p>
+<div class="bubble"><div class="ic"></div><div class="tx">これは試してみないと！</div></div>
+<p class="c">と思ったのですが…</p>
+<figure><img class="full" src="img/d21_sorry.jpg" width="800" height="533" alt="大変申し訳ございません。 ここちドライは一時、販売数を制限しておりました。 誠心誠意、大急ぎで縫製しております。"></figure>
+<p>1枚1枚、縫い目まで検品しています。</p>
+<p>そのため一時期は、お届けまでにお時間をいただいておりました…</p>
+<span class="chev"></span>
+<p>検品するぶん作れる数に限りがあるので、お店には置かず、<span class="r">WEB限定の知る人ぞ知る商品。</span></p>
+<figure><img class="full" src="img/d21_store.jpg" width="800" height="533" alt="ドラッグストアや介護用品売り場では販売していません…"></figure>
+<div class="bubble gray"><div class="tx" style="font-size:15px">欲しくてもなかなかお目にかかれなかった…</div></div>
+</section>
+
+<!-- 参考 22 特別ルート -->
+<section data-dan="8">
+<p class="c xl r" style="letter-spacing:.3em">ですが！</p>
+<p class="c">このページを見つけた人は、<br><mark>本当に運がいいです！</mark></p>
+<div class="arrows"><i></i><i></i><i></i></div>
+<p class="c r">現在(<span data-today>10月10日</span> 時点)</p>
+<p class="c">＼今、なんと／<br><span class="r">このページから購入すると</span></p>
+<figure class="inset"><img class="full" src="img/d22_soku.jpg" width="800" height="800" alt="在庫あり ご注文受付中!"></figure>
+<div class="redframe"><p class="r lg">WEB限定</p><p>隠れた名品のここちドライが、<br>今なら在庫ありでお届け可能に！</p></div>
+<p class="c xl">さらに！！！</p>
+<figure class="inset"><img class="full" src="img/d22_owari.jpg" width="800" height="533" alt="ここで終わりじゃありません！"></figure>
+<div class="arrows"><i></i><i></i><i></i></div>
+<p class="c">「一人でも多くの方の横もれをなくしたい！」という<mark class="r">開発者の熱い想い</mark>から！</p>
+<figure><img class="full" src="img/d22_dev.jpg" width="800" height="533" alt="一度でいいから はいてみていただきたい！"></figure>
+<p class="c r">現在(<span data-today>10月10日</span> 時点)</p>
+<p class="c">【公式サイト限定】<span class="r lg">約40%OFF</span>※6で手に入る特別ルートにご案内！</p>
+<span class="note">※15枚セット・通常価格49,890円と比べた値</span>
+<div class="arrows"><i></i><i></i><i></i></div>
+<p class="c"><mark>開発チームの一大決心！！</mark></p>
+</section>
+
+<!-- 参考 23 値段の札（＋必ず入れる物2: 1日あたり→パッド代→価格の箱→縦長の値段画像） -->
+<section data-dan="9" data-tasu="2">
+<p class="c r lg">＼Web限定／<br><span style="color:#222">驚きの</span>約40%OFF<span style="color:#222">でお届け！！</span></p>
+<p class="c">しかも、1日あたりに直すと、<br>なんと<b class="r">約82円</b>なんです！<span class="s">※7</span></p>
+<p class="c">毎日のパッド代（1日160円）と比べると、<span style="white-space:nowrap">約半分です。</span></p>
+<figure><img class="full" src="img/d23_coupon.jpg" width="800" height="533" alt="20,000円お得。WEB限定でご案内↓ 通常価格 49,890円が、15枚セット 29,890円(税込) ご回答いただいた方へ 特別サイトにご案内 ※2026年10月10日時点の公式ストアの価格"></figure>
+<figure class="inset"><img class="full" src="img/d23_yen82.jpg" width="800" height="1143" alt="パッドと比べると… 29,890円を365日で割ると 1日あたり約82円 パッド代は1日160円 パッド代の約半分! ※1年で買い替えたとしての計算。パッド1枚40円・1日4枚で計算"></figure>
+</section>
+
+<!-- 参考 24 おまけ -->
+<section data-dan="9">
+<p class="c xl"><mark>さらに！今！！</mark></p>
+<p class="c pk">「毎日気持ちよくはいてほしい！」</p>
+<p class="c">という開発チームの想いから…</p>
+<p class="c lg r">プレゼント企画も実施中！</p>
+<figure class="inset"><img class="full" src="img/d24_net.jpg" width="800" height="533" alt="ご購入いただいた皆さんに、洗濯ネットをプレゼント！ ※セットの枚数に応じて1〜3個"></figure>
+<p class="c">今購入したら、<span class="r">お値段そのままで</span><br><span class="r">洗濯ネットまでついてくる！</span></p>
+<figure><img class="full" src="img/d24_present.jpg" width="800" height="533" alt="お得なプレゼント実施中! 洗濯ネットもついてくる! 洗濯機でポンでOK! 1個3,000円相当が0円! ※5枚に1個・10枚に2個・15枚に3個"></figure>
+</section>
+
+<!-- 参考 25 比べ表 -->
+<section data-dan="9">
+<p class="c">今、ここのサイトで買うのが</p>
+<p class="c lg"><mark class="r">一番お得な買い方です！！</mark><span class="s">※自社調べ</span></p>
+<table class="cmp">
+<tr><th>買い方</th><th>金額(税込)</th></tr>
+<tr><td>1枚ずつ15枚買うと</td><td class="n">82,350円</td></tr>
+<tr><td>15枚セット(通常価格)</td><td class="n">49,890円</td></tr>
+<tr class="hi"><td>特別ページ</td><td>29,890円</td></tr>
+</table>
+<span class="note" style="margin-top:0">※2026年10月10日時点の公式ストアの価格。価格は予告なく変わる場合があります。</span>
+</section>
+
+<!-- 参考 26 不安つぶし（買い切り: 返金保証の日数・先着の数） -->
+<section data-dan="10">
+<p class="r">通販によくある<br>「定期購入の縛り」もありません。</p>
+<figure class="inset"><img class="full" src="img/d26_henkin.jpg" width="800" height="533" alt="定期購入ではありません!! 届く はいて試す 30日間返金OK!? ※到着から30日以内・はいて洗った後でも対象"></figure>
+<p>はいて、洗ってからでも、到着から30日以内なら<b>返金保証の対象</b>です！</p>
+<figure class="inset"><img class="full" src="img/d26_souryou.jpg" width="800" height="533" alt="全国送料無料なら。。。何枚でも0円! 追跡つきで届く はいて試す 合わなければ返金"></figure>
+<p class="c"><mark>これなら安心！！</mark></p>
+<p>本日分は先着300セット※8まで。迷ったら、とりあえず<span class="r">15枚セットを選んで試しておく</span>のが<span style="white-space:nowrap">オススメです！</span></p>
+<p class="c">あとは、<mark>下のアンケートに回答</mark>して、ぜひ</p>
+<p class="c lg r">“横もれのない生活”</p>
+<p class="c">を味わってください！</p>
+<span class="chev"></span>
+</section>
+
+<!-- 参考 27 アンケートの入口 -->
+<section data-dan="11">
+<figure><img class="full" src="img/d27_enquete.jpg" width="800" height="800" alt="タップするだけ！3問で完了！ “横もれに関するアンケート” 通常 49,890円(税込)のところ 本日約40%OFFの公式ページへご招待！ ※2026年10月10日時点の公式ストアの価格"></figure>
+</section>
+
+<!-- 参考 28 Q1 -->
+<section data-dan="12">
+<div class="qwrap" data-q="1">
+<div class="qh">Q1.どんな時にツライですか？</div>
+<figure class="inset"><img class="full" src="img/d28_q1.jpg" width="800" height="533" alt="くしゃみをする女性とお腹を押さえる女性のイラスト"></figure>
+<div class="opts">
+<button class="ans" data-answer="1" data-cta="q1-1">①くしゃみで横から漏れてしまう</button>
+<button class="ans" data-answer="2" data-cta="q1-2">②パッドのムレ・かぶれがつらい</button>
+<button class="ans" data-answer="3" data-cta="q1-3">③夕方のにおいが気になる</button>
+<button class="ans" data-answer="4" data-cta="q1-4">④パッドがずれて直しに行く</button>
+</div>
+</div>
+</section>
+
+<!-- 参考 29 Q2 -->
+<section data-dan="13">
+<div class="loading" id="ld2">Loading...</div>
+<div class="qwrap" data-q="2" hidden>
+<div class="qh">Q2.「ここちドライ」の特徴で、最も魅力的なものはなんですか？</div>
+<figure><img class="full" src="img/d29_q2.jpg" width="800" height="533" alt="手のひらにのせたここちドライ"></figure>
+<div class="opts">
+<button class="ans" data-answer="1" data-cta="q2-1">① 股の全面で受け止めること</button>
+<button class="ans" data-answer="2" data-cta="q2-2">② 綿80%で肌にやさしいこと</button>
+<button class="ans" data-answer="3" data-cta="q2-3">③ 約100回洗えること</button>
+<button class="ans" data-answer="4" data-cta="q2-4">④ 普通の下着に見えること</button>
+</div>
+<span class="note" style="margin-top:4px">※商品の特徴</span>
+</div>
+</section>
+
+<!-- 参考 30 Q3 -->
+<section data-dan="14">
+<div class="loading" id="ld3">Loading...</div>
+<div class="qwrap" data-q="3" hidden>
+<div class="qh">Q3.「ここちドライ」をはいてみたいですか？</div>
+<figure><img class="full" src="img/d30_q3.jpg" width="800" height="533" alt="バスの中で笑う女性3人"></figure>
+<div class="opts">
+<button class="ans" data-answer="1" data-cta="q3-1">① はい</button>
+<button class="ans" data-answer="2" data-cta="q3-2">② いいえ</button>
+</div>
+</div>
+</section>
+
+<!-- 参考 31 回答のお礼と申込（＋必ず入れる物2の申込の段） -->
+<div class="loading" id="ld4">Loading...</div>
+<section data-dan="15" data-tasu="2" id="thanks" hidden>
+<figure><img class="full" src="img/d31_thanks.jpg" width="800" height="533" alt="ご回答いただきありがとうございました"></figure>
+<figure class="inset"><img class="full" src="img/d23_coupon.jpg" width="800" height="533" alt="20,000円お得。WEB限定でご案内↓ 通常価格 49,890円が、15枚セット 29,890円(税込) ご回答いただいた方へ 特別サイトにご案内 ※2026年10月10日時点の公式ストアの価格"></figure>
+<span class="chev"></span>
+<p class="c"><mark>緑のボタンをクリックで注文画面へ</mark></p>
+<p class="c" style="font-size:22px;letter-spacing:.4em">⬇⬇⬇</p>
+<a class="cta" href="https://kokochidry.shop/products/kokochidry" data-cta="thanks-btn"><img class="full" src="img/d31_button.jpg" width="800" height="533" alt="20,000円お得！ 送料無料 特別価格 本日40%OFF 今すぐGET"></a>
+<div class="timer">本日分受付終了まで(最短出荷日で対応)<div class="t">⏱ あと <b data-h>13</b> 時間 <b data-m>23</b> 分 <b data-s>02</b> 秒</div></div>
+<p class="c s">公式サイト:https://kokochidry.shop</p>
+</section>
+
+<!-- 参考 32 緊急追記 -->
+<section data-dan="16">
+<div class="tsuiki">【<span data-today>10月10日</span>：⚠️緊急追記⚠️】</div>
+<p>はくだけだから<span class="r">ラクラク</span>なのに、</p>
+<p class="c">くしゃみの横もれに悩んでいた、こちらの<span style="white-space:nowrap"><b class="r">58歳女性</b>も！</span></p>
+<figure><img class="full" src="img/d32_58.jpg" width="800" height="533" alt="ここちドライ愛用者 小野寺美香さん 58歳 くしゃみが怖くなくなったの"></figure>
+<p class="c">パッドのかぶれに悩んでいた、<br>こちらの<span class="r">63歳女性</span>も！</p>
+<figure><img class="full" src="img/d32_63.jpg" width="800" height="533" alt="ここちドライ愛用者 田中結子さん 63歳 『もう替えを持たなくていいじゃない』って思って"></figure>
+</section>
+
+<!-- 参考 33 おまけの念押し -->
+<section data-dan="16">
+<p>これだけでも大満足ですが、</p>
+<p class="c lg">さらに！</p>
+<p class="c r lg"><mark>【大感謝！！】</mark><br>特別プレゼントオファーを実施中！</p>
+<figure class="inset"><img class="full" src="img/d24_present.jpg" width="800" height="533" alt="お得なプレゼント実施中! 洗濯ネットもついてくる! 洗濯機でポンでOK! 1個3,000円相当が0円!"></figure>
+<p class="c"><span class="bl">横もれ対策はもちろん、</span>洗濯ネットに入れて洗濯機でポン！<span class="r">簡単にお手入れできる</span>んです✨</p>
+<figure class="inset"><img class="full" src="img/d33_raku.jpg" width="800" height="533" alt="ラクちん〜！"></figure>
+<p>なのですが・・・</p>
+<p class="c bl">ただでさえ人気なのに、特別価格に加えておまけ付きで、</p>
+<p class="c r">想定以上に注文が殺到中！</p>
+<figure class="inset"><img class="full" src="img/d33_souko.jpg" width="800" height="533" alt="倉庫で運ばれる荷物"></figure>
+</section>
+
+<!-- 参考 34 最後の申込 -->
+<section data-dan="16">
+<div class="thought">また今度買えばいいか</div>
+<p>と迷うよりも、</p>
+<p class="c"><mark class="r">せっかくなら1日でも早く、快適な日々を取り戻しませんか？</mark></p>
+<figure class="inset"><img class="full" src="img/d34_travel.jpg" width="800" height="800" alt="温泉旅行を楽しむ女性の友だち2人"></figure>
+<p class="c"><mark>下のボタンから申し込んで、充実した毎日をゲットしちゃって下さい💨</mark></p>
+<span class="chev"></span>
+<a class="cta" href="https://kokochidry.shop/products/kokochidry" data-cta="last-btn"><img class="full" src="img/d31_button.jpg" width="800" height="533" alt="20,000円お得！ 送料無料 特別価格 本日40%OFF 今すぐGET"></a>
+<div class="timer">本日分受付終了まで(最短出荷日で対応)<div class="t">⏱ あと <b data-h>13</b> 時間 <b data-m>23</b> 分 <b data-s>02</b> 秒</div></div>
+</section>
+
+<!-- 参考 35 終わりの急ぎ -->
+<section data-dan="16">
+<figure class="inset"><img class="full" src="img/d35_end.jpg" width="800" height="533" alt="この記事は1度閉じると 検索しても出てこない 可能性があります"></figure>
+<div class="src">※1 Phipps L ほか（2019）J Wound Ostomy Continence Nurs 46(4):315-320。65歳以上の女性30人で、尿でぬれたパッドに15分触れた後の肌のpHが5.67から6.25に上がった。<br>※2 竹貞ほか（2024）日本創傷・オストミー・失禁管理学会誌 28(1):79-93。<br>※3 公式ストアの表示（2026年10月時点）。※4 ここちドライの商品の中で。※5 股の全面で受ける吸水の構造。※6 15枚セットの通常価格49,890円と比べた値。※7 29,890円を365日で割ると1日あたり約82円。パッド1枚40円・1日4枚で1日160円として計算した目安。※8 本日分の受付の数。</div>
+<p class="foot"><a href="https://kokochidry.shop/policies/legal-notice" data-cta="legal">運営者情報</a></p>
+</section>
+
+</div>
+<script>
+(function(){
+  // 今日の日付
+  var d=new Date(), t=(d.getMonth()+1)+'月'+d.getDate()+'日';
+  document.querySelectorAll('[data-today]').forEach(function(e){e.textContent=t;});
+  // セルフチェックの数
+  var cnt=document.getElementById('cnt');
+  document.querySelectorAll('[data-chk]').forEach(function(e){
+    e.addEventListener('click',function(){e.classList.toggle('on');cnt.textContent=document.querySelectorAll('[data-chk].on').length;});
+  });
+  // アンケート: どの答えでも次の問いへ。答えた問いは帯に変わる（中身は全員同じ）
+  function answer(q,btn){
+    var box=q.querySelector('.opts'), btns=[].slice.call(box.querySelectorAll('[data-answer]'));
+    var html='';
+    btns.forEach(function(b){
+      var me=b===btn, w=me?Math.floor(55+Math.random()*25):Math.floor(5+Math.random()*20);
+      html+='<div class="bar'+(me?' me':'')+'"><i style="width:0" data-w="'+w+'"></i><span>'+b.textContent+(me?'　←あなた':'')+'</span></div>';
+    });
+    box.innerHTML=html;
+    setTimeout(function(){box.querySelectorAll('i').forEach(function(i){i.style.width=i.getAttribute('data-w')+'%';});},30);
+    var n=+q.getAttribute('data-q');
+    var ld=document.getElementById('ld'+(n+1)); if(ld) ld.style.display='block';
+    setTimeout(function(){
+      if(ld) ld.style.display='none';
+      var next=document.querySelector('[data-q="'+(n+1)+'"]');
+      if(next){next.hidden=false;next.scrollIntoView({behavior:'smooth',block:'start'});}
+      else{var th=document.getElementById('thanks');th.hidden=false;th.scrollIntoView({behavior:'smooth',block:'start'});}
+    },700);
+  }
+  document.querySelectorAll('[data-q]').forEach(function(q){
+    q.addEventListener('click',function(ev){var b=ev.target.closest('[data-answer]');if(b) answer(q,b);});
+  });
+  // 本日分のタイマー（今日の終わりまで）
+  function tick(){
+    var now=new Date(), end=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1), s=Math.max(0,Math.floor((end-now)/1000));
+    var h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60;
+    document.querySelectorAll('[data-h]').forEach(function(e){e.textContent=h;});
+    document.querySelectorAll('[data-m]').forEach(function(e){e.textContent=('0'+m).slice(-2);});
+    document.querySelectorAll('[data-s]').forEach(function(e){e.textContent=('0'+x).slice(-2);});
+  }
+  tick(); setInterval(tick,1000);
+})();
+</script>
+</body>
+</html>

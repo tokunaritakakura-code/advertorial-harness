@@ -1,0 +1,3677 @@
+<!doctype html>
+<html>
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+    <meta charset="utf-8" />
+    <meta content="width=device-width, maximum-scale=1" name="viewport" />
+    <meta content="telephone=no" name="format-detection" />
+    <title>【体質診断 体質チェック】からだかがみ｜漢方セラピー｜クラシエ</title>
+    <meta content="体質, 体質診断, 体質チェック, 漢方" name="keywords" />
+    <meta
+      content="あなたの体質が60秒で分かる体質診断コンテンツ「からだかがみ」。漢方理論に則って6つの体質に分類し体質に合った対処法をご紹介します。自分の体質を知ることが症状の改善・体質改善につながります。"
+      name="description"
+    />
+    <meta content="website" property="og:type" />
+    <meta
+      content="【体質自己診断】からだかがみ｜漢方セラピー｜クラシエ"
+      property="og:title"
+    />
+    <meta
+      content="https://www.kracie.co.jp/ph/k-therapy/karadakagami/"
+      property="og:url"
+    />
+    <meta
+      content="https://www.kracie.co.jp/ph/k-therapy/karadakagami/images/ogp.jpg"
+      property="og:image"
+    />
+    <meta
+      content="あなたの体質が60秒で分かる体質自己診断コンテンツ「からだかがみ」。漢方理論に則って6つの体質に分類し体質に合った対処法をご紹介します。自分の体質を知ることが症状の改善・体質改善につながります。"
+      property="og:description"
+    />
+    <meta
+      content="【体質自己診断】からだかがみ｜漢方セラピー｜クラシエ"
+      property="og:site_name"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;300;400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://www.kracie.co.jp/css/share/brandsite_mds_h_res_lgin.css"
+      rel="stylesheet"
+      media="all"
+    />
+    <link
+      href="/ph/k-therapy/karadakagami/shared_2025/css/style.css"
+      rel="stylesheet"
+    />
+    <!-- EBiS tag version4.10 start -->
+    <script type="text/javascript">
+      (function (a, d, e, b, i, s) {
+        window[i] = window[i] || [];
+        var f = function (a, d, e, b, i, s) {
+            var o = a.getElementsByTagName(d)[0],
+              h = a.createElement(d),
+              t = 'text/javascript';
+            h.type = t;
+            h.async = e;
+            h.onload = function () {
+              window[i].init({ argument: s, auto: true });
+            };
+            h._p = o;
+            return h;
+          },
+          h = f(a, d, e, b, i, s),
+          l = '//taj',
+          j = b + s + '/cmt.js';
+        h.src = l + '1.' + j;
+        h._p.parentNode.insertBefore(h, h._p);
+        h.onerror = function (k) {
+          k = f(a, d, e, b, i, s);
+          k.src = l + '2.' + j;
+          k._p.parentNode.insertBefore(k, k._p);
+        };
+      })(document, 'script', true, 'ebis.ne.jp/', 'ebis', 'E56pKAT3');
+    </script>
+    <!-- EBiS tag end -->
+    <style>
+      #container {
+        position: relative;
+      }
+      /* 診断状況表示のスタイル */
+      #check-result {
+        display: none !important;
+        position: fixed;
+        left: 20px;
+        top: 20px;
+        width: 250px;
+        background-color: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        padding: 10px;
+        border-radius: 5px;
+        z-index: 100;
+        font-size: 12px;
+      }
+      @media screen and (max-width: 640px) {
+        #check-result {
+          display: none;
+        }
+      }
+
+      #check-result h4 {
+        margin: 0 0 10px 0;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .type-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+
+      .type-table th,
+      .type-table td {
+        text-align: left;
+        padding: 4px;
+      }
+
+      .type-table th {
+        background-color: #f5f5f5;
+      }
+
+      .type-value,
+      .type-rank {
+        text-align: right;
+      }
+
+      .current-type {
+        margin-bottom: 10px;
+        font-weight: bold;
+      }
+
+      /* 重複制御状況表示のスタイル */
+      .hidden-items-status {
+        margin-top: 15px;
+        padding-top: 10px;
+        border-top: 1px solid #eee;
+      }
+
+      .hidden-items-status h4 {
+        margin: 0 0 10px 0;
+        color: #666;
+      }
+
+      .target-items,
+      .hidden-count {
+        margin-bottom: 5px;
+        color: #777;
+      }
+
+      .target-items span,
+      .hidden-count span {
+        font-weight: bold;
+        color: #333;
+      }
+
+      /* 設問の表示非表示 */
+      .contents__layout {
+        display: none !important;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+      .contents__layout.is-active {
+        display: flex !important;
+        opacity: 1;
+      }
+      /* loading */
+      .type__loading {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        /*display: none;*/
+        width: 100%;
+        height: 100%;
+        background-color: #ffffff;
+      }
+      .type__loading .loading__body {
+        position: relative;
+        display: table;
+        width: 100%;
+        height: 100%;
+      }
+      .type__loading .loading__content {
+        display: table-cell;
+        vertical-align: middle;
+      }
+      .type__loading .type__mirror {
+        padding-bottom: 124px;
+        overflow: hidden;
+        text-align: center;
+      }
+      .type__loading .type__mirror .mirror__caption {
+        padding-bottom: 48px;
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: 1.29px;
+        color: #333333;
+      }
+      .type__loading .type__mirror .mirror__figure {
+        position: relative;
+        width: 320px;
+        height: 300px;
+        margin: 0 auto;
+      }
+      .type__loading .type__mirror .mirror__figure .mirror__figure--cover {
+        position: relative;
+      }
+      .type__loading
+        .type__mirror
+        .mirror__figure
+        .mirror__figure--cover
+        .figure__glitter {
+        position: absolute;
+        display: none;
+        top: -3px;
+        left: 6px;
+        width: 155px;
+        height: 265px;
+        background-image: url(../images/loading-animation.png);
+        background-repeat: no-repeat;
+        background-size: 100% auto;
+        -webkit-animation: glitter 0.8s steps(4) infinite;
+        animation: glitter 0.8s steps(4) infinite;
+      }
+      .type__loading .type__mirror .mirror__figure .mirror__figure--cover img {
+        width: 320px;
+        height: auto;
+      }
+
+      @-webkit-keyframes glitter {
+        0 {
+          background-position: left 0px;
+        }
+
+        100% {
+          background-position: left -1060px;
+        }
+      }
+
+      @keyframes glitter {
+        0 {
+          background-position: left 0px;
+        }
+
+        100% {
+          background-position: left -1060px;
+        }
+      }
+
+      @-webkit-keyframes glitter-sp {
+        0 {
+          background-position: left 0px;
+        }
+
+        100% {
+          background-position: left -560px;
+        }
+      }
+
+      @keyframes glitter-sp {
+        0 {
+          background-position: left 0px;
+        }
+
+        100% {
+          background-position: left -560px;
+        }
+      }
+    </style>
+  </head>
+
+  <body data-contents-type="constitution">
+    <script src="https://www.kracie.co.jp/js/share/brandsite_mds_h_header_res_lgin.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <div id="check-result"></div>
+
+    <script>
+      // ===========================================
+      // 体質診断 重複制御機能 - 統合版
+      // ===========================================
+
+      // ■ 重複制御モード設定
+      const DUPLICATE_CONTROL_MODE = 'enhanced'; // 'current' | 'enhanced'
+      // 'current': 現在仕様（第2位体質設問でのみ第1位選択項目を非表示）
+      // 'enhanced': 改修仕様（第1位・第2位体質設問で全選択項目を非表示）
+
+      // ■ モード設定値の検証（不正な値の場合はデフォルト値を返す）
+      function validateMode() {
+        return ['current', 'enhanced'].includes(DUPLICATE_CONTROL_MODE)
+          ? DUPLICATE_CONTROL_MODE
+          : 'current';
+      }
+
+      // ■ 元の関数へのバックアップ参照（統合前の機能保持用）
+      const ORIGINAL_FUNCTIONS = {
+        hideDuplicateItems: null,
+        restoreHiddenItems: null,
+        recordFirstTypeSelections: null,
+      };
+
+      // ■ 改修仕様用：フェーズ別選択項目記録オブジェクト
+      let constitutionSelections = {
+        basic: [], // 設問2-6の選択項目
+        first: [], // 第1位体質設問の選択項目
+        second: [], // 第2位体質設問の選択項目
+      };
+
+      //20260709 体質タイプの順位を計算する関数
+      function sortTypeResults(scores) {
+          const typeKeys = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+
+          return scores
+            .map((score, index) => ({
+              type: typeKeys[index],
+              val: score,
+            }))
+            .sort((a, b) => {
+              if (b.val !== a.val) {
+                return b.val - a.val;
+              }
+              return a.type.localeCompare(b.type);
+            })
+            .map((item, index, sorted) => {
+              const rank =
+                index > 0 && item.val === sorted[index - 1].val
+                  ? sorted[index - 1].rank
+                  : index + 1;
+
+              return {
+                ...item,
+                rank,
+              };
+            });
+        }
+
+      $(function () {
+        // ■ 現在仕様用：第1位体質設問で選択された項目のテキスト記録
+        let firstTypeSelected = []; // 第2位体質設問で非表示にする項目リスト
+
+        // ■ 体質タイプマスタ定義（A～H: 8つの体質分類）
+        const typeNames = {
+          A: '血虚',
+          B: '瘀血',
+          C: '気虚',
+          D: '気滞',
+          E: '水滞',
+          F: '陰虚',
+          G: '湿熱',
+          H: '陽虚',
+        };
+
+        // ■ デバッグ用診断状況表示エリアの存在確認
+        const $resultArea = $('#check-result');
+        if (!$resultArea.length) return; // 表示エリアが無い場合は処理終了
+
+        // ■ 診断状況表示エリアの初期HTML構築
+        $resultArea.html(
+          '<div class="diagnosis-status">' +
+            '<h4>診断状況</h4>' +
+            '<div class="current-type">現在の傾向: <span>まだ診断中...</span></div>' +
+            '<div class="type-scores"></div>' +
+            '</div>' +
+            '<div class="hidden-items-status">' +
+            '<h4>重複制御状況</h4>' +
+            '<div class="target-items">非表示項目: <span>なし</span></div>' +
+            '<div class="hidden-count">非表示済み: <span>0個</span></div>' +
+            '</div>'
+        );
+
+        // ■ 表示更新用のjQuery要素参照を取得
+        const $currentType = $resultArea.find('.current-type span'); // 現在の最高スコア体質表示
+        const $typeScores = $resultArea.find('.type-scores'); // スコア一覧表示エリア
+
+        // ■ 重複制御状況表示用の要素参照を取得
+        const $targetItems = $resultArea.find('.target-items span'); // 非表示項目表示
+        const $hiddenCount = $resultArea.find('.hidden-count span'); // 非表示済み個数表示
+
+        // ■ 体質別スコア表示テーブルのHTML構築
+        $typeScores.html(
+          '<table class="type-table">' +
+            '<thead><tr>' +
+            '<th>タイプ</th>' + // 体質名
+            '<th>点数</th>' + // 現在のスコア
+            '<th>順位</th>' + // 現在の順位
+            '</tr></thead>' +
+            '<tbody></tbody>' +
+            '</table>'
+        );
+
+        const $tableBody = $typeScores.find('tbody');
+
+        // ■ 8つの体質タイプの行を動的生成してテーブルに追加
+        Object.keys(typeNames).forEach((typeKey) => {
+          const typeName = typeNames[typeKey];
+          const $row = $(`<tr data-type="${typeKey}">
+            <td>${typeKey}: ${typeName}</td>
+            <td class="type-value">0</td>
+            <td class="type-rank">-</td>
+          </tr>`);
+          $tableBody.append($row);
+        });
+
+        // ■ 診断チェックボックス変更時のイベント監視
+        $('input[type=checkbox][name=diagnostic]').on('change', function () {
+          updateDiagnosisData(); // スコア再計算と表示更新
+          recordFirstTypeSelections(); // 第1位体質設問での選択項目記録
+        });
+
+        // 性別選択時の処理
+        $('.gender__block').on('click', function () {
+          const gender = $(this).data('select');
+
+          // 男性またはその他が選択された場合
+          if (gender === 'female') {
+            // 女性の場合は設問6を表示し、プログレスバーを「/9」に戻す
+            $('[data-step-active="7"]').show();
+            $('.step__progress--value').text('/9');
+
+            // 女性の場合はtype_femaleクラスを追加
+            $('.step__progress').addClass('type_female');
+          } else {
+            // 設問7を非表示に
+            $('[data-step-active="7"]').hide();
+
+            // プログレスバーの表示を「8」に変更
+            $('.step__progress--value').text('/8');
+
+            // type_femaleクラスを削除
+            $('.step__progress').removeClass('type_female');
+
+            // 設問5の次へボタンの挙動を変更
+            $('.viewbox__navigation .btn__next').one('click', function () {
+              if (
+                $('#constitution__columns--view').hasClass('view__progress--5')
+              ) {
+                // 設問5の次は診断結果へ
+                $('.viewbox__navigation .btn__type').trigger('click');
+                return false;
+              }
+            });
+          }
+        });
+
+        // データ属性を更新
+        $resultArea.attr('data-diagnosis', '{}');
+
+        function updateDiagnosisData() {
+          // ■ 現在チェックされている診断項目を全て取得
+          const $checked = $('input[type=checkbox][name=diagnostic]:checked');
+
+          // ■ 8つの体質タイプ別スコア配列を初期化（A～H順）
+          const scores = [0, 0, 0, 0, 0, 0, 0, 0]; // A, B, C, D, E, F, G, H のスコア
+
+          // ■ チェック済み項目のdata-points属性値を加算してスコア計算
+          $checked.each(function () {
+            const $checkbox = $(this);
+            const points = $checkbox.data('points'); // [A,B,C,D,E,F,G,H]の配点配列
+
+            if (points && Array.isArray(points)) {
+              for (let i = 0; i < points.length; i++) {
+                if (i < scores.length) {
+                  scores[i] += points[i]; // 各体質への配点を加算
+                }
+              }
+            }
+          });
+
+          // ■ 浮動小数点精度問題を解決：各スコアを小数点1桁に四捨五入
+          for (let i = 0; i < scores.length; i++) {
+            scores[i] = Math.round(scores[i] * 10) / 10;
+          }
+
+          // ■ 全体合計スコアを計算（デバッグ用、現在は未使用）
+          const totalScore =
+            Math.round(scores.reduce((sum, score) => sum + score, 0) * 10) / 10;
+
+          // ■ 8つの体質タイプの順位計算（高スコア順で1位～8位）
+          const ranks = [];
+          const sortedScores = [...scores].sort((a, b) => b - a); // 降順ソート
+
+          for (let i = 0; i < scores.length; i++) {
+            const rank = sortedScores.indexOf(scores[i]) + 1; // 同点は同順位
+            ranks.push(rank);
+          }
+
+          // ■ 現在の最高スコア体質タイプを特定
+          let highestType = '';
+          let highestScore = 0;
+
+          for (let i = 0; i < scores.length; i++) {
+            if (scores[i] > highestScore) {
+              highestScore = scores[i];
+              highestType = Object.keys(typeNames)[i]; // A～H
+            }
+          }
+
+          // ■ 最高スコア体質の表示更新
+          if (highestType && totalScore > 0) {
+            $currentType.text(`${highestType}: ${typeNames[highestType]}`);
+          } else {
+            $currentType.text('まだ診断中...');
+          }
+
+          // ■ デバッグ表示テーブルの更新
+          updateDiagnosisTable(scores, ranks);
+
+          // ■ 診断結果データのJSON形式保存（結果ページ用）
+          updateDiagnosisJSON(scores, ranks);
+
+          // ■ 重複制御状況の表示更新
+          updateHiddenItemsStatus();
+        }
+
+        function updateDiagnosisTable(scores, ranks) {
+          // ■ デバッグ表示テーブルの各行（A～H）を最新スコア・順位で更新
+          Object.keys(typeNames).forEach((typeKey, index) => {
+            const $row = $tableBody.find(`tr[data-type="${typeKey}"]`);
+            $row.find('.type-value').text(scores[index]); // スコア列更新
+            $row.find('.type-rank').text(ranks[index]); // 順位列更新
+          });
+        }
+
+        function updateDiagnosisJSON(scores, ranks) {
+          // ■ 診断結果を順位をキーとしたJSON形式で保存（結果ページに渡すデータ）
+          //const diagnosisData = {};
+
+          //20260709 ■ 診断結果を順位付き配列で保存（同率時の上書きを防ぐ）
+          const diagnosisData = sortTypeResults(scores);
+
+          //Object.keys(typeNames).forEach((typeKey, index) => {
+            //diagnosisData[ranks[index]] = {
+              //type: typeKey, // 体質タイプ（A～H）
+              //val: scores[index], // そのタイプのスコア
+            //};
+          //});
+
+          // data-diagnosis属性に保存（後続処理で参照）
+          $resultArea.attr('data-diagnosis', JSON.stringify(diagnosisData));
+        }
+
+        // ■ 重複制御状況の表示更新（ローカル版）
+        function updateHiddenItemsStatus() {
+          // 実際に非表示になっているli要素を取得
+          const hiddenElements = document.querySelectorAll(
+            'li[style*="display: none"]'
+          );
+
+          // 非表示項目のテキストを取得
+          const hiddenItemTexts = [];
+          hiddenElements.forEach((element) => {
+            const spanElement = element.querySelector('span');
+            if (spanElement) {
+              hiddenItemTexts.push(spanElement.textContent.trim());
+            }
+          });
+
+          // 非表示項目の表示更新
+          if (hiddenItemTexts.length > 0) {
+            const itemsText = hiddenItemTexts.slice(0, 3).join(', '); // 最初の3項目のみ表示
+            const remainingCount = hiddenItemTexts.length - 3;
+            const displayText =
+              remainingCount > 0
+                ? `${itemsText} 他${remainingCount}項目`
+                : itemsText;
+            $targetItems.text(displayText);
+          } else {
+            $targetItems.text('なし');
+          }
+
+          // 非表示項目数を表示
+          $hiddenCount.text(`${hiddenElements.length}個`);
+        }
+
+        // ■ グローバル版の重複制御状況表示更新関数
+        window.updateHiddenItemsStatus = function () {
+          // 実際に非表示になっているli要素を取得
+          const hiddenElements = document.querySelectorAll(
+            'li[style*="display: none"]'
+          );
+
+          // 非表示項目のテキストを取得
+          const hiddenItemTexts = [];
+          hiddenElements.forEach((element) => {
+            const spanElement = element.querySelector('span');
+            if (spanElement) {
+              hiddenItemTexts.push(spanElement.textContent.trim());
+            }
+          });
+
+          // DOM要素を直接取得
+          const targetItemsElement = document.querySelector(
+            '#check-result .target-items span'
+          );
+          const hiddenCountElement = document.querySelector(
+            '#check-result .hidden-count span'
+          );
+
+          if (!targetItemsElement || !hiddenCountElement) {
+            console.warn('デバッグ表示エリアの要素が見つかりません');
+            return;
+          }
+
+          // 非表示項目の表示更新
+          if (hiddenItemTexts.length > 0) {
+            const itemsText = hiddenItemTexts.slice(0, 3).join(', '); // 最初の3項目のみ表示
+            const remainingCount = hiddenItemTexts.length - 3;
+            const displayText =
+              remainingCount > 0
+                ? `${itemsText} 他${remainingCount}項目`
+                : itemsText;
+            targetItemsElement.textContent = displayText;
+          } else {
+            targetItemsElement.textContent = 'なし';
+          }
+
+          // 非表示項目数を表示
+          hiddenCountElement.textContent = `${hiddenElements.length}個`;
+
+          console.log('デバッグ表示更新完了:', {
+            hiddenItemTexts,
+            hiddenCount: hiddenElements.length,
+          });
+        };
+
+        // ■ 第1位体質設問での選択項目記録（現在仕様用）
+        function recordFirstTypeSelections() {
+          // window.constitutionState から現在のフェーズと設問ステップを取得
+          const vanillaScript = window.constitutionState;
+          if (!vanillaScript) return; // 状態オブジェクトが無い場合は処理終了
+
+          // 第1位体質設問（A～H）で且つ'first'フェーズの場合のみ記録
+          if (
+            vanillaScript.constitutionPhase === 'first' &&
+            ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].includes(
+              vanillaScript.currentStep
+            )
+          ) {
+            firstTypeSelected = []; // 記録配列をリセット
+
+            // 現在表示中の体質設問要素を取得
+            const currentStepElement = document.querySelector(
+              `[data-step-active="${vanillaScript.currentStep}"]`
+            );
+            if (currentStepElement) {
+              // その設問内でチェックされている項目を取得
+              const checkedBoxes = currentStepElement.querySelectorAll(
+                'input[type="checkbox"][name="diagnostic"]:checked'
+              );
+
+              // チェック項目のテキストを配列に記録
+              checkedBoxes.forEach((checkbox) => {
+                const spanElement = checkbox.nextElementSibling;
+                if (spanElement && spanElement.tagName === 'SPAN') {
+                  firstTypeSelected.push(spanElement.textContent.trim());
+                }
+              });
+
+              console.log('1位体質設問で選択された項目:', firstTypeSelected);
+            }
+          }
+
+          // 表示更新
+          updateHiddenItemsStatus();
+        }
+
+        // ■ 改修仕様用：フェーズ別選択項目記録
+        function recordSelectionsByPhase() {
+          if (validateMode() !== 'enhanced') return; // 改修仕様以外では処理しない
+
+          const vanillaScript = window.constitutionState;
+          if (!vanillaScript) return;
+
+          // 基本設問（2-6）の選択項目を記録
+          constitutionSelections.basic = [];
+          const basicSteps = ['2', '3', '4', '5', '6'];
+          basicSteps.forEach((step) => {
+            const stepElement = document.querySelector(
+              `[data-step-active="${step}"]`
+            );
+            if (stepElement) {
+              const checkedBoxes = stepElement.querySelectorAll(
+                'input[type="checkbox"][name="diagnostic"]:checked'
+              );
+              checkedBoxes.forEach((checkbox) => {
+                const spanElement = checkbox.nextElementSibling;
+                if (spanElement && spanElement.tagName === 'SPAN') {
+                  constitutionSelections.basic.push(
+                    spanElement.textContent.trim()
+                  );
+                }
+              });
+            }
+          });
+
+          // 現在のフェーズに応じて体質設問の選択も記録
+          if (vanillaScript.constitutionPhase === 'first') {
+            constitutionSelections.first = [];
+            const currentStepElement = document.querySelector(
+              `[data-step-active="${vanillaScript.currentStep}"]`
+            );
+            if (
+              currentStepElement &&
+              ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].includes(
+                vanillaScript.currentStep
+              )
+            ) {
+              const checkedBoxes = currentStepElement.querySelectorAll(
+                'input[type="checkbox"][name="diagnostic"]:checked'
+              );
+              checkedBoxes.forEach((checkbox) => {
+                const spanElement = checkbox.nextElementSibling;
+                if (spanElement && spanElement.tagName === 'SPAN') {
+                  constitutionSelections.first.push(
+                    spanElement.textContent.trim()
+                  );
+                }
+              });
+            }
+          } else if (vanillaScript.constitutionPhase === 'second') {
+            constitutionSelections.second = [];
+            const currentStepElement = document.querySelector(
+              `[data-step-active="${vanillaScript.currentStep}"]`
+            );
+            if (
+              currentStepElement &&
+              ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].includes(
+                vanillaScript.currentStep
+              )
+            ) {
+              const checkedBoxes = currentStepElement.querySelectorAll(
+                'input[type="checkbox"][name="diagnostic"]:checked'
+              );
+              checkedBoxes.forEach((checkbox) => {
+                const spanElement = checkbox.nextElementSibling;
+                if (spanElement && spanElement.tagName === 'SPAN') {
+                  constitutionSelections.second.push(
+                    spanElement.textContent.trim()
+                  );
+                }
+              });
+            }
+          }
+
+          console.log('改修仕様：記録された選択データ', constitutionSelections);
+
+          // 表示更新
+          updateHiddenItemsStatus();
+        }
+
+        // ■ フェーズ別非表示対象取得関数（新規追加）
+        function getHiddenTargetsForPhase(phase, currentStep) {
+          if (validateMode() !== 'enhanced') return [];
+
+          let targets = [];
+
+          if (phase === 'first') {
+            // 第1位体質設問：基本設問の選択項目のみ非表示
+            targets = [...constitutionSelections.basic];
+            console.log('第1位設問での非表示対象（基本設問のみ）:', targets);
+          } else if (phase === 'second') {
+            // 第2位体質設問：基本設問 + 第1位選択項目を非表示
+            targets = [
+              ...constitutionSelections.basic,
+              ...constitutionSelections.first,
+            ];
+            console.log('第2位設問での非表示対象（基本+第1位）:', targets);
+          }
+
+          // 重複を除去
+          return [...new Set(targets)];
+        }
+
+        // Phase 3: 重複制御拡張（詳細ログ対応）
+        function enhancedHideDuplicateItems(currentStep) {
+          const mode = validateMode();
+          const vanillaScript = window.constitutionState;
+
+          // 体質設問かどうかの判定
+          const isConstitutionStep = [
+            'A',
+            'B',
+            'C',
+            'D',
+            'E',
+            'F',
+            'G',
+            'H',
+          ].includes(currentStep);
+
+          if (mode === 'current') {
+            // 現在仕様：第2位体質設問のみで第1位選択を非表示（変更なし）
+            if (
+              !isConstitutionStep ||
+              !vanillaScript ||
+              vanillaScript.constitutionPhase !== 'second'
+            ) {
+              return; // 第2位体質設問以外では処理しない
+            }
+
+            if (firstTypeSelected.length === 0) {
+              console.log('1位体質設問での選択項目が記録されていません');
+              return;
+            }
+
+            const currentStepElement = document.querySelector(
+              `[data-step-active="${currentStep}"]`
+            );
+            if (!currentStepElement) {
+              console.log('現在のステップ要素が見つかりません:', currentStep);
+              return;
+            }
+
+            const allCheckboxes = currentStepElement.querySelectorAll(
+              'input[type="checkbox"][name="diagnostic"]'
+            );
+
+            let hiddenCount = 0;
+            let hiddenItems = []; // 非表示項目を記録
+
+            allCheckboxes.forEach((checkbox) => {
+              const spanElement = checkbox.nextElementSibling;
+              if (spanElement && spanElement.tagName === 'SPAN') {
+                const itemText = spanElement.textContent.trim();
+
+                if (firstTypeSelected.includes(itemText)) {
+                  const listItem = checkbox.closest('li');
+                  if (listItem) {
+                    listItem.style.display = 'none';
+                    hiddenCount++;
+                    hiddenItems.push(itemText); // 記録
+                  }
+                }
+              }
+            });
+
+            console.log(
+              `現在仕様（第2位のみ）：${hiddenCount}個の重複項目を非表示にしました`
+            );
+            if (hiddenItems.length > 0) {
+              console.log('📝 非表示になった項目:', hiddenItems);
+              console.log('🔍 対象データ (第1位選択):', firstTypeSelected);
+            }
+            return;
+          }
+
+          if (mode === 'enhanced') {
+            // 改修仕様：フェーズ別の適切な非表示制御
+            if (!isConstitutionStep || !vanillaScript) {
+              return; // 体質設問以外では処理しない
+            }
+
+            // フェーズに応じた非表示対象を取得
+            const targetItems = getHiddenTargetsForPhase(
+              vanillaScript.constitutionPhase,
+              currentStep
+            );
+
+            if (targetItems.length === 0) {
+              console.log('改修仕様：非表示対象なし');
+              return;
+            }
+
+            const currentStepElement = document.querySelector(
+              `[data-step-active="${currentStep}"]`
+            );
+            if (!currentStepElement) {
+              console.log('現在のステップ要素が見つかりません:', currentStep);
+              return;
+            }
+
+            const allCheckboxes = currentStepElement.querySelectorAll(
+              'input[type="checkbox"][name="diagnostic"]'
+            );
+
+            let hiddenCount = 0;
+            let hiddenItems = []; // 非表示項目を記録
+
+            allCheckboxes.forEach((checkbox) => {
+              const spanElement = checkbox.nextElementSibling;
+              if (spanElement && spanElement.tagName === 'SPAN') {
+                const itemText = spanElement.textContent.trim();
+                if (targetItems.includes(itemText)) {
+                  const listItem = checkbox.closest('li');
+                  if (listItem) {
+                    listItem.style.display = 'none';
+                    hiddenCount++;
+                    hiddenItems.push(itemText);
+                  }
+                }
+              }
+            });
+
+            const phaseText =
+              vanillaScript.constitutionPhase === 'first' ? '第1位' : '第2位';
+            console.log(
+              `改修仕様（${phaseText}）：${hiddenCount}個の項目を非表示`
+            );
+            if (hiddenItems.length > 0) {
+              console.log('📝 非表示になった項目:', hiddenItems);
+              console.log('🔍 対象データ:', targetItems);
+            }
+          }
+        }
+
+        function enhancedRestoreHiddenItems() {
+          const allSteps = document.querySelectorAll('.contents__layout');
+
+          allSteps.forEach((stepElement) => {
+            const hiddenItems = stepElement.querySelectorAll(
+              'li[style*="display: none"]'
+            );
+            hiddenItems.forEach((item) => {
+              item.style.display = '';
+            });
+          });
+
+          console.log('非表示項目を復元しました');
+        }
+
+        // Phase 4: 初期化と統合
+        // 既存関数のバックアップ（初期化時に実行）
+        ORIGINAL_FUNCTIONS.hideDuplicateItems = enhancedHideDuplicateItems;
+        ORIGINAL_FUNCTIONS.restoreHiddenItems = enhancedRestoreHiddenItems;
+        ORIGINAL_FUNCTIONS.recordFirstTypeSelections =
+          recordFirstTypeSelections;
+
+        // 追加監視の設定
+        $(document).on(
+          'change.enhancedMode',
+          'input[type="checkbox"][name="diagnostic"]',
+          function () {
+            if (validateMode() === 'enhanced') {
+              recordSelectionsByPhase();
+            }
+          }
+        );
+
+        // 既存のrecordFirstTypeSelectionsの拡張
+        const originalRecord = recordFirstTypeSelections;
+        recordFirstTypeSelections = function () {
+          originalRecord();
+          if (validateMode() === 'enhanced') {
+            recordSelectionsByPhase();
+          }
+        };
+
+        // グローバルからアクセス可能にする
+        window.duplicateController = {
+          hideDuplicateItems: enhancedHideDuplicateItems,
+          restoreHiddenItems: enhancedRestoreHiddenItems,
+        };
+
+        console.log(`重複制御モード: ${validateMode()}`);
+
+        // デバッグ用テスト関数
+        window.validateImplementation = function () {
+          const tests = [
+            // 基本設定
+            () => typeof DUPLICATE_CONTROL_MODE === 'string',
+            () => ['current', 'enhanced'].includes(DUPLICATE_CONTROL_MODE),
+
+            // 既存インターフェース
+            () =>
+              typeof window.duplicateController.hideDuplicateItems ===
+              'function',
+            () =>
+              typeof window.duplicateController.restoreHiddenItems ===
+              'function',
+
+            // 配列の存在
+            () => Array.isArray(firstTypeSelected),
+            () =>
+              typeof constitutionSelections === 'object' &&
+              constitutionSelections !== null,
+
+            // 関数の存在
+            () => typeof recordFirstTypeSelections === 'function',
+            () => typeof recordSelectionsByPhase === 'function',
+          ];
+
+          const results = tests.map((test, index) => {
+            try {
+              const result = test();
+              console.log(`Test ${index + 1}: ${result ? 'PASS' : 'FAIL'}`);
+              return result;
+            } catch (error) {
+              console.log(`Test ${index + 1}: ERROR - ${error.message}`);
+              return false;
+            }
+          });
+
+          const allPassed = results.every((result) => result);
+          console.log(
+            `総合結果: ${allPassed ? 'ALL TESTS PASSED' : 'SOME TESTS FAILED'}`
+          );
+          return allPassed;
+        };
+
+        // 🆕 非表示状態確認用デバッグ関数
+        window.showHiddenItems = function () {
+          const mode = validateMode();
+          const allSteps = document.querySelectorAll('.contents__layout');
+          let totalHidden = 0;
+          let hiddenItemsByStep = {};
+
+          console.log('=== 非表示項目の詳細確認 ===');
+          console.log('現在のモード:', mode);
+
+          if (mode === 'current') {
+            console.log('第1位選択データ:', firstTypeSelected);
+          } else {
+            console.log('基本設問選択データ:', constitutionSelections.basic);
+            console.log('第1位選択データ:', constitutionSelections.first);
+            console.log('第2位選択データ:', constitutionSelections.second);
+          }
+
+          allSteps.forEach((stepElement) => {
+            const stepId = stepElement.getAttribute('data-step-active');
+            const hiddenItems = stepElement.querySelectorAll(
+              'li[style*="display: none"]'
+            );
+
+            if (hiddenItems.length > 0) {
+              hiddenItemsByStep[stepId] = [];
+              hiddenItems.forEach((item) => {
+                const spanElement = item.querySelector('span');
+                if (spanElement) {
+                  const itemText = spanElement.textContent.trim();
+                  hiddenItemsByStep[stepId].push(itemText);
+                  totalHidden++;
+                }
+              });
+            }
+          });
+
+          console.log('📊 ステップ別非表示項目:');
+          Object.keys(hiddenItemsByStep).forEach((stepId) => {
+            console.log(`  設問${stepId}:`, hiddenItemsByStep[stepId]);
+          });
+
+          console.log('📈 総非表示項目数:', totalHidden);
+          console.log('=====================================');
+
+          return {
+            mode: mode,
+            totalHidden: totalHidden,
+            hiddenByStep: hiddenItemsByStep,
+            targetData:
+              mode === 'current' ? firstTypeSelected : constitutionSelections,
+          };
+        };
+
+        // 🆕 選択状況確認用デバッグ関数
+        window.showSelectionStatus = function () {
+          console.log('=== 現在の選択状況 ===');
+          console.log('モード:', validateMode());
+          console.log('第1位選択項目:', firstTypeSelected);
+          console.log('改修仕様選択項目:', constitutionSelections);
+
+          // 現在表示中のステップでの選択状況
+          const currentSteps = document.querySelectorAll(
+            '.contents__layout.is-active'
+          );
+          currentSteps.forEach((step) => {
+            const stepId = step.getAttribute('data-step-active');
+            const checkedBoxes = step.querySelectorAll(
+              'input[type="checkbox"][name="diagnostic"]:checked'
+            );
+            const selectedItems = [];
+            checkedBoxes.forEach((checkbox) => {
+              const spanElement = checkbox.nextElementSibling;
+              if (spanElement && spanElement.tagName === 'SPAN') {
+                selectedItems.push(spanElement.textContent.trim());
+              }
+            });
+            if (selectedItems.length > 0) {
+              console.log(`現在の設問${stepId}で選択中:`, selectedItems);
+            }
+          });
+
+          console.log('==============================');
+        };
+
+        // 初期更新
+        updateDiagnosisData();
+
+        // 初期表示更新
+        updateHiddenItemsStatus();
+
+        // 🆕 改修版テスト関数の追加
+        window.testEnhancedModeFixed = function () {
+          console.log('=== 改修版Enhanced Mode テスト開始 ===');
+
+          // テスト1: データ構造の確認
+          console.log('テスト1: データ構造');
+          console.log('constitutionSelections:', constitutionSelections);
+
+          // テスト2: フェーズ別非表示対象の確認
+          console.log('テスト2: フェーズ別非表示対象');
+          const firstTargets = getHiddenTargetsForPhase('first', 'A');
+          const secondTargets = getHiddenTargetsForPhase('second', 'A');
+          console.log('第1位での非表示対象:', firstTargets);
+          console.log('第2位での非表示対象:', secondTargets);
+
+          // テスト3: 実際の非表示状況確認
+          console.log('テスト3: 実際の非表示状況');
+          showHiddenItems();
+
+          console.log('=== テスト完了 ===');
+          return {
+            dataStructure: constitutionSelections,
+            firstTargets: firstTargets,
+            secondTargets: secondTargets,
+          };
+        };
+
+        // 実装完了確認
+        console.log('=== 重複制御機能 修正完了 ===');
+        console.log('使用方法:');
+        console.log(
+          '1. DUPLICATE_CONTROL_MODE を "current" または "enhanced" に変更'
+        );
+        console.log('2. ページをリロード');
+        console.log('📝 デバッグ用コマンド:');
+        console.log('  validateImplementation() - 実装テスト実行');
+        console.log('  testEnhancedModeFixed() - 修正版テスト実行');
+        console.log('  showHiddenItems() - 非表示項目の詳細確認');
+        console.log('  showSelectionStatus() - 現在の選択状況確認');
+        console.log('=====================================');
+      });
+    </script>
+
+    <main id="container">
+      <div class="breadcrumbs">
+        <div class="breadcrumbs__outer">
+          <div class="breadcrumbs__inner">
+            <ul>
+              <li><a href="https://www.kracie.co.jp/">クラシエ</a></li>
+              <li><a href="/ph/k-therapy/">漢方セラピー</a></li>
+              <li><a href="/ph/k-therapy/karadakagami/">からだかがみ</a></li>
+              <li>設問</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <section class="contents">
+        <div class="contents__inner">
+          <!--  設問 1  -->
+          <div class="contents__layout" data-step-active="1">
+            <div class="contents__layout--head">
+              <h2 class="step__title">
+                <img
+                  src="/ph/k-therapy/karadakagami/shared_2025/img/logo-01.svg"
+                  alt="60秒で体質check! からだかがみ"
+                />
+              </h2>
+              <div class="step__progress">
+                <span class="step__progress--value">/8</span>
+              </div>
+              <div class="step__comment">
+                <p class="step__comment--value">性別を選択ください。</p>
+              </div>
+            </div>
+            <div class="contents__layout--body">
+              <ul class="step__btns lists__columns">
+                <li class="lists__cell">
+                  <label
+                    class="column__item gender__block"
+                    data-select="female"
+                    for="gender-female"
+                  >
+                    <input id="gender-female" name="gender" type="radio" />
+                    <span>女性</span>
+                  </label>
+                </li>
+                <li class="lists__cell">
+                  <label
+                    class="column__item gender__block"
+                    data-select="male"
+                    for="gender-male"
+                  >
+                    <input id="gender-male" name="gender" type="radio" />
+                    <span>男性</span>
+                  </label>
+                </li>
+                <li class="lists__cell">
+                  <label
+                    class="column__item gender__block"
+                    data-select="other"
+                    for="gender-other"
+                  >
+                    <input id="gender-other" name="gender" type="radio" />
+                    <span>その他</span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!--  設問 1  -->
+          <!--  設問 2  -->
+          <div class="contents__layout" data-step-active="2">
+            <div class="contents__layout--head">
+              <h2 class="step__title">
+                <img
+                  src="/ph/k-therapy/karadakagami/shared_2025/img/logo-01.svg"
+                  alt="60秒で体質check! からだかがみ"
+                />
+              </h2>
+              <div class="step__progress">
+                <span class="step__progress--value">/8</span>
+              </div>
+              <div class="step__comment">
+                <p class="step__comment--value">
+                  現在の体の状態についてお伺いします。当てはまるものがない場合は「次へ」を押して進んでください。
+                </p>
+              </div>
+            </div>
+            <div class="contents__layout--body">
+              <ul class="step__btns lists__columns">
+                <li>
+                  <label>
+                    <input
+                      data-points="[4.5,0,2.3,0,0,3.16,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>かすみ目、疲れ目がある</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[4.5,0,2.3,0,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>髪の毛がパサついたり抜け毛が多い</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,6.7,0,2.6,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>首や肩がこる</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[2.8,0,2.3,0,0,0,0,5.7]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>冷えやすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,6.7,0,0,0,3.16,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>痔になりやすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,3.82,0,3.16,0,3.7,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>汗をかきやすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[2.8,0,2.3,0,0,0,0,5.7]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>体が冷えると頭が痛くなる</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,0,0,0,6.2,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>黄色い鼻水、粘り気のある鼻水が出る</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,4.25,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>両脇やみぞおちが痛む（張った感じがする）</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,0,5.26,0,0,3.4]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>体がむくみやすい、重だるい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,2.3,0,5.26,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>曇りの日や雨が降ると体調を崩しやすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[2.8,0,0,0,0,0,0,5.7]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>筋肉が少ない</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,3.82,0,0,0,0,3.4]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>アレルギー体質</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,2.6,0,5.26,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>口やのどが渇く</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,0,0,5.26,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>手足がほてる</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[2.8,0,0,0,0,5.26,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>耳鳴りがある</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[2.8,0,3.82,0,0,0,0,3.4]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>疲れやすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,0,0,0,6.2,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>尿の色が濃い</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,2.3,0,0,3.16,0,5.7]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>足腰のだるさがある</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,2.3,0,0,0,0,5.7]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>透明な鼻水、さらさらな鼻水が出る</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[2.8,6.7,0,0,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>ぎっくり腰になりやすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,4.3,0,2.6,0,5.26,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>のぼせやすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,0,5.26,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>天気が悪い日に頭が痛くなる</span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!--  設問 2  -->
+          <!--  設問 3  -->
+          <div class="contents__layout" data-step-active="3">
+            <div class="contents__layout--head">
+              <h2 class="step__title">
+                <img
+                  src="/ph/k-therapy/karadakagami/shared_2025/img/logo-01.svg"
+                  alt="60秒で体質check! からだかがみ"
+                />
+              </h2>
+              <div class="step__progress">
+                <span class="step__progress--value">/8</span>
+              </div>
+              <div class="step__comment">
+                <p class="step__comment--value">
+                  肌の状態についてお伺いします。当てはまるものがない場合は「次へ」を押して進んでください。
+                </p>
+              </div>
+            </div>
+            <div class="contents__layout--body">
+              <ul class="step__btns lists__columns">
+                <li>
+                  <label>
+                    <input
+                      data-points="[4.5,0,2.3,0,0,0,0,3.4]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>顔色が白く、ツヤがない</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,6.7,0,2.6,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>あざができやすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,6.7,0,2.6,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>しみやそばかすが気になる、目のくまができる</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,3.82,0,0,3.16,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>顔にはりがない</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,4.3,0,4.3,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>ストレスが肌の状態に出やすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[2.8,0,0,0,0,5.26,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>乾燥肌、敏感肌だ</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,0,0,0,6.2,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>髪や肌が脂っぽい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,0,3.16,0,6.2,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>オイリー肌</span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!--  設問 3  -->
+          <!--  設問 4  -->
+          <div class="contents__layout" data-step-active="4">
+            <div class="contents__layout--head">
+              <h2 class="step__title">
+                <img
+                  src="/ph/k-therapy/karadakagami/shared_2025/img/logo-01.svg"
+                  alt="60秒で体質check! からだかがみ"
+                />
+              </h2>
+              <div class="step__progress">
+                <span class="step__progress--value">/8</span>
+              </div>
+              <div class="step__comment">
+                <p class="step__comment--value">
+                  胃腸の状態についてお伺いします。当てはまるものがない場合は「次へ」を押して進んでください。
+                </p>
+              </div>
+            </div>
+            <div class="contents__layout--body">
+              <ul class="step__btns lists__columns">
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,3.82,0,3.16,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>胃腸が弱い、食欲がない</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,4.25,0,0,3.7,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>ガス（おなら、ゲップ）が溜まりやすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,2.6,5.26,0,3.7,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>吐き気、嘔吐が多い</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,2.3,0,5.26,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>よく下痢、軟便になる</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,2.6,3.16,0,6.2,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>胃がもたれる</span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!--  設問 4  -->
+          <!--  設問 5  -->
+          <div class="contents__layout" data-step-active="5">
+            <div class="contents__layout--head">
+              <h2 class="step__title">
+                <img
+                  src="/ph/k-therapy/karadakagami/shared_2025/img/logo-01.svg"
+                  alt="60秒で体質check! からだかがみ"
+                />
+              </h2>
+              <div class="step__progress">
+                <span class="step__progress--value">/8</span>
+              </div>
+              <div class="step__comment">
+                <p class="step__comment--value">
+                  現在の状態で当てはまるものをお選びください。当てはまるものがない場合は「次へ」を押して進んでください。
+                </p>
+              </div>
+            </div>
+            <div class="contents__layout--body">
+              <ul class="step__btns lists__columns">
+                <li>
+                  <label>
+                    <input
+                      data-points="[4.5,0,0,2.6,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>不安感がある</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[4.5,0,2.3,0,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>夢をよく見たり、眠りが浅い</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,4.25,0,3.16,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>イライラしやすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,4.25,3.16,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>胸につかえた感じがする</span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!--  設問 5  -->
+          <!--  設問 6  -->
+          <div class="contents__layout" data-step-active="6">
+            <div class="contents__layout--head">
+              <h2 class="step__title">
+                <img
+                  src="/ph/k-therapy/karadakagami/shared_2025/img/logo-01.svg"
+                  alt="60秒で体質check! からだかがみ"
+                />
+              </h2>
+              <div class="step__progress">
+                <span class="step__progress--value">/8</span>
+              </div>
+              <div class="step__comment">
+                <p class="step__comment--value">
+                  体調についてお伺いします。当てはまるものをすべてお選び下さい。当てはまるものがない場合は「次へ」を押して進んでください。
+                </p>
+              </div>
+            </div>
+            <div class="contents__layout--body">
+              <ul class="step__btns lists__columns">
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,0,5,0,3,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>おりものが多い</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,5,0,3,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>生理血に塊が出る</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,3,0,5,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span
+                      >生理不順（周期が不定期など）、ストレスなどで左右される</span
+                    >
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,5,0,0,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>生理血が暗紫色</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[5,0,3,0,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>生理血が薄い、少ない</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,3,0,0,0,0,5]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>月経がだらだらと続く</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[3,0,5,0,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>月経周期が短くなりがち</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,0,0,0,5,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>おりもののにおいが気になる</span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!--  設問 6  -->
+          <!--  設問 A  -->
+          <div class="contents__layout" data-step-active="A">
+            <div class="contents__layout--head">
+              <h2 class="step__title">
+                <img
+                  src="/ph/k-therapy/karadakagami/shared_2025/img/logo-01.svg"
+                  alt="60秒で体質check! からだかがみ"
+                />
+              </h2>
+              <div class="step__progress">
+                <span class="step__progress--value">/8</span>
+              </div>
+              <div class="step__comment">
+                <p class="step__comment--value">
+                  体調についてお伺いします。​当てはまるものがない場合は「次へ」を押して進んでください。​
+                </p>
+              </div>
+            </div>
+            <div class="contents__layout--body">
+              <ul class="step__btns lists__columns">
+                <li>
+                  <label>
+                    <input
+                      data-points="[5,0,0,0,0,0,0,3]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>手足がしびれたり、つったりしやすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[5,3,0,0,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>爪を押すと色の戻りが悪い</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[5,0,3,0,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>目が疲れる、視力が衰えた</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[3,0,5,0,3,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>息切れする</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[3,0,3,5,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>細かいことが気になる</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[3,0,3,0,5,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>めまい・立ちくらみがよくある</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[3,0,0,0,0,5,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>やせぎみ</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[3,0,0,0,0,5,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>目が乾きやすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[3,0,0,0,0,5,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>夜更かしをよくする</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[3,0,0,0,0,5,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>肌がかゆい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[3,0,3,0,0,0,0,5]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>一年中冷えが気になる</span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!--  設問 A  -->
+          <!--  設問 B  -->
+          <div class="contents__layout" data-step-active="B">
+            <div class="contents__layout--head">
+              <h2 class="step__title">
+                <img
+                  src="/ph/k-therapy/karadakagami/shared_2025/img/logo-01.svg"
+                  alt="60秒で体質check! からだかがみ"
+                />
+              </h2>
+              <div class="step__progress">
+                <span class="step__progress--value">/8</span>
+              </div>
+              <div class="step__comment">
+                <p class="step__comment--value">
+                  体調についてお伺いします。​当てはまるものがない場合は「次へ」を押して進んでください。​
+                </p>
+              </div>
+            </div>
+            <div class="contents__layout--body">
+              <ul class="step__btns lists__columns">
+                <li>
+                  <label>
+                    <input
+                      data-points="[5,3,0,0,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>爪を押すと色の戻りが悪い</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,5,0,3,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>足先は冷えて顔はのぼせる</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,5,0,3,0,0,0,3]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>昼間より夜になると痛みが悪化する</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,5,0,3,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>下肢の静脈瘤が目立つ</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,5,0,0,3,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>ズキズキする頭痛がある</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,5,0,0,3,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>関節が痛む</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,3,0,5,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>ストレスが肌の状態に出やすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,3,0,0,5,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>ふとりぎみ</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,3,0,0,0,0,5,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>吹き出物ができやすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,3,0,0,0,0,0,5]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>しもやけができやすい</span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!--  設問 B  -->
+          <!--  設問 C  -->
+          <div class="contents__layout" data-step-active="C">
+            <div class="contents__layout--head">
+              <h2 class="step__title">
+                <img
+                  src="/ph/k-therapy/karadakagami/shared_2025/img/logo-01.svg"
+                  alt="60秒で体質check! からだかがみ"
+                />
+              </h2>
+              <div class="step__progress">
+                <span class="step__progress--value">/8</span>
+              </div>
+              <div class="step__comment">
+                <p class="step__comment--value">
+                  体調についてお伺いします。​当てはまるものがない場合は「次へ」を押して進んでください。​
+                </p>
+              </div>
+            </div>
+            <div class="contents__layout--body">
+              <ul class="step__btns lists__columns">
+                <li>
+                  <label>
+                    <input
+                      data-points="[5,0,3,0,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>目が疲れる、視力が衰えた</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,5,0,0,3,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>顔にはりがない</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,5,0,0,0,0,3]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>風邪をひきやすい、治りにくい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[3,0,5,0,3,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>息切れする</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,5,0,0,0,3,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>甘い食べ物が好き</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,5,0,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>食後に眠くなる</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,3,5,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>よくため息がでる</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[3,0,3,5,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>細かいことが気になる</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,3,5,0,0,0,3]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>落ちこみやすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[3,0,3,0,5,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>めまい・立ちくらみがよくある</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,3,0,5,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>お腹がちゃぷちゃぷする</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,3,0,0,5,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>寝汗をよくかく</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,3,0,3,0,0,5]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>トイレが近くなった</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[3,0,3,0,0,0,0,5]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>一年中冷えが気になる</span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!--  設問 C  -->
+          <!--  設問 D  -->
+          <div class="contents__layout" data-step-active="D">
+            <div class="contents__layout--head">
+              <h2 class="step__title">
+                <img
+                  src="/ph/k-therapy/karadakagami/shared_2025/img/logo-01.svg"
+                  alt="60秒で体質check! からだかがみ"
+                />
+              </h2>
+              <div class="step__progress">
+                <span class="step__progress--value">/8</span>
+              </div>
+              <div class="step__comment">
+                <p class="step__comment--value">
+                  体調についてお伺いします。​当てはまるものがない場合は「次へ」を押して進んでください。​
+                </p>
+              </div>
+            </div>
+            <div class="contents__layout--body">
+              <ul class="step__btns lists__columns">
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,5,0,3,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>足先は冷えて顔はのぼせる</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,5,0,3,0,0,0,3]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>昼間より夜になると痛みが悪化する</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,5,0,3,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>下肢の静脈瘤が目立つ</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,5,0,3,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>便秘と下痢を繰り返す</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,3,0,5,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>ストレスが肌の状態に出やすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,3,5,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>よくため息がでる</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[3,0,3,5,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>細かいことが気になる</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,5,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>寝つきが悪い</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,3,5,0,0,0,3]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>落ちこみやすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,5,0,0,3,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>辛い食べ物が好き</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,5,0,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>ストレスで頭が痛くなる</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,3,0,5,3,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>便が硬い</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,3,0,0,5,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>体臭が気になる</span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!--  設問 D  -->
+          <!--  設問 E  -->
+          <div class="contents__layout" data-step-active="E">
+            <div class="contents__layout--head">
+              <h2 class="step__title">
+                <img
+                  src="/ph/k-therapy/karadakagami/shared_2025/img/logo-01.svg"
+                  alt="60秒で体質check! からだかがみ"
+                />
+              </h2>
+              <div class="step__progress">
+                <span class="step__progress--value">/8</span>
+              </div>
+              <div class="step__comment">
+                <p class="step__comment--value">
+                  体調についてお伺いします。​当てはまるものがない場合は「次へ」を押して進んでください。​
+                </p>
+              </div>
+            </div>
+            <div class="contents__layout--body">
+              <ul class="step__btns lists__columns">
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,5,0,0,3,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>ズキズキする頭痛がある</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,5,0,0,3,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>関節が痛む</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[3,0,5,0,3,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>息切れする</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[3,0,3,0,5,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>めまい・立ちくらみがよくある</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,3,0,5,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>お腹がちゃぷちゃぷする</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,3,0,0,5,0,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>ふとりぎみ</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,0,3,0,5,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>脂っこい食べ物が好き</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,0,3,0,5,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>お酒を飲むと、二日酔いしやすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,3,0,3,0,0,5]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>トイレが近くなった</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,0,3,0,0,5]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>下半身の冷えやむくみが気になる</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,0,3,0,0,5]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>しゃっくりが良く出る</span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!--  設問 E  -->
+          <!--  設問 F  -->
+          <div class="contents__layout" data-step-active="F">
+            <div class="contents__layout--head">
+              <h2 class="step__title">
+                <img
+                  src="/ph/k-therapy/karadakagami/shared_2025/img/logo-01.svg"
+                  alt="60秒で体質check! からだかがみ"
+                />
+              </h2>
+              <div class="step__progress">
+                <span class="step__progress--value">/8</span>
+              </div>
+              <div class="step__comment">
+                <p class="step__comment--value">
+                  体調についてお伺いします。​当てはまるものがない場合は「次へ」を押して進んでください。​
+                </p>
+              </div>
+            </div>
+            <div class="contents__layout--body">
+              <ul class="step__btns lists__columns">
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,5,0,0,3,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>顔にはりがない</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,5,0,3,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>便秘と下痢を繰り返す</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[3,0,0,0,0,5,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>やせぎみ</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[3,0,0,0,0,5,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>目が乾きやすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,3,0,0,5,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>寝汗をよくかく</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,0,0,5,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>空咳がでる</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,3,0,5,3,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>便が硬い</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[3,0,0,0,0,5,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>夜更かしをよくする</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[3,0,0,0,0,5,0,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>肌がかゆい</span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!--  設問 F  -->
+          <!--  設問 G  -->
+          <div class="contents__layout" data-step-active="G">
+            <div class="contents__layout--head">
+              <h2 class="step__title">
+                <img
+                  src="/ph/k-therapy/karadakagami/shared_2025/img/logo-01.svg"
+                  alt="60秒で体質check! からだかがみ"
+                />
+              </h2>
+              <div class="step__progress">
+                <span class="step__progress--value">/8</span>
+              </div>
+              <div class="step__comment">
+                <p class="step__comment--value">
+                  体調についてお伺いします。​当てはまるものがない場合は「次へ」を押して進んでください。​
+                </p>
+              </div>
+            </div>
+            <div class="contents__layout--body">
+              <ul class="step__btns lists__columns">
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,5,0,0,0,3,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>甘い食べ物が好き</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,5,0,0,3,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>辛い食べ物が好き</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,3,0,5,3,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>便が硬い</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,3,0,0,0,0,5,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>吹き出物ができやすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,0,3,0,5,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>脂っこい食べ物が好き</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,0,3,0,5,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>お酒を飲むと、二日酔いしやすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,3,0,0,5,0]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>体臭が気になる</span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!--  設問 G  -->
+          <!--  設問 H  -->
+          <div class="contents__layout" data-step-active="H">
+            <div class="contents__layout--head">
+              <h2 class="step__title">
+                <img
+                  src="/ph/k-therapy/karadakagami/shared_2025/img/logo-01.svg"
+                  alt="60秒で体質check! からだかがみ"
+                />
+              </h2>
+              <div class="step__progress">
+                <span class="step__progress--value">/8</span>
+              </div>
+              <div class="step__comment">
+                <p class="step__comment--value">
+                  体調についてお伺いします。​当てはまるものがない場合は「次へ」を押して進んでください。​
+                </p>
+              </div>
+            </div>
+            <div class="contents__layout--body">
+              <ul class="step__btns lists__columns">
+                <li>
+                  <label>
+                    <input
+                      data-points="[5,0,0,0,0,0,0,3]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>手足がしびれたり、つったりしやすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,5,0,3,0,0,0,3]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>昼間より夜になると痛みが悪化する</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,5,0,0,0,0,3]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>風邪をひきやすい、治りにくい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,3,5,0,0,0,3]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>落ちこみやすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,3,0,0,0,0,0,5]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>しもやけができやすい</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,3,0,3,0,0,5]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>トイレが近くなった</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,0,3,0,0,5]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>下半身の冷えやむくみが気になる</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[0,0,0,0,3,0,0,5]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>しゃっくりが良く出る</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      data-points="[3,0,3,0,0,0,0,5]"
+                      name="diagnostic"
+                      type="checkbox"
+                    />
+                    <span>一年中冷えが気になる</span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!--  設問 H  -->
+          <!--  設問 7  -->
+          <div class="contents__layout" data-step-active="7">
+            <div class="contents__layout--head">
+              <h2 class="step__title">
+                <img
+                  src="/ph/k-therapy/karadakagami/shared_2025/img/logo-01.svg"
+                  alt="60秒で体質check! からだかがみ"
+                />
+              </h2>
+              <div class="step__progress">
+                <span class="step__progress--value">/8</span>
+              </div>
+              <div class="step__comment">
+                <p class="step__comment--value">
+                  お名前を入力して下さい。(未入力可)
+                </p>
+              </div>
+            </div>
+            <div
+              class="contents__layout--body contents__layout--body-inputname"
+            >
+              <input
+                type="text"
+                name="step8"
+                value=""
+                placeholder="名前を入力"
+                class="step__input"
+              />
+              <div
+                class="step__link ta__r"
+                data-label-next="診断結果へ"
+                data-label-skip="選ばず診断結果へ"
+              >
+                <a
+                  href="javascript:void(0);"
+                  class="step__link--value js-diagnose"
+                  data-base-href="../types"
+                  data-alert="当てはまる項目を１個以上チェックしてください"
+                  data-types='["a","b","c","d","e","f"]'
+                  >名前を入力せず次へ進む</a
+                >
+              </div>
+            </div>
+          </div>
+          <!--  設問 7  -->
+        </div>
+      </section>
+
+      <div class="type__loading" style="display: none">
+        <div class="loading__body">
+          <div class="loading__content">
+            <div class="type__mirror type__mirror__wrap">
+              <div class="mirror__caption">あなたの体質は…</div>
+              <div class="mirror__figure">
+                <div class="mirror__figure--cover">
+                  <div class="figure__glitter"></div>
+                  <img
+                    src="../shared_2025/img/fig_loading_image.png.webp"
+                    alt=""
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div class="footer__inner">
+          <div class="footer__prev">
+            <a href="/ph/k-therapy/karadakagami/">からだかがみTOPに戻る</a>
+          </div>
+          <ul class="footer__nav">
+            <li class="footer__nav--item footer__nav--prev js-button-back">
+              <a href="javascript:void(0);">戻る</a>
+            </li>
+            <li
+              class="footer__nav--item footer__nav--next"
+              data-label-next="次へ"
+              data-label-skip="どれにも当てはまらない"
+            >
+              <a href="javascript:void(0);">次へ</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </main>
+    <!-- container -->
+
+    <script src="https://www.kracie.co.jp/js/share/brandsite_u8_footer.js"></script>
+    <script src="../javascripts/app.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        let currentStep = 1;
+        let selectedGender = null;
+        const steps = document.querySelectorAll('.contents__layout');
+        const nextBtn = document.querySelector('.footer__nav--next a');
+        const backBtn = document.querySelector('.footer__nav--prev a');
+
+        // 🆕 第2位対応のグローバル変数
+        let constitutionPhase = 'first'; // 'first' または 'second'
+        let topTwoTypes = null; // {first: 'A', second: 'B', scores: [...]}
+        let constitutionHistory = []; // 体質設問の履歴管理
+
+        // 🆕 状態をグローバルに公開
+        window.constitutionState = {
+          get constitutionPhase() {
+            return constitutionPhase;
+          },
+          get currentStep() {
+            return currentStep;
+          },
+        };
+
+        // 初期化処理
+        function initializeProgress() {
+          // 初期表示時に進捗度を正しく設定
+          updateProgressDisplay(1);
+          console.log('初期化完了: 進捗度表示を1/8に設定');
+        }
+
+        // 初期表示
+        function showStep(step) {
+          steps.forEach((el) => {
+            el.classList.remove('is-active');
+
+            // フェードアウト
+            const body = el.querySelector('.contents__layout--body');
+            if (body) {
+              body.style.opacity = 0;
+              body.style.transition = 'opacity 1.0s ease';
+            }
+
+            // すべてのstep__progressからstep-activeを除去
+            const prog = el.querySelector('.step__progress');
+            if (prog) prog.classList.remove('step-active');
+          });
+
+          const target = document.querySelector(`[data-step-active="${step}"]`);
+          if (target) {
+            target.classList.add('is-active');
+
+            // フェードイン
+            const body = target.querySelector('.contents__layout--body');
+            if (body) {
+              requestAnimationFrame(() => {
+                body.style.opacity = 1;
+              });
+            }
+
+            // 表示ステップのstep__progressにstep-active追加
+            const progress = target.querySelector('.step__progress');
+            if (progress) {
+              progress.classList.add('step-active');
+
+              // 🆕 体質設問時のfirst/secondクラス制御
+              if (['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].includes(step)) {
+                progress.classList.remove('first', 'second'); // 既存クラスを削除
+                progress.classList.add(constitutionPhase); // 現在のフェーズを追加
+                console.log(
+                  `体質設問${step}: ${constitutionPhase}フェーズのクラスを追加`
+                );
+              }
+            }
+          }
+
+          // プログレスバー更新を少し遅らせる
+          setTimeout(() => {
+            updateProgressDisplay(step);
+          }, 100);
+
+          // 🆕 体質設問での重複項目非表示処理（改修仕様：第1位・第2位両方で実行）
+          if (['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].includes(step)) {
+            setTimeout(() => {
+              if (window.duplicateController) {
+                window.duplicateController.hideDuplicateItems(step);
+                // 非表示処理完了後に表示状況を更新
+                updateHiddenItemsStatus();
+              }
+            }, 200); // フェードイン後に実行
+          }
+        }
+
+        showStep(currentStep);
+
+        // 性別選択時の記録を修正
+        document.querySelectorAll('.gender__block').forEach((el) => {
+          el.addEventListener('click', function () {
+            // ラジオボタンの選択状態も確実にする
+            const radioInput = el.querySelector('input[type="radio"]');
+            if (radioInput) {
+              radioInput.checked = true;
+            }
+
+            selectedGender = el.dataset.select;
+            console.log('性別選択:', selectedGender); // デバッグ用
+
+            // 🔧 女性選択時にtype_femaleクラスを追加/削除
+            const progressElements =
+              document.querySelectorAll('.step__progress');
+            progressElements.forEach((progressEl) => {
+              if (selectedGender === 'female') {
+                progressEl.classList.add('type_female');
+                console.log('type_femaleクラスを追加:', progressEl);
+              } else {
+                progressEl.classList.remove('type_female');
+                console.log('type_femaleクラスを削除:', progressEl);
+              }
+            });
+
+            // 性別選択後にプログレスバーを即座に更新
+            updateProgressDisplay(currentStep);
+          });
+        });
+
+        // ラジオボタンの変更も監視（バックアップとして）
+        document.querySelectorAll('input[name="gender"]').forEach((radio) => {
+          radio.addEventListener('change', function () {
+            if (this.checked) {
+              const genderBlock = this.closest('.gender__block');
+              if (genderBlock) {
+                selectedGender = genderBlock.dataset.select;
+                console.log('ラジオボタンから性別選択:', selectedGender);
+
+                // 🔧 女性選択時にtype_femaleクラスを追加/削除（ラジオボタン用）
+                const progressElements =
+                  document.querySelectorAll('.step__progress');
+                progressElements.forEach((progressEl) => {
+                  if (selectedGender === 'female') {
+                    progressEl.classList.add('type_female');
+                    console.log(
+                      'type_femaleクラスを追加（ラジオ）:',
+                      progressEl
+                    );
+                  } else {
+                    progressEl.classList.remove('type_female');
+                    console.log(
+                      'type_femaleクラスを削除（ラジオ）:',
+                      progressEl
+                    );
+                  }
+                });
+
+                updateProgressDisplay(currentStep);
+              }
+            }
+          });
+        });
+
+        // 最終ステップの処理を共通化
+        function processFinalStep(useEmptyName = false) {
+          // 配点合計チェック
+          const totalScore = calculateTotalScore();
+          if (totalScore === 0) {
+            alert('診断項目を1つ以上選択してから診断結果へ進んでください。');
+            return; // 処理を中止
+          }
+
+          const highestType = calculateHighestScore();
+          if (highestType) {
+            // 名前の入力値を取得
+            const nameInput = document.querySelector('input[name="step8"]');
+            const userName = useEmptyName
+              ? ''
+              : nameInput
+                ? nameInput.value
+                : '';
+
+            // 診断データを取得
+            const checkResult = document.getElementById('check-result');
+            const diagnosisData = checkResult
+              ? checkResult.getAttribute('data-diagnosis')
+              : '{}';
+
+            // data-diagnosisをカンマ区切り形式に変換する関数
+            function convertDiagnosisToDataParam(diagnosisJson) {
+              console.log('診断データ（生）:', diagnosisJson);
+
+              try {
+                const diagnosisObj = JSON.parse(diagnosisJson);
+                console.log('診断データ（パース後）:', diagnosisObj);
+
+                // 体質タイプA-Hの順序でスコアを配列化
+                const typeOrder = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+                const scores = new Array(8).fill(0);
+
+                // diagnosisObjから各タイプのスコアを抽出
+                Object.values(diagnosisObj).forEach((item) => {
+                  console.log('処理中のアイテム:', item);
+                  const typeIndex = typeOrder.indexOf(item.type);
+                  if (typeIndex !== -1) {
+                    scores[typeIndex] = item.val;
+                  }
+                });
+
+                console.log('変換後のスコア配列:', scores);
+
+                // 小数点以下1桁に丸める
+                const result = scores
+                  .map((score) => Math.round(score * 10) / 10)
+                  .join(',');
+                console.log('最終的なdataパラメータ:', result);
+                return result;
+              } catch (error) {
+                console.error('診断データの変換エラー:', error);
+                // デフォルト値を返す
+                return '0,0,0,0,0,0,0,0';
+              }
+            }
+
+            // dataパラメータを作成
+            const dataParam = convertDiagnosisToDataParam(diagnosisData);
+            console.log('生成されたdataパラメータ:', dataParam);
+
+            // URLパラメーターを手動で構築（カンマをエンコードしない）
+            const queryString = `name=${encodeURIComponent(userName)}&data=${dataParam}`;
+
+            console.log(
+              '最終URL:',
+              `/ph/k-therapy/karadakagami/types/${highestType.toLowerCase()}/?${queryString}`
+            );
+
+            // カウンターAPIを呼び出してからリダイレクト
+            const counterUrl = `/ph/k-therapy/karadakagami/types/_counter.php?type=${highestType.toLowerCase()}`;
+            console.log('=== カウンター処理開始 ===');
+            console.log('診断結果タイプ:', highestType);
+            console.log('カウンターAPI URL:', counterUrl);
+            console.log('診断データ:', diagnosisData);
+
+            // カウンターAPI呼び出し前にローディング表示
+            function showLoadingScreen() {
+              const loadingElement = document.querySelector('.type__loading');
+              const glitterElement = document.querySelector('.figure__glitter');
+
+              if (loadingElement) {
+                loadingElement.style.display = 'block';
+              }
+              if (glitterElement) {
+                glitterElement.style.display = 'block';
+              }
+            }
+
+            // API呼び出し前に追加
+            showLoadingScreen();
+
+            // カウンターAPIを実際に呼び出す
+            fetch(counterUrl, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+              },
+            })
+              .then((response) => {
+                console.log('=== レスポンス受信 ===');
+                console.log('ステータス:', response.status);
+                console.log('ステータステキスト:', response.statusText);
+                console.log('レスポンス OK:', response.ok);
+
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+              })
+              .then((data) => {
+                console.log('=== カウンター結果 ===');
+                console.log('全体:', data);
+                console.log('成功:', data.success);
+                console.log('メッセージ:', data.message);
+                console.log('データ:', data.data);
+
+                // 成功/失敗に関係なく、2秒後にリダイレクト
+                setTimeout(() => {
+                  location.href = `/ph/k-therapy/karadakagami/types/${highestType.toLowerCase()}/?${queryString}`;
+                }, 2000);
+              })
+              .catch((error) => {
+                console.error('=== カウンターエラー ===');
+                console.error('エラータイプ:', typeof error);
+                console.error('エラー詳細:', error);
+                console.error('エラーメッセージ:', error.message);
+
+                // エラーでも2秒後にリダイレクト
+                setTimeout(() => {
+                  location.href = `/ph/k-therapy/karadakagami/types/${highestType.toLowerCase()}/?${queryString}`;
+                }, 2000);
+              });
+          }
+        }
+
+        // 「次へ」
+        nextBtn.addEventListener('click', function () {
+          window.scrollTo(0, 0); // 即座にスクロール
+          let nextStep;
+
+          if (currentStep === 6) {
+            // 設問6から1位体質設問へ遷移
+            if (!topTwoTypes) {
+              topTwoTypes = calculateTopTwoTypes();
+            }
+            constitutionPhase = 'first';
+            constitutionHistory.push('first');
+            nextStep = topTwoTypes.first;
+            console.log(`設問6 → 1位体質設問: ${nextStep}`);
+          } else if (
+            ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].includes(currentStep) &&
+            constitutionPhase === 'first'
+          ) {
+            // 1位体質設問から2位体質設問へ
+            constitutionPhase = 'second';
+            constitutionHistory.push('second');
+            nextStep = topTwoTypes.second;
+            console.log(`1位体質設問 → 2位体質設問: ${nextStep}`);
+          } else if (
+            ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].includes(currentStep) &&
+            constitutionPhase === 'second'
+          ) {
+            // 2位体質設問から設問7（名前入力）へ
+            nextStep = 7;
+            console.log(`2位体質設問 → 名前入力`);
+          } else {
+            // 従来のロジック
+            nextStep = currentStep + 1;
+            // 設問6スキップ処理も維持
+            if (
+              (!selectedGender || selectedGender !== 'female') &&
+              nextStep === 6
+            ) {
+              // 女性でない場合は1位体質判定へ
+              if (!topTwoTypes) {
+                topTwoTypes = calculateTopTwoTypes();
+              }
+              constitutionPhase = 'first';
+              constitutionHistory.push('first');
+              nextStep = topTwoTypes.first;
+              console.log(`設問5 → 1位体質設問: ${nextStep}`);
+            }
+          }
+
+          const nextEl = document.querySelector(
+            `[data-step-active="${nextStep}"]`
+          );
+          if (nextEl) {
+            currentStep = nextStep;
+            showStep(currentStep);
+          } else {
+            // 最終ステップの処理
+            processFinalStep(false);
+          }
+        });
+
+        // 「名前を入力せず次へ進む」リンク
+        const skipNameLink = document.querySelector('.js-diagnose');
+        if (skipNameLink) {
+          skipNameLink.addEventListener('click', function (e) {
+            e.preventDefault();
+            window.scrollTo(0, 0); // 即座にスクロール
+            // 名前を空にして最終ステップの処理を実行
+            processFinalStep(true);
+          });
+        }
+
+        // 「戻る」
+        backBtn.addEventListener('click', function () {
+          console.log('=== 戻るボタン クリック ===');
+          console.log('現在のcurrentStep:', currentStep, typeof currentStep);
+
+          if (currentStep === 1) {
+            history.back();
+            return;
+          }
+
+          let prevStep;
+
+          if (currentStep === 7) {
+            // 設問7から2位体質設問に戻る
+            console.log('設問7からの戻り処理開始');
+            constitutionPhase = 'second';
+            prevStep = topTwoTypes.second;
+            console.log(`設問7 → 2位体質設問: ${prevStep}`);
+          } else if (
+            ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].includes(currentStep) &&
+            constitutionPhase === 'second'
+          ) {
+            // 2位体質設問から1位体質設問に戻る
+            console.log('2位体質設問からの戻り処理開始');
+            constitutionPhase = 'first';
+            constitutionHistory.pop();
+            prevStep = topTwoTypes.first;
+
+            // 🆕 非表示項目を元に戻す
+            if (window.duplicateController) {
+              window.duplicateController.restoreHiddenItems();
+              // 復元後にデバッグ表示を更新
+              if (window.updateHiddenItemsStatus) {
+                window.updateHiddenItemsStatus();
+              }
+            }
+
+            console.log(`2位体質設問 → 1位体質設問: ${prevStep}`);
+          } else if (
+            ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].includes(currentStep) &&
+            constitutionPhase === 'first'
+          ) {
+            // 1位体質設問から設問6または設問5に戻る
+            console.log('1位体質設問からの戻り処理開始');
+            constitutionHistory.pop(); // 履歴から削除
+
+            // 🔧 体質設問から基本設問に戻る際にtopTwoTypesをリセット
+            topTwoTypes = null;
+            console.log('topTwoTypesをリセットしました（回答変更対応）');
+
+            // 🆕 非表示項目を元に戻す
+            if (window.duplicateController) {
+              window.duplicateController.restoreHiddenItems();
+              // 復元後にデバッグ表示を更新
+              if (window.updateHiddenItemsStatus) {
+                window.updateHiddenItemsStatus();
+              }
+            }
+
+            if (selectedGender === 'female') {
+              prevStep = 6;
+            } else {
+              prevStep = 5;
+            }
+            console.log(`1位体質設問 → 設問${prevStep}`);
+          } else {
+            console.log('通常の戻り処理開始');
+            // 従来のロジック
+            prevStep = currentStep - 1;
+            // 設問6スキップ処理も維持
+            if (
+              (!selectedGender || selectedGender !== 'female') &&
+              currentStep === 7
+            ) {
+              prevStep = 5;
+            }
+          }
+
+          console.log('決定されたprevStep:', prevStep);
+
+          // 条件判定を修正：数値と文字列の両方に対応
+          const isValidStep =
+            (typeof prevStep === 'number' && prevStep >= 1) ||
+            (typeof prevStep === 'string' &&
+              ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].includes(prevStep));
+
+          if (isValidStep) {
+            currentStep = prevStep;
+            console.log('新しいcurrentStep:', currentStep);
+            showStep(currentStep);
+          } else {
+            console.log('無効なprevStep:', prevStep);
+          }
+        });
+
+        // スコア計算 → 最上位タイプを返す（A～H）
+        function calculateHighestScore() {
+          const checkboxes = document.querySelectorAll(
+            'input[type=checkbox][name=diagnostic]:checked'
+          );
+          const scores = new Array(8).fill(0); // A〜H
+
+          checkboxes.forEach((cb) => {
+            const points = cb.getAttribute('data-points');
+            if (points) {
+              const arr = JSON.parse(points);
+              arr.forEach((val, i) => {
+                scores[i] += val;
+              });
+            }
+          });
+
+          for (let i = 0; i < scores.length; i++) {
+            scores[i] = Math.round(scores[i] * 10) / 10;
+          }
+
+          // 最も高いスコアのインデックス → A〜Hへ変換
+          //const typeKeys = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+          //let maxIndex = 0;
+          //scores.forEach((val, idx) => {
+            //if (val > scores[maxIndex]) {
+              //maxIndex = idx;
+            //}
+          //});
+          //return typeKeys[maxIndex];
+
+          //20260709 ■ 最上位タイプを順位付き配列で返す
+          const sortedResults = sortTypeResults(scores);
+          return sortedResults[0].type;
+        }
+
+        // 🆕 1位・2位体質判定（同率時ランダム対応）
+        function calculateTopTwoTypes() {
+          const checkboxes = document.querySelectorAll(
+            'input[type=checkbox][name=diagnostic]:checked'
+          );
+          const scores = new Array(8).fill(0); // A〜H
+
+          checkboxes.forEach((cb) => {
+            const points = cb.getAttribute('data-points');
+            if (points) {
+              const arr = JSON.parse(points);
+              arr.forEach((val, i) => {
+                scores[i] += val;
+              });
+            }
+          });
+
+          for (let i = 0; i < scores.length; i++) {
+            scores[i] = Math.round(scores[i] * 10) / 10;
+          }
+
+          // スコアとインデックスをペアにして、ランダム要素を追加
+          const typeKeys = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+          const indexed = scores.map((score, index) => ({
+            score,
+            type: typeKeys[index],
+            randomTieBreaker: Math.random(), // 同率時のランダム要素
+          }));
+
+          // スコア優先、同率時はランダム要素で決定
+          indexed.sort((a, b) => {
+            if (b.score !== a.score) {
+              return b.score - a.score; // スコア降順
+            }
+            return b.randomTieBreaker - a.randomTieBreaker; // ランダム要素で決定
+          });
+
+          console.log('=== 体質判定結果 ===');
+          console.log('ソート後:', indexed);
+          console.log('1位:', indexed[0]);
+          console.log('2位:', indexed[1]);
+
+          return {
+            first: indexed[0].type,
+            second: indexed[1].type,
+            scores: scores,
+          };
+        }
+
+        // データが取得できない場合のデフォルト処理
+        function getTopRankedTypeWithFallback() {
+          const topType = getTopRankedType(); // ←getTopRankedType()を呼び出す
+          if (!topType) {
+            return calculateHighestScore();
+          }
+          return topType;
+        }
+
+        // 1位のタイプを特定する関数を作成
+        function getTopRankedType() {
+          const checkResult = document.getElementById('check-result');
+          if (!checkResult) {
+            console.error('check-result要素が見つかりません');
+            return null;
+          }
+
+          const diagnosisData = checkResult.getAttribute('data-diagnosis');
+          console.log('取得した診断データ:', diagnosisData);
+
+          if (!diagnosisData || diagnosisData === '{}') {
+            console.warn('診断データが空です');
+            return null;
+          }
+
+          try {
+            const data = JSON.parse(diagnosisData);
+            console.log('パース後の診断データ:', data);
+
+            const items = Object.values(data);
+            if (!items.length) {
+              console.warn('診断データが空配列です');
+              return null;
+            }
+
+            const topRank = items.sort((a, b) => a.rank - b.rank)[0];
+            if (topRank && topRank.type) {
+              console.log('1位のタイプ:', topRank.type);
+              return topRank.type;
+            } else {
+              console.warn('1位のデータが見つかりません:', topRank);
+              return null;
+            }
+          } catch (error) {
+            console.error('診断データの解析エラー:', error);
+            return null;
+          }
+        }
+
+        function updateProgressDisplay(step) {
+          const progressValue = document.querySelector(
+            '.step__progress--value'
+          );
+
+          console.log('=== プログレス更新デバッグ ===');
+          console.log('step:', step, typeof step);
+          console.log('selectedGender:', selectedGender);
+          console.log('現在の表示:', progressValue.textContent); // 現在の表示を確認
+
+          // 性別が未選択の場合でも現在のステップを表示
+          if (!selectedGender) {
+            // stepが数値の場合は「step/8」、そうでなければ「1/8」を表示
+            const currentStep = typeof step === 'number' ? step : 1;
+            progressValue.textContent = `/8`;
+            console.log(`性別未選択のため ${currentStep}/8 を表示`);
+            console.log('更新後の表示:', progressValue.textContent);
+            return;
+          }
+
+          let currentPosition, totalSteps;
+
+          if (selectedGender === 'female') {
+            console.log('女性フロー開始');
+            // 女性のケース: 1,2,3,4,5,6,A-H(1位),A-H(2位),7
+            totalSteps = 9;
+            if (typeof step === 'number') {
+              console.log('数値ステップ:', step);
+              if (step <= 6) {
+                currentPosition = step;
+                console.log('設問1-6:', currentPosition);
+              } else if (step === 7) {
+                currentPosition = 9; // 名前入力
+                console.log('名前入力:', currentPosition);
+              }
+            } else {
+              console.log('体質別設問（女性）');
+              if (constitutionPhase === 'first') {
+                currentPosition = 7; // 1位体質設問
+                console.log('1位体質設問 currentPosition:', currentPosition);
+              } else {
+                currentPosition = 8; // 2位体質設問
+                console.log('2位体質設問 currentPosition:', currentPosition);
+              }
+            }
+          } else {
+            console.log('男性/その他フロー開始');
+            // 男性/その他のケース: 1,2,3,4,5,A-H(1位),A-H(2位),7
+            totalSteps = 8;
+            if (typeof step === 'number') {
+              console.log('数値ステップ:', step);
+              if (step <= 5) {
+                currentPosition = step;
+                console.log('設問1-5:', currentPosition);
+              } else if (step === 6) {
+                currentPosition = 6;
+                console.log('設問6:', currentPosition);
+              }
+            } else {
+              console.log('体質別設問（男性/その他）');
+              if (constitutionPhase === 'first') {
+                currentPosition = 7; // 1位体質設問 = 7/8
+                console.log('1位体質設問 currentPosition:', currentPosition);
+              } else {
+                currentPosition = 8; // 2位体質設問 = 8/8
+                console.log('2位体質設問 currentPosition:', currentPosition);
+              }
+            }
+          }
+
+          console.log('最終的な currentPosition:', currentPosition);
+          console.log('最終的な totalSteps:', totalSteps);
+
+          if (currentPosition === undefined) {
+            console.error('currentPosition が未定義です！');
+            progressValue.textContent = `?/${totalSteps}`;
+          } else {
+            progressValue.textContent = `${currentPosition}/${totalSteps}`;
+          }
+
+          console.log('設定したテキスト:', progressValue.textContent);
+          console.log('実際の表示:', progressValue.textContent);
+          console.log('=== プログレス更新デバッグ終了 ===');
+        }
+
+        // currentStepの型を統一する関数
+        function normalizeStep(step) {
+          if (typeof step === 'string') {
+            return step;
+          }
+          return Number(step);
+        }
+
+        // 比較処理を修正
+        if (normalizeStep(currentStep) === 7) {
+          // 処理
+        }
+
+        // 配点合計計算関数を追加
+        function calculateTotalScore() {
+          const checkedBoxes = document.querySelectorAll(
+            'input[type=checkbox][name=diagnostic]:checked'
+          );
+          let total = 0;
+
+          checkedBoxes.forEach((checkbox) => {
+            const points = checkbox.getAttribute('data-points');
+            if (points) {
+              const pointsArray = JSON.parse(points);
+              const sum = pointsArray.reduce((acc, val) => acc + val, 0);
+              total += sum;
+            }
+          });
+
+          return total;
+        }
+
+        // ページ読み込み完了時の初期化処理を実行
+        showStep(1); // 最初のステップを表示
+        initializeProgress();
+      });
+    </script>
+
+    <div class="analytics__container">
+      <!-- Google Tag Manager -->
+      <noscript>
+        <iframe
+          src="//www.googletagmanager.com/ns.html?id=GTM-P439GK"
+          height="0"
+          width="0"
+          style="display: none; visibility: hidden"
+        >
+        </iframe>
+      </noscript>
+      <script>
+        (function (w, d, s, l, i) {
+          w[l] = w[l] || [];
+          w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+          var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s),
+            dl = l != 'dataLayer' ? '&l=' + l : '';
+          j.async = true;
+          j.src = '//www.googletagmanager.com/gtm.js?id=' + i + dl;
+          f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-P439GK');
+      </script>
+      <!-- End Google Tag Manager -->
+    </div>
+  </body>
+</html>

@@ -1,0 +1,4249 @@
+<!DOCTYPE html><html><head><link href="data:," rel="icon" /><meta charset="UTF-8" /><meta content="noindex,nofollow,noarchive" name="robots" /><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" /><script>window.addEventListener('load', function() {
+  if (window.location.host.match(/sb-preview.*.squadbeyond.com/)) return
+  document.oncopy = function() { return false; };
+  document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+  document.addEventListener('dragstart', function(e) { e.preventDefault(); });
+});</script><script>window.addEventListener('load', function() {
+  const nodelist = document.body.querySelectorAll('.sb-bg-gum-marker');
+  const node = Array.prototype.slice.call(nodelist, 0);
+
+  if (node.length === 0) { return; }
+  const windowHeight = window.innerHeight || document.body.clientHeight;
+  window.addEventListener('scroll', function (event) {
+    let scroll = (window.pageYOffset !== undefined) ? window.pageYOffset : document.documentElement.scrollTop;
+    node.forEach(function(marker) {
+      let position = marker.offsetTop - windowHeight + 50;
+      if (scroll > position) {
+        marker.classList.add('animated', 'sb-bg-gum-marker-animated');
+        marker.classList.remove('sb-bg-gum-marker');
+      }
+    });
+  }, false);
+});</script><script>/**
+* Copyright 2016 Google Inc. All Rights Reserved.
+*
+* Licensed under the W3C SOFTWARE AND DOCUMENT NOTICE AND LICENSE.
+*
+*  https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
+*
+*/
+(function() {
+'use strict';
+
+// Exit early if we're not running in a browser.
+if (typeof window !== 'object') {
+  return;
+}
+
+// Exit early if all IntersectionObserver and IntersectionObserverEntry
+// features are natively supported.
+if ('IntersectionObserver' in window &&
+    'IntersectionObserverEntry' in window &&
+    'intersectionRatio' in window.IntersectionObserverEntry.prototype) {
+
+  if (!('isIntersecting' in window.IntersectionObserverEntry.prototype)) {
+    Object.defineProperty(window.IntersectionObserverEntry.prototype,
+      'isIntersecting', {
+      get: function () {
+        return this.intersectionRatio > 0;
+      }
+    });
+  }
+  return;
+}
+
+
+/**
+* A local reference to the document.
+*/
+var document = window.document;
+
+
+/**
+* An IntersectionObserver registry. This registry exists to hold a strong
+* reference to IntersectionObserver instances currently observing a target
+* element. Without this registry, instances without another reference may be
+* garbage collected.
+*/
+var registry = [];
+
+
+/**
+* Creates the global IntersectionObserverEntry constructor.
+* https://w3c.github.io/IntersectionObserver/#intersection-observer-entry
+* @param {Object} entry A dictionary of instance properties.
+* @constructor
+*/
+function IntersectionObserverEntry(entry) {
+  this.time = entry.time;
+  this.target = entry.target;
+  this.rootBounds = entry.rootBounds;
+  this.boundingClientRect = entry.boundingClientRect;
+  this.intersectionRect = entry.intersectionRect || getEmptyRect();
+  this.isIntersecting = !!entry.intersectionRect;
+
+  // Calculates the intersection ratio.
+  var targetRect = this.boundingClientRect;
+  var targetArea = targetRect.width * targetRect.height;
+  var intersectionRect = this.intersectionRect;
+  var intersectionArea = intersectionRect.width * intersectionRect.height;
+
+  // Sets intersection ratio.
+  if (targetArea) {
+    // Round the intersection ratio to avoid floating point math issues:
+    this.intersectionRatio = Number((intersectionArea / targetArea).toFixed(4));
+  } else {
+    // If area is zero and is intersecting, sets to 1, otherwise to 0
+    this.intersectionRatio = this.isIntersecting ? 1 : 0;
+  }
+}
+
+
+/**
+* Creates the global IntersectionObserver constructor.
+* https://w3c.github.io/IntersectionObserver/#intersection-observer-interface
+* @param {Function} callback The function to be invoked after intersection
+*     changes have queued. The function is not invoked if the queue has
+*     been emptied by calling the `takeRecords` method.
+* @param {Object=} opt_options Optional configuration options.
+* @constructor
+*/
+function IntersectionObserver(callback, opt_options) {
+
+  var options = opt_options || {};
+
+  if (typeof callback != 'function') {
+    throw new Error('callback must be a function');
+  }
+
+  if (options.root && options.root.nodeType != 1) {
+    throw new Error('root must be an Element');
+  }
+
+  // Binds and throttles `this._checkForIntersections`.
+  this._checkForIntersections = throttle(
+      this._checkForIntersections.bind(this), this.THROTTLE_TIMEOUT);
+
+  // Private properties.
+  this._callback = callback;
+  this._observationTargets = [];
+  this._queuedEntries = [];
+  this._rootMarginValues = this._parseRootMargin(options.rootMargin);
+
+  // Public properties.
+  this.thresholds = this._initThresholds(options.threshold);
+  this.root = options.root || null;
+  this.rootMargin = this._rootMarginValues.map(function(margin) {
+    return margin.value + margin.unit;
+  }).join(' ');
+}
+
+
+/**
+* The minimum interval within which the document will be checked for
+* intersection changes.
+*/
+IntersectionObserver.prototype.THROTTLE_TIMEOUT = 100;
+
+
+/**
+* The frequency in which the shim polls for intersection changes.
+* this can be updated on a per instance basis and must be set prior to
+* calling `observe` on the first target.
+*/
+IntersectionObserver.prototype.POLL_INTERVAL = null;
+
+/**
+* Use a mutation observer on the root element
+* to detect intersection changes.
+*/
+IntersectionObserver.prototype.USE_MUTATION_OBSERVER = true;
+
+
+/**
+* Starts observing a target element for intersection changes based on
+* the thresholds values.
+* @param {Element} target The DOM element to observe.
+*/
+IntersectionObserver.prototype.observe = function(target) {
+  var isTargetAlreadyObserved = this._observationTargets.some(function(item) {
+    return item.element == target;
+  });
+
+  if (isTargetAlreadyObserved) {
+    return;
+  }
+
+  if (!(target && target.nodeType == 1)) {
+    throw new Error('target must be an Element');
+  }
+
+  this._registerInstance();
+  this._observationTargets.push({element: target, entry: null});
+  this._monitorIntersections();
+  this._checkForIntersections();
+};
+
+
+/**
+* Stops observing a target element for intersection changes.
+* @param {Element} target The DOM element to observe.
+*/
+IntersectionObserver.prototype.unobserve = function(target) {
+  this._observationTargets =
+      this._observationTargets.filter(function(item) {
+
+    return item.element != target;
+  });
+  if (!this._observationTargets.length) {
+    this._unmonitorIntersections();
+    this._unregisterInstance();
+  }
+};
+
+
+/**
+* Stops observing all target elements for intersection changes.
+*/
+IntersectionObserver.prototype.disconnect = function() {
+  this._observationTargets = [];
+  this._unmonitorIntersections();
+  this._unregisterInstance();
+};
+
+
+/**
+* Returns any queue entries that have not yet been reported to the
+* callback and clears the queue. This can be used in conjunction with the
+* callback to obtain the absolute most up-to-date intersection information.
+* @return {Array} The currently queued entries.
+*/
+IntersectionObserver.prototype.takeRecords = function() {
+  var records = this._queuedEntries.slice();
+  this._queuedEntries = [];
+  return records;
+};
+
+
+/**
+* Accepts the threshold value from the user configuration object and
+* returns a sorted array of unique threshold values. If a value is not
+* between 0 and 1 and error is thrown.
+* @private
+* @param {Array|number=} opt_threshold An optional threshold value or
+*     a list of threshold values, defaulting to [0].
+* @return {Array} A sorted list of unique and valid threshold values.
+*/
+IntersectionObserver.prototype._initThresholds = function(opt_threshold) {
+  var threshold = opt_threshold || [0];
+  if (!Array.isArray(threshold)) threshold = [threshold];
+
+  return threshold.sort().filter(function(t, i, a) {
+    if (typeof t != 'number' || isNaN(t) || t < 0 || t > 1) {
+      throw new Error('threshold must be a number between 0 and 1 inclusively');
+    }
+    return t !== a[i - 1];
+  });
+};
+
+
+/**
+* Accepts the rootMargin value from the user configuration object
+* and returns an array of the four margin values as an object containing
+* the value and unit properties. If any of the values are not properly
+* formatted or use a unit other than px or %, and error is thrown.
+* @private
+* @param {string=} opt_rootMargin An optional rootMargin value,
+*     defaulting to '0px'.
+* @return {Array<Object>} An array of margin objects with the keys
+*     value and unit.
+*/
+IntersectionObserver.prototype._parseRootMargin = function(opt_rootMargin) {
+  var marginString = opt_rootMargin || '0px';
+  var margins = marginString.split(/\s+/).map(function(margin) {
+    var parts = /^(-?\d*\.?\d+)(px|%)$/.exec(margin);
+    if (!parts) {
+      throw new Error('rootMargin must be specified in pixels or percent');
+    }
+    return {value: parseFloat(parts[1]), unit: parts[2]};
+  });
+
+  // Handles shorthand.
+  margins[1] = margins[1] || margins[0];
+  margins[2] = margins[2] || margins[0];
+  margins[3] = margins[3] || margins[1];
+
+  return margins;
+};
+
+
+/**
+* Starts polling for intersection changes if the polling is not already
+* happening, and if the page's visibility state is visible.
+* @private
+*/
+IntersectionObserver.prototype._monitorIntersections = function() {
+  if (!this._monitoringIntersections) {
+    this._monitoringIntersections = true;
+
+    // If a poll interval is set, use polling instead of listening to
+    // resize and scroll events or DOM mutations.
+    if (this.POLL_INTERVAL) {
+      this._monitoringInterval = setInterval(
+          this._checkForIntersections, this.POLL_INTERVAL);
+    }
+    else {
+      addEvent(window, 'resize', this._checkForIntersections, true);
+      addEvent(document, 'scroll', this._checkForIntersections, true);
+
+      if (this.USE_MUTATION_OBSERVER && 'MutationObserver' in window) {
+        this._domObserver = new MutationObserver(this._checkForIntersections);
+        this._domObserver.observe(document, {
+          attributes: true,
+          childList: true,
+          characterData: true,
+          subtree: true
+        });
+      }
+    }
+  }
+};
+
+
+/**
+* Stops polling for intersection changes.
+* @private
+*/
+IntersectionObserver.prototype._unmonitorIntersections = function() {
+  if (this._monitoringIntersections) {
+    this._monitoringIntersections = false;
+
+    clearInterval(this._monitoringInterval);
+    this._monitoringInterval = null;
+
+    removeEvent(window, 'resize', this._checkForIntersections, true);
+    removeEvent(document, 'scroll', this._checkForIntersections, true);
+
+    if (this._domObserver) {
+      this._domObserver.disconnect();
+      this._domObserver = null;
+    }
+  }
+};
+
+
+/**
+* Scans each observation target for intersection changes and adds them
+* to the internal entries queue. If new entries are found, it
+* schedules the callback to be invoked.
+* @private
+*/
+IntersectionObserver.prototype._checkForIntersections = function() {
+  var rootIsInDom = this._rootIsInDom();
+  var rootRect = rootIsInDom ? this._getRootRect() : getEmptyRect();
+
+  this._observationTargets.forEach(function(item) {
+    var target = item.element;
+    var targetRect = getBoundingClientRect(target);
+    var rootContainsTarget = this._rootContainsTarget(target);
+    var oldEntry = item.entry;
+    var intersectionRect = rootIsInDom && rootContainsTarget &&
+        this._computeTargetAndRootIntersection(target, rootRect);
+
+    var newEntry = item.entry = new IntersectionObserverEntry({
+      time: now(),
+      target: target,
+      boundingClientRect: targetRect,
+      rootBounds: rootRect,
+      intersectionRect: intersectionRect
+    });
+
+    if (!oldEntry) {
+      this._queuedEntries.push(newEntry);
+    } else if (rootIsInDom && rootContainsTarget) {
+      // If the new entry intersection ratio has crossed any of the
+      // thresholds, add a new entry.
+      if (this._hasCrossedThreshold(oldEntry, newEntry)) {
+        this._queuedEntries.push(newEntry);
+      }
+    } else {
+      // If the root is not in the DOM or target is not contained within
+      // root but the previous entry for this target had an intersection,
+      // add a new record indicating removal.
+      if (oldEntry && oldEntry.isIntersecting) {
+        this._queuedEntries.push(newEntry);
+      }
+    }
+  }, this);
+
+  if (this._queuedEntries.length) {
+    this._callback(this.takeRecords(), this);
+  }
+};
+
+
+/**
+* Accepts a target and root rect computes the intersection between then
+* following the algorithm in the spec.
+* TODO(philipwalton): at this time clip-path is not considered.
+* https://w3c.github.io/IntersectionObserver/#calculate-intersection-rect-algo
+* @param {Element} target The target DOM element
+* @param {Object} rootRect The bounding rect of the root after being
+*     expanded by the rootMargin value.
+* @return {?Object} The final intersection rect object or undefined if no
+*     intersection is found.
+* @private
+*/
+IntersectionObserver.prototype._computeTargetAndRootIntersection =
+    function(target, rootRect) {
+
+  // If the element isn't displayed, an intersection can't happen.
+  if (window.getComputedStyle(target).display == 'none') return;
+
+  var targetRect = getBoundingClientRect(target);
+  var intersectionRect = targetRect;
+  var parent = getParentNode(target);
+  var atRoot = false;
+
+  while (!atRoot) {
+    var parentRect = null;
+    var parentComputedStyle = parent.nodeType == 1 ?
+        window.getComputedStyle(parent) : {};
+
+    // If the parent isn't displayed, an intersection can't happen.
+    if (parentComputedStyle.display == 'none') return;
+
+    if (parent == this.root || parent == document) {
+      atRoot = true;
+      parentRect = rootRect;
+    } else {
+      // If the element has a non-visible overflow, and it's not the <body>
+      // or <html> element, update the intersection rect.
+      // Note: <body> and <html> cannot be clipped to a rect that's not also
+      // the document rect, so no need to compute a new intersection.
+      if (parent != document.body &&
+          parent != document.documentElement &&
+          parentComputedStyle.overflow != 'visible') {
+        parentRect = getBoundingClientRect(parent);
+      }
+    }
+
+    // If either of the above conditionals set a new parentRect,
+    // calculate new intersection data.
+    if (parentRect) {
+      intersectionRect = computeRectIntersection(parentRect, intersectionRect);
+
+      if (!intersectionRect) break;
+    }
+    parent = getParentNode(parent);
+  }
+  return intersectionRect;
+};
+
+
+/**
+* Returns the root rect after being expanded by the rootMargin value.
+* @return {Object} The expanded root rect.
+* @private
+*/
+IntersectionObserver.prototype._getRootRect = function() {
+  var rootRect;
+  if (this.root) {
+    rootRect = getBoundingClientRect(this.root);
+  } else {
+    // Use <html>/<body> instead of window since scroll bars affect size.
+    var html = document.documentElement;
+    var body = document.body;
+    rootRect = {
+      top: 0,
+      left: 0,
+      right: html.clientWidth || body.clientWidth,
+      width: html.clientWidth || body.clientWidth,
+      bottom: html.clientHeight || body.clientHeight,
+      height: html.clientHeight || body.clientHeight
+    };
+  }
+  return this._expandRectByRootMargin(rootRect);
+};
+
+
+/**
+* Accepts a rect and expands it by the rootMargin value.
+* @param {Object} rect The rect object to expand.
+* @return {Object} The expanded rect.
+* @private
+*/
+IntersectionObserver.prototype._expandRectByRootMargin = function(rect) {
+  var margins = this._rootMarginValues.map(function(margin, i) {
+    return margin.unit == 'px' ? margin.value :
+        margin.value * (i % 2 ? rect.width : rect.height) / 100;
+  });
+  var newRect = {
+    top: rect.top - margins[0],
+    right: rect.right + margins[1],
+    bottom: rect.bottom + margins[2],
+    left: rect.left - margins[3]
+  };
+  newRect.width = newRect.right - newRect.left;
+  newRect.height = newRect.bottom - newRect.top;
+
+  return newRect;
+};
+
+
+/**
+* Accepts an old and new entry and returns true if at least one of the
+* threshold values has been crossed.
+* @param {?IntersectionObserverEntry} oldEntry The previous entry for a
+*    particular target element or null if no previous entry exists.
+* @param {IntersectionObserverEntry} newEntry The current entry for a
+*    particular target element.
+* @return {boolean} Returns true if a any threshold has been crossed.
+* @private
+*/
+IntersectionObserver.prototype._hasCrossedThreshold =
+    function(oldEntry, newEntry) {
+
+  // To make comparing easier, an entry that has a ratio of 0
+  // but does not actually intersect is given a value of -1
+  var oldRatio = oldEntry && oldEntry.isIntersecting ?
+      oldEntry.intersectionRatio || 0 : -1;
+  var newRatio = newEntry.isIntersecting ?
+      newEntry.intersectionRatio || 0 : -1;
+
+  // Ignore unchanged ratios
+  if (oldRatio === newRatio) return;
+
+  for (var i = 0; i < this.thresholds.length; i++) {
+    var threshold = this.thresholds[i];
+
+    // Return true if an entry matches a threshold or if the new ratio
+    // and the old ratio are on the opposite sides of a threshold.
+    if (threshold == oldRatio || threshold == newRatio ||
+        threshold < oldRatio !== threshold < newRatio) {
+      return true;
+    }
+  }
+};
+
+
+/**
+* Returns whether or not the root element is an element and is in the DOM.
+* @return {boolean} True if the root element is an element and is in the DOM.
+* @private
+*/
+IntersectionObserver.prototype._rootIsInDom = function() {
+  return !this.root || containsDeep(document, this.root);
+};
+
+
+/**
+* Returns whether or not the target element is a child of root.
+* @param {Element} target The target element to check.
+* @return {boolean} True if the target element is a child of root.
+* @private
+*/
+IntersectionObserver.prototype._rootContainsTarget = function(target) {
+  return containsDeep(this.root || document, target);
+};
+
+
+/**
+* Adds the instance to the global IntersectionObserver registry if it isn't
+* already present.
+* @private
+*/
+IntersectionObserver.prototype._registerInstance = function() {
+  if (registry.indexOf(this) < 0) {
+    registry.push(this);
+  }
+};
+
+
+/**
+* Removes the instance from the global IntersectionObserver registry.
+* @private
+*/
+IntersectionObserver.prototype._unregisterInstance = function() {
+  var index = registry.indexOf(this);
+  if (index != -1) registry.splice(index, 1);
+};
+
+
+/**
+* Returns the result of the performance.now() method or null in browsers
+* that don't support the API.
+* @return {number} The elapsed time since the page was requested.
+*/
+function now() {
+  return window.performance && performance.now && performance.now();
+}
+
+
+/**
+* Throttles a function and delays its execution, so it's only called at most
+* once within a given time period.
+* @param {Function} fn The function to throttle.
+* @param {number} timeout The amount of time that must pass before the
+*     function can be called again.
+* @return {Function} The throttled function.
+*/
+function throttle(fn, timeout) {
+  var timer = null;
+  return function () {
+    if (!timer) {
+      timer = setTimeout(function() {
+        fn();
+        timer = null;
+      }, timeout);
+    }
+  };
+}
+
+
+/**
+* Adds an event handler to a DOM node ensuring cross-browser compatibility.
+* @param {Node} node The DOM node to add the event handler to.
+* @param {string} event The event name.
+* @param {Function} fn The event handler to add.
+* @param {boolean} opt_useCapture Optionally adds the even to the capture
+*     phase. Note: this only works in modern browsers.
+*/
+function addEvent(node, event, fn, opt_useCapture) {
+  if (typeof node.addEventListener == 'function') {
+    node.addEventListener(event, fn, opt_useCapture || false);
+  }
+  else if (typeof node.attachEvent == 'function') {
+    node.attachEvent('on' + event, fn);
+  }
+}
+
+
+/**
+* Removes a previously added event handler from a DOM node.
+* @param {Node} node The DOM node to remove the event handler from.
+* @param {string} event The event name.
+* @param {Function} fn The event handler to remove.
+* @param {boolean} opt_useCapture If the event handler was added with this
+*     flag set to true, it should be set to true here in order to remove it.
+*/
+function removeEvent(node, event, fn, opt_useCapture) {
+  if (typeof node.removeEventListener == 'function') {
+    node.removeEventListener(event, fn, opt_useCapture || false);
+  }
+  else if (typeof node.detatchEvent == 'function') {
+    node.detatchEvent('on' + event, fn);
+  }
+}
+
+
+/**
+* Returns the intersection between two rect objects.
+* @param {Object} rect1 The first rect.
+* @param {Object} rect2 The second rect.
+* @return {?Object} The intersection rect or undefined if no intersection
+*     is found.
+*/
+function computeRectIntersection(rect1, rect2) {
+  var top = Math.max(rect1.top, rect2.top);
+  var bottom = Math.min(rect1.bottom, rect2.bottom);
+  var left = Math.max(rect1.left, rect2.left);
+  var right = Math.min(rect1.right, rect2.right);
+  var width = right - left;
+  var height = bottom - top;
+
+  return (width >= 0 && height >= 0) && {
+    top: top,
+    bottom: bottom,
+    left: left,
+    right: right,
+    width: width,
+    height: height
+  };
+}
+
+
+/**
+* Shims the native getBoundingClientRect for compatibility with older IE.
+* @param {Element} el The element whose bounding rect to get.
+* @return {Object} The (possibly shimmed) rect of the element.
+*/
+function getBoundingClientRect(el) {
+  var rect;
+
+  try {
+    rect = el.getBoundingClientRect();
+  } catch (err) {
+    // Ignore Windows 7 IE11 "Unspecified error"
+  }
+
+  if (!rect) return getEmptyRect();
+
+  // Older IE
+  if (!(rect.width && rect.height)) {
+    rect = {
+      top: rect.top,
+      right: rect.right,
+      bottom: rect.bottom,
+      left: rect.left,
+      width: rect.right - rect.left,
+      height: rect.bottom - rect.top
+    };
+  }
+  return rect;
+}
+
+
+/**
+* Returns an empty rect object. An empty rect is returned when an element
+* is not in the DOM.
+* @return {Object} The empty rect.
+*/
+function getEmptyRect() {
+  return {
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    width: 0,
+    height: 0
+  };
+}
+
+/**
+* Checks to see if a parent element contains a child element (including inside
+* shadow DOM).
+* @param {Node} parent The parent element.
+* @param {Node} child The child element.
+* @return {boolean} True if the parent node contains the child node.
+*/
+function containsDeep(parent, child) {
+  var node = child;
+  while (node) {
+    if (node == parent) return true;
+
+    node = getParentNode(node);
+  }
+  return false;
+}
+
+
+/**
+* Gets the parent node of an element or its host element if the parent node
+* is a shadow root.
+* @param {Node} node The node whose parent to get.
+* @return {Node|null} The parent node or null if no parent exists.
+*/
+function getParentNode(node) {
+  var parent = node.parentNode;
+
+  if (parent && parent.nodeType == 11 && parent.host) {
+    // If the parent is a shadow root, return the host element.
+    return parent.host;
+  }
+
+  if (parent && parent.assignedSlot) {
+    // If the parent is distributed in a <slot>, return the parent of a slot.
+    return parent.assignedSlot.parentNode;
+  }
+
+  return parent;
+}
+
+
+// Exposes the constructors globally.
+window.IntersectionObserver = IntersectionObserver;
+window.IntersectionObserverEntry = IntersectionObserverEntry;
+
+}());</script><script>window.addEventListener('load', function() {
+  function LinkSettingForGunosy() {
+  }
+  LinkSettingForGunosy.prototype = {
+    assign: function() {
+      const media = document.querySelector('.js-m-id');
+      if (media === null) { return; }
+      if (media.dataset.value != '4') { return; }
+
+      const nodelist = document.querySelectorAll('a');
+      const node = Array.prototype.slice.call(nodelist, 0);
+
+      node.forEach(function(element) {
+        const uri = new URI(element.getAttribute('href'));
+        if (uri.query(true).sb_tracking === 'true') {
+          let onclickAttribute = element.getAttribute('onclick');
+          if (onclickAttribute === null) {
+            onclickAttribute = '';
+          }
+          onclickAttribute += ';this.href=GunosyTransit.link(this.href);';
+          element.setAttribute('onclick', onclickAttribute);
+        }
+      });
+    }
+  }
+
+  let linkSettingForGunosy = new LinkSettingForGunosy();
+  linkSettingForGunosy.assign();
+});</script><script>window.addEventListener('message', function() {
+  function SetFormActionVisitorId() {
+  }
+  SetFormActionVisitorId.prototype = {
+    assign: function() {
+      let iframes = document.querySelectorAll('.sb-form-iframe')
+      if (iframes.length === 0) return
+      Array.from(iframes).forEach((iframe, i) => {
+        const sbTuId = document.querySelector('.js-v-id')
+        const articleUid = document.querySelector('.js-a-id')
+        const abTestUid = document.querySelector('.js-ab-id')
+        const folderUid = document.querySelector('.js-f-id')
+        let target = iframe.contentWindow.postMessage ? iframe : undefined;
+        if (typeof target != "undefined" && document.body.scrollHeight) {
+          target.contentWindow.postMessage({ sb_tu_id: sbTuId.dataset.value, article_uid: articleUid.dataset.value, ab_test_uid: abTestUid.dataset.value, folder_uid: folderUid.dataset.value, posted_beyond: true }, "*");
+        }
+      });
+    }
+  }
+
+  let setFormActionVisitorId = new SetFormActionVisitorId();
+  setFormActionVisitorId.assign();
+});</script><script>window.addEventListener('message', function(e) {
+  function SetFolderFormIframeAttributes() {
+  }
+  SetFolderFormIframeAttributes.prototype = {
+    assign: function(e) {
+      if (!e.data['posted_beyond']) return
+      let forms = document.querySelectorAll(`[data-sb-form-uid="${e.data['uid']}"]`)
+      Array.from(forms).forEach((form, i) => {
+        let height = e.data['height']
+        let width = e.data['width']
+        let iframe = form.querySelector('iframe')
+        iframe.style.height = height
+        iframe.style.width = width
+        iframe.style.margin = '0 auto'
+      });
+    }
+  }
+
+  let setFolderFormIframeHeight = new SetFolderFormIframeAttributes();
+  setFolderFormIframeHeight.assign(e);
+});</script><script>window.addEventListener('DOMContentLoaded', function() {
+  let iframes = document.querySelectorAll('.sb-form-iframe')
+  Array.from(iframes).forEach((iframe, i) => {
+    const uri = new URI(iframe.src);
+    const iframe_host = document.querySelector('.js-folder-form-host')
+    //MEMO: 識別子をpostMessageだけで渡すとリロードやキャッシュのタイミングで取りこぼすことがあるため
+    //      sb_domainと同様にiframeのsrcのクエリにも載せて確実に届くようにする
+    //      visitor_idは.js-v-idへの値の代入がこのハンドラより後になるためwindowから直接参照する
+    iframe.src = uri.host(iframe_host.dataset.value)
+      .setQuery('sb_domain', window.location.hostname)
+      .setQuery('visitor_id', window.sb_visitor_id || '')
+      .setQuery('article_uid', document.querySelector('.js-a-id').dataset.value)
+      .setQuery('ab_test_uid', document.querySelector('.js-ab-id').dataset.value)
+      .toString()
+  });
+});</script><script>!function(t,n){"object"==typeof exports&&"undefined"!=typeof module?module.exports=n():"function"==typeof define&&define.amd?define(n):(t=t||self).LazyLoad=n()}(this,(function(){"use strict";function t(){return(t=Object.assign||function(t){for(var n=1;n<arguments.length;n++){var e=arguments[n];for(var i in e)Object.prototype.hasOwnProperty.call(e,i)&&(t[i]=e[i])}return t}).apply(this,arguments)}var n="undefined"!=typeof window,e=n&&!("onscroll"in window)||"undefined"!=typeof navigator&&/(gle|ing|ro)bot|crawl|spider/i.test(navigator.userAgent),i=n&&"IntersectionObserver"in window,o=n&&"classList"in document.createElement("p"),r=n&&window.devicePixelRatio>1,a={elements_selector:".lazy",container:e||n?document:null,threshold:300,thresholds:null,data_src:"src",data_srcset:"srcset",data_sizes:"sizes",data_bg:"bg",data_bg_hidpi:"bg-hidpi",data_bg_multi:"bg-multi",data_bg_multi_hidpi:"bg-multi-hidpi",data_poster:"poster",class_applied:"applied",class_loading:"loading",class_loaded:"loaded",class_error:"error",class_entered:"entered",class_exited:"exited",unobserve_completed:!0,unobserve_entered:!1,cancel_on_exit:!0,callback_enter:null,callback_exit:null,callback_applied:null,callback_loading:null,callback_loaded:null,callback_error:null,callback_finish:null,callback_cancel:null,use_native:!1},c=function(n){return t({},a,n)},s=function(t,n){var e,i="LazyLoad::Initialized",o=new t(n);try{e=new CustomEvent(i,{detail:{instance:o}})}catch(t){(e=document.createEvent("CustomEvent")).initCustomEvent(i,!1,!1,{instance:o})}window.dispatchEvent(e)},l="loading",u="loaded",d="applied",f="error",_="native",g="data-",v="ll-status",p=function(t,n){return t.getAttribute(g+n)},b=function(t){return p(t,v)},h=function(t,n){return function(t,n,e){var i="data-ll-status";null!==e?t.setAttribute(i,e):t.removeAttribute(i)}(t,0,n)},m=function(t){return h(t,null)},E=function(t){return null===b(t)},y=function(t){return b(t)===_},A=[l,u,d,f],I=function(t,n,e,i){t&&(void 0===i?void 0===e?t(n):t(n,e):t(n,e,i))},L=function(t,n){o?t.classList.add(n):t.className+=(t.className?" ":"")+n},w=function(t,n){o?t.classList.remove(n):t.className=t.className.replace(new RegExp("(^|\\s+)"+n+"(\\s+|$)")," ").replace(/^\s+/,"").replace(/\s+$/,"")},k=function(t){return t.llTempImage},O=function(t,n){if(n){var e=n._observer;e&&e.unobserve(t)}},x=function(t,n){t&&(t.loadingCount+=n)},z=function(t,n){t&&(t.toLoadCount=n)},C=function(t){for(var n,e=[],i=0;n=t.children[i];i+=1)"SOURCE"===n.tagName&&e.push(n);return e},N=function(t,n,e){e&&t.setAttribute(n,e)},M=function(t,n){t.removeAttribute(n)},R=function(t){return!!t.llOriginalAttrs},G=function(t){if(!R(t)){var n={};n.src=t.getAttribute("src"),n.srcset=t.getAttribute("srcset"),n.sizes=t.getAttribute("sizes"),t.llOriginalAttrs=n}},T=function(t){if(R(t)){var n=t.llOriginalAttrs;N(t,"src",n.src),N(t,"srcset",n.srcset),N(t,"sizes",n.sizes)}},j=function(t,n){N(t,"sizes",p(t,n.data_sizes)),N(t,"srcset",p(t,n.data_srcset)),N(t,"src",p(t,n.data_src))},D=function(t){M(t,"src"),M(t,"srcset"),M(t,"sizes")},F=function(t,n){var e=t.parentNode;e&&"PICTURE"===e.tagName&&C(e).forEach(n)},P={IMG:function(t,n){F(t,(function(t){G(t),j(t,n)})),G(t),j(t,n)},IFRAME:function(t,n){N(t,"src",p(t,n.data_src))},VIDEO:function(t,n){!function(t,e){C(t).forEach((function(t){N(t,"src",p(t,n.data_src))}))}(t),N(t,"poster",p(t,n.data_poster)),N(t,"src",p(t,n.data_src)),t.load()}},S=function(t,n){var e=P[t.tagName];e&&e(t,n)},V=function(t,n,e){x(e,1),L(t,n.class_loading),h(t,l),I(n.callback_loading,t,e)},U=["IMG","IFRAME","VIDEO"],$=function(t,n){!n||function(t){return t.loadingCount>0}(n)||function(t){return t.toLoadCount>0}(n)||I(t.callback_finish,n)},q=function(t,n,e){t.addEventListener(n,e),t.llEvLisnrs[n]=e},H=function(t,n,e){t.removeEventListener(n,e)},B=function(t){return!!t.llEvLisnrs},J=function(t){if(B(t)){var n=t.llEvLisnrs;for(var e in n){var i=n[e];H(t,e,i)}delete t.llEvLisnrs}},K=function(t,n,e){!function(t){delete t.llTempImage}(t),x(e,-1),function(t){t&&(t.toLoadCount-=1)}(e),w(t,n.class_loading),n.unobserve_completed&&O(t,e)},Q=function(t,n,e){var i=k(t)||t;B(i)||function(t,n,e){B(t)||(t.llEvLisnrs={});var i="VIDEO"===t.tagName?"loadeddata":"load";q(t,i,n),q(t,"error",e)}(i,(function(o){!function(t,n,e,i){var o=y(n);K(n,e,i),L(n,e.class_loaded),h(n,u),I(e.callback_loaded,n,i),o||$(e,i)}(0,t,n,e),J(i)}),(function(o){!function(t,n,e,i){var o=y(n);K(n,e,i),L(n,e.class_error),h(n,f),I(e.callback_error,n,i),o||$(e,i)}(0,t,n,e),J(i)}))},W=function(t,n,e){!function(t){t.llTempImage=document.createElement("IMG")}(t),Q(t,n,e),function(t,n,e){var i=p(t,n.data_bg),o=p(t,n.data_bg_hidpi),a=r&&o?o:i;a&&(t.style.backgroundImage='url("'.concat(a,'")'),k(t).setAttribute("src",a),V(t,n,e))}(t,n,e),function(t,n,e){var i=p(t,n.data_bg_multi),o=p(t,n.data_bg_multi_hidpi),a=r&&o?o:i;a&&(t.style.backgroundImage=a,function(t,n,e){L(t,n.class_applied),h(t,d),n.unobserve_completed&&O(t,n),I(n.callback_applied,t,e)}(t,n,e))}(t,n,e)},X=function(t,n,e){!function(t){return U.indexOf(t.tagName)>-1}(t)?W(t,n,e):function(t,n,e){Q(t,n,e),S(t,n),V(t,n,e)}(t,n,e)},Y=["IMG","IFRAME"],Z=function(t){return t.use_native&&"loading"in HTMLImageElement.prototype},tt=function(t,n,e){t.forEach((function(t){return function(t){return t.isIntersecting||t.intersectionRatio>0}(t)?function(t,n,e,i){h(t,"entered"),L(t,e.class_entered),w(t,e.class_exited),function(t,n,e){n.unobserve_entered&&O(t,e)}(t,e,i),I(e.callback_enter,t,n,i),function(t){return A.indexOf(b(t))>=0}(t)||X(t,e,i)}(t.target,t,n,e):function(t,n,e,i){E(t)||(L(t,e.class_exited),function(t,n,e,i){e.cancel_on_exit&&function(t){return b(t)===l}(t)&&"IMG"===t.tagName&&(J(t),function(t){F(t,(function(t){D(t)})),D(t)}(t),function(t){F(t,(function(t){T(t)})),T(t)}(t),w(t,e.class_loading),x(i,-1),m(t),I(e.callback_cancel,t,n,i))}(t,n,e,i),I(e.callback_exit,t,n,i))}(t.target,t,n,e)}))},nt=function(t){return Array.prototype.slice.call(t)},et=function(t){return t.container.querySelectorAll(t.elements_selector)},it=function(t){return function(t){return b(t)===f}(t)},ot=function(t,n){return function(t){return nt(t).filter(E)}(t||et(n))},rt=function(t,e){var o=c(t);this._settings=o,this.loadingCount=0,function(t,n){i&&!Z(t)&&(n._observer=new IntersectionObserver((function(e){tt(e,t,n)}),function(t){return{root:t.container===document?null:t.container,rootMargin:t.thresholds||t.threshold+"px"}}(t)))}(o,this),function(t,e){n&&window.addEventListener("online",(function(){!function(t,n){var e;(e=et(t),nt(e).filter(it)).forEach((function(n){w(n,t.class_error),m(n)})),n.update()}(t,e)}))}(o,this),this.update(e)};return rt.prototype={update:function(t){var n,o,r=this._settings,a=ot(t,r);z(this,a.length),!e&&i?Z(r)?function(t,n,e){t.forEach((function(t){-1!==Y.indexOf(t.tagName)&&(t.setAttribute("loading","lazy"),function(t,n,e){Q(t,n,e),S(t,n),h(t,_)}(t,n,e))})),z(e,0)}(a,r,this):(o=a,function(t){t.disconnect()}(n=this._observer),function(t,n){n.forEach((function(n){t.observe(n)}))}(n,o)):this.loadAll(a)},destroy:function(){this._observer&&this._observer.disconnect(),et(this._settings).forEach((function(t){delete t.llOriginalAttrs})),delete this._observer,delete this._settings,delete this.loadingCount,delete this.toLoadCount},loadAll:function(t){var n=this,e=this._settings;ot(t,e).forEach((function(t){O(t,n),X(t,e,n)}))}},rt.load=function(t,n){var e=c(n);X(t,e)},rt.resetStatus=function(t){m(t)},n&&function(t,n){if(n)if(n.length)for(var e,i=0;e=n[i];i+=1)s(t,e);else s(t,n)}(rt,window.lazyLoadOptions),rt}));</script><script>window.addEventListener('load', function() {
+  var scroll = new SmoothScroll('a[href*="#"]', {
+    speed:1000
+  });
+});</script><!-- discovery Pixel Code -->
+<script type='text/javascript'>
+    window._megoaa = window._megoaa || [];
+    window._megoaa.push({ type: 'event', name: 'pageview',acid: '29906'});
+    window._megoaa.push({ type: 'nextjump', link: ["sb-yuriiro-oil.newsanything.tokyo","ec.e-seeds.co.jp"]});
+    !function (t, f, a, x) {
+            if (!document.getElementById(x)) {
+                t.async = 1;t.src = a;t.id=x;f.parentNode.insertBefore(t, f);
+            }
+    }(document.createElement('script'),
+    document.getElementsByTagName('script')[0], '//asset.popin.cc/js/pixel.js?acid=29906', 'pixel_megoaa_script');
+</script>
+<noscript>
+    <img src='//trace.popin.cc/api/bidder/track/pixel/pageview?tn=f9f2b1ef23fe2759c2cad0953029a94b&acid=29906' width='0' height='0' style='display:none' />
+</noscript>
+<!-- End of discovery Pixel Code -->
+<!-- discovery Pixel Code -->
+<script>
+window._megoaa = window._megoaa || [];
+window._megoaa.push({ type: 'event', name: 'yuriiro_LP遷移先ピクセル', acid: '29906', pxd: '1090918219907465'});
+</script>
+<noscript>
+<img src='//trace.popin.cc/api/bidder/track/pixel/conversion?cvn=yuriiro_LP遷移先ピクセル&acid=29906&pxd=1090918219907465&tn=f9f2b1ef23fe2759c2cad0953029a94b' width='0' height='0' style='display:none' />
+</noscript>
+<!-- End of discovery Pixel Code --><script>
+(function(){
+var uqid = "5Dd190064WaDdc81";
+var gid  = "87";
+var a=document.createElement("script");
+a.dataset.uqid=uqid;a.dataset.gid=gid;a.id="afadfpc-5Dd190064WaDdc81gid87-"+Date.now();
+a.src="//ac.ad-growth.jp/fpc/cookie_js.php?scriptId="+encodeURIComponent(a.id);
+document.head.appendChild(a);
+})();
+</script>
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "xbfg2pylcw");
+</script><script>
+    var sbAncChoices = sbAncChoices || {};
+    (function(_) {
+
+        /* 対象のclass */
+        const target = '.js-anc-choices';
+
+        _.questionnaire = function(selectors) {
+            let elList = document.querySelectorAll(selectors);
+            elList.forEach(function(el) {
+                let itemList = el.querySelectorAll('.choices');
+                let loader = el.querySelector('.loader_wrap');
+
+                itemList.forEach(function(item) {
+                    let radio = item.querySelector('.choice-radio');
+                    radio.addEventListener('click', function() {
+                        item.classList.add('checked');
+                        setView();
+                    }, false);
+                });
+
+
+                function setView() {
+                    itemList.forEach(function(item) {
+                        let select = item.querySelector('.selecter');
+                        let result = item.querySelector('.results');
+                        let woodLine = result.querySelector('.wood-line');
+
+
+                        item.style.opacity = '0.7';
+                        loader.classList.add('open');
+
+                        let onTimer = setTimeout(function() {
+                            loader.classList.remove('open');
+                            item.style.opacity = '';
+                            select.style.display = "none";
+                            result.classList.add('show_result');
+                            woodLine.classList.add('widthimp');
+
+                            let offTimer = setTimeout(function() {
+                                woodLine.classList.remove('widthimp');
+                            }, 50)
+
+                        }, 2000)
+
+                    });
+                }
+            });
+        };
+
+        //main
+        _.init = function() {
+            _.questionnaire(target);
+        };
+
+    })(sbAncChoices);
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic&display=swap" rel="stylesheet">
+
+<!-- タグ設定のJavaScript headに以下をカットして貼り付けてください。
+同一widgetを複数追加する場合、複数回貼付けは不要です。 -->
+<script>
+    /* 本日の日付 */
+    var sbCurrentDate = sbCurrentDate || {};
+    (function(_) {
+
+        /* 対象のclass */
+        const target = '.js-s-current-date-ja';
+
+        _.setCurrentDate = function(selectors) {
+            let date = new Date();
+            let yyyy = date.getFullYear();
+            let mm = date.getMonth() + 1;
+            let dd = date.getDate();
+            let dayOfWeek = date.getDay();
+            let dayOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"][dayOfWeek];
+            let dateString = mm + '月' + dd + '日'
+
+            let elList = document.querySelectorAll(selectors);
+            elList.forEach(el => el.innerHTML = dateString);
+        };
+
+        //main
+        _.init = function() {
+            _.setCurrentDate(target);
+        };
+
+    })(sbCurrentDate);
+</script>
+<!-- JavaScript headここまで --><!-- TikTok Pixel Code Start -->
+<script>
+!function (w, d, t) {
+  w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(
+var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script")
+;n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
+
+
+  ttq.load('D4MKNHRC77UEBGID4A5G');
+  ttq.page();
+}(window, document, 'ttq');
+</script>
+<!-- TikTok Pixel Code End -->
+
+<script>
+ttq.track('AddToCart', {
+	"contents": [
+		{
+			"content_id": "<content_identifier>", // string. ID of the product. Example: "1077218".
+			"content_type": "<content_type>", // string. Either product or product_group.
+			"content_name": "<content_name>" // string. The name of the page or product. Example: "shirt".
+		}
+	],
+	"value": "<content_value>", // number. Value of the order or items sold. Example: 100.
+	"currency": "<content_currency>" // string. The 4217 currency code. Example: "USD".
+});
+    </script><!-- TikTok Pixel Code Start -->
+<script>
+!function (w, d, t) {
+  w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(
+var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script")
+;n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
+
+
+  ttq.load('D29H2P3C77U4ENLN65Q0');
+  ttq.page();
+}(window, document, 'ttq');
+</script>
+<!-- TikTok Pixel Code End -->
+
+<script>
+ttq.instance('D29H2P3C77U4ENLN65Q0').track('ViewContent', {
+   contents: [
+    {
+      content_id: '1',
+    },],
+    content_type: 'product',
+    value: 1990,
+    currency: 'JPY',
+});
+  </script><!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18042741904"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-18042741904');
+</script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18042687474"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-18042687474');
+</script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18042633680"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-18042633680');
+</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18223021491"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-18223021491');
+</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18222967988"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-18222967988');
+</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18326472824"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-18326472824');
+</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18370031648"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-18370031648');
+</script><!-- LINE Tag Base Code -->
+<!-- Do Not Modify -->
+<script>
+(function(g,d,o){
+  g._ltq=g._ltq||[];g._lt=g._lt||function(){g._ltq.push(arguments)};
+  var h=location.protocol==='https:'?'https://d.line-scdn.net':'http://d.line-cdn.net';
+  var s=d.createElement('script');s.async=1;
+  s.src=o||h+'/n/line_tag/public/release/v1/lt.js';
+  var t=d.getElementsByTagName('script')[0];t.parentNode.insertBefore(s,t);
+    })(window, document);
+_lt('init', {
+  customerType: 'lap',
+  tagId: 'e2658063-c2bd-4e8f-bcff-ad3408e3cc58'
+});
+_lt('send', 'pv', ['e2658063-c2bd-4e8f-bcff-ad3408e3cc58']);
+</script>
+<noscript>
+  <img height="1" width="1" style="display:none"
+       src="https://tr.line.me/tag.gif?c_t=lap&t_id=e2658063-c2bd-4e8f-bcff-ad3408e3cc58&e=pv&noscript=1" />
+</noscript>
+<!-- End LINE Tag Base Code -->
+<script>
+    /* ============================================================
+   YURiiRO × BETTY BOOP™ 私だけの香り診断 - JS
+   ベース：20260709受領のBeyond本番実データの構造（yrShow/yrDrawQ/yrPick/yrBind）
+   変更：香り5種の配点 → 甘/色/遊/隠の4軸加算＋5タイプ分岐（全員ピーチムスク着地）
+   CTA_URL_PEACHMUSK＝10月コラボ版の遷移先URL確定後に差し替え
+   ============================================================ */
+
+    /* ★CTA遷移先URL：確定したら " " の中をURLに差し替える（結果画面のCTAボタン2つ共通） */
+    var bbCtaUrl = "https://ac.ad-growth.jp/5Dd190064WaDdc81/cl/?bId=8a3sr51s&aro=16&ipc=1";
+
+    /* ---- 結果5タイプ（セットB「夜の住人」・2026-09-24確定） ---- */
+    var bbT = {
+        tenshi: {
+            id: "tenshi",
+            name: "とろける天使",
+            headline: "やわらかな甘さが、\nそっと余韻を残す。",
+            desc: "ウサギみたいに、そばにいるだけで力が抜ける人。がんばった日の夜は、甘いものとふかふかの毛布。あなたのやわらかさは、一緒にいる人の肩の力までほどいていきます。",
+            kasane: "そばにいたくなる甘さに、ふわっと余韻が続く。ピーチの甘さが、あなたのやわらかさをそのまま連れて歩く。纏うなら、手首と髪に。"
+        },
+        masei: {
+            id: "masei",
+            name: "不意打ちの魔性",
+            headline: "ふわっと甘く、\nふと色っぽい。",
+            desc: "黒ネコみたいに、ふとした瞬間だけ色っぽい人。ふだんはよく笑う甘えん坊。なのに、本音がぽろっとこぼれた瞬間の顔に、まわりはドキッとします。",
+            kasane: "甘く始まって、ムスクの余韻に変わる。香りの変わり目が、あなたのギャップと同じ動きをする。纏うなら、耳の後ろに少しだけ。"
+        },
+        majo: {
+            id: "majo",
+            name: "凛とした魔女",
+            headline: "静かな色気に、\n甘さがほどける。",
+            desc: "スワンみたいに、しゃべらなくても目を引く人。服は表はシンプル、でも見えないところにこだわる。見せる相手を選ぶあなたの色気は、そっと持っているもの。近づいた人だけが、その奥の甘さに気づきます。",
+            kasane: "近づいた人だけが気づく、余韻の長い色気がふくらむ。ピーチの甘さは、あなたの“隠している甘さ”の側に働く。纏うなら、手首より髪と首すじに。"
+        },
+        koakuma: {
+            id: "koakuma",
+            name: "きまぐれ小悪魔",
+            headline: "甘く、自由に、\n気まぐれに。",
+            desc: "万華鏡みたいに、会うたび印象が変わる人。深夜にかわいいコスメを衝動買いするのも、今日の気分で選ぶのも、ぜんぶあなたの魅力のうち。",
+            kasane: "つけた日の気分で、甘さと色気の出方が変わる。今日のあなたが、今日の香りを決める。纏うなら、気分の上がる場所にどこでも。"
+        },
+        megami: {
+            id: "megami",
+            name: "よくばり女神",
+            headline: "甘さも色気も、\n私らしく。",
+            desc: "甘いも色っぽいも、ぜんぶ自分のものにする人。かわいいと言われる日も、きれいと言われる日も、どちらも本物のあなたです。",
+            kasane: "昼はピーチの甘さが、夜はムスクの色気が前に出る。1本で、あなたの両方に追いつく香り。朝と夜の2度づけも似合います。"
+        }
+    };
+
+    /* ---- 商品（全タイプ共通＝ピーチムスク） ---- 香調＝2026-09-24 本人共有の確定情報 */
+    var bbProduct = {
+        name: "ピーチムスク",
+        note: "トップ：ラベンダー・アップル・ピーチ / ミドル：ローズ・ミュゲ・アイリス / ラスト：アンバー・ムスク・ウッディ",
+        top: "ラベンダー・アップル・ピーチ",
+        mid: "ローズ・ミュゲ・アイリス",
+        last: "アンバー・ムスク・ウッディ"
+    };
+
+    /* ============================================================
+       ★★ 結果画面の最初のベティ：タイプ別5画像 ★★
+       診断結果ヒーロー（.bb-slot-result 内の画像）をタイプごとに差し替える。
+       下の5行に、Beyondへアップロードした各タイプ用画像のURLを貼るだけ。
+       「http」で始まるURLが入るまでは、HTMLに入っている現行の共通画像の
+       まま表示される（＝貼るまで表示は壊れない）。
+       ============================================================ */
+    var bbTypeImg = {
+        tenshi: "https://file.mysquadbeyond.com/uploads/article_photo/photo/7540452/17b3411f-455e-4b81-bc7d-f48ec704e32d.png",
+        /* とろける天使 用 */
+        masei: "https://file.mysquadbeyond.com/uploads/article_photo/photo/7541457/3d9eea9a-481b-497b-a5d4-420638327204.png",
+        /* 不意打ちの魔性 用 */
+        majo: "https://file.mysquadbeyond.com/uploads/article_photo/photo/7541305/455791d5-608e-4904-bcb6-3ff51fad0253.png",
+        /* 凛とした魔女 用 */
+        koakuma: "https://file.mysquadbeyond.com/uploads/article_photo/photo/7541485/1c37a763-047a-4829-89f8-caba398ea795.png",
+        /* きまぐれ小悪魔 用 */
+        megami: "https://file.mysquadbeyond.com/uploads/article_photo/photo/7541519/8b08c235-a16f-4a28-a54b-6763e245816d.png" /* よくばり女神 用 */
+    };
+
+    /* ---- 設問7問 × 選択肢4〜5個
+       s: ama=甘さ / iro=色気 / aso=遊び心 / kaku=隠れ ---- */
+    var yrQ = [{
+            cat: "わたしらしさ",
+            q: "いちばん“自分らしい”と\n感じる服は？",
+            hint: "直感で選んで",
+            a: [{
+                    t: "ふわっとやわらかい素材の、\n丸みのある服",
+                    s: "ama"
+                },
+                {
+                    t: "体のラインがきれいに見える、\nすっきりした服",
+                    s: "iro"
+                },
+                {
+                    t: "差し色や小物で、\nちょっと遊びたい",
+                    s: "aso"
+                },
+                {
+                    t: "表はシンプル。\nでも下着や裏地にはこだわる",
+                    s: "kaku"
+                },
+                {
+                    t: "その日の気分で、\nがらっと変わる",
+                    s: "aso"
+                }
+            ]
+        },
+        {
+            cat: "素肌の時間",
+            q: "お風呂上がりの素肌の時間。\nいちばん近いのは？",
+            hint: "今夜を思い出して",
+            a: [{
+                    t: "お気に入りの部屋着に着替えて、\nぬくぬくする",
+                    s: "ama"
+                },
+                {
+                    t: "鏡の前で、\n今日の肌をちょっと確かめる",
+                    s: "iro"
+                },
+                {
+                    t: "お手入れそこそこに、\nアイスと動画へ一直線",
+                    s: "aso"
+                },
+                {
+                    t: "素肌のままでいる時間が、\n実はいちばん好き",
+                    s: "kaku"
+                },
+                {
+                    t: "香りのいいオイルで、\nゆっくり手入れする",
+                    s: "ama"
+                }
+            ]
+        },
+        {
+            cat: "香りの本音",
+            q: "本音を言うと、\n香りをまとう理由は？",
+            hint: "本音で選んで",
+            a: [{
+                    t: "自分の機嫌をとるため",
+                    s: "ama"
+                },
+                {
+                    t: "すれ違いざまに、\nふわっと気づかせたいから",
+                    s: "iro"
+                },
+                {
+                    t: "その日なりたい私に、\n切り替えるため",
+                    s: "aso"
+                },
+                {
+                    t: "理由はない。でも、\nつけない日はなんだか心細い",
+                    s: "kaku"
+                },
+                {
+                    t: "近づいた人だけが気づく距離で、\n香らせたいから",
+                    s: "iro"
+                }
+            ]
+        },
+        {
+            cat: "近い距離",
+            q: "気を許した人の前で、\nつい出ちゃうのは？",
+            hint: "思い浮かべて",
+            a: [{
+                    t: "声がワントーン上がって、\nよく笑う",
+                    s: "ama"
+                },
+                {
+                    t: "沈黙が平気になる。\n隣にいるだけでいい",
+                    s: "iro"
+                },
+                {
+                    t: "ちょっとからかって、\n反応を楽しむ",
+                    s: "aso"
+                },
+                {
+                    t: "ふだん言わない本音が、\nぽろっとこぼれる",
+                    s: "kaku"
+                },
+                {
+                    t: "変なあだ名で呼んだり、\nふざけ合える",
+                    s: "aso"
+                }
+            ]
+        },
+        {
+            cat: "ご褒美の夜",
+            q: "がんばった日の夜、\n自分へのご褒美は？",
+            hint: "想像するだけで幸せなものを",
+            a: [{
+                    t: "甘いものと、\nふかふかの毛布",
+                    s: "ama"
+                },
+                {
+                    t: "キャンドルや音楽で、\n部屋の空気ごと変える",
+                    s: "iro"
+                },
+                {
+                    t: "深夜にかわいいコスメを\n衝動買い",
+                    s: "aso"
+                },
+                {
+                    t: "誰にも言わず、\nちょっといいお酒と長風呂",
+                    s: "kaku"
+                },
+                {
+                    t: "録りためたドラマと、\nあたたかい飲み物",
+                    s: "ama"
+                }
+            ]
+        },
+        {
+            cat: "わたしのギャップ",
+            q: "「イメージと違うね」って\n言われるとしたら、どこ？",
+            hint: "言われてうれしい方で",
+            a: [{
+                    t: "しっかりして見えるけど、\n実は甘えん坊",
+                    s: "kaku"
+                },
+                {
+                    t: "明るく見えるけど、\nひとりの時間が何より好き",
+                    s: "iro"
+                },
+                {
+                    t: "おとなしく見えるけど、\n好きなものには一直線",
+                    s: "aso"
+                },
+                {
+                    t: "ちゃんとして見えるけど、\n家ではだらだらの達人",
+                    s: "ama"
+                },
+                {
+                    t: "「イメージ通り」と言われがち。\nでも、全部は見せていない",
+                    s: "kaku"
+                }
+            ]
+        },
+        {
+            cat: "仕上げの願い",
+            q: "この香りが、\n素肌と溶け合うなら<span class='yr-star'>＊</span>\nどんな私で香りたい？",
+            hint: "目を閉じて、想像して",
+            note: "※角質層まで",
+            a: [{
+                    t: "ふわっと甘く、\nそばにいると安心する私",
+                    s: "ama"
+                },
+                {
+                    t: "すれ違いに振り向かせる、\n色っぽい私",
+                    s: "iro"
+                },
+                {
+                    t: "会うたび印象が変わる、\nつかめない私",
+                    s: "aso"
+                },
+                {
+                    t: "いつも通りの私。\nでも、近づいたら特別",
+                    s: "kaku"
+                },
+                {
+                    t: "言葉より先に、\n香りで覚えてもらえる私",
+                    s: "iro"
+                }
+            ]
+        }
+    ];
+
+    /* ---- 設問ごとのベティ全身ポーズ（Q1〜Q7）。Beyondアップロード後はURLを差し替え ---- */
+    var bbQBetty = [
+        "https://file.mysquadbeyond.com/uploads/article_photo/photo/7539251/4cb5f44e-2ed0-43b5-b871-8163cb3b1dcb.png", /* Q1 わたしらしさ：腰に手・堂々 */
+        "https://file.mysquadbeyond.com/uploads/article_photo/photo/7539253/9538a6e2-466c-44ca-9edd-c72e6ecd53d6.png", /* Q2 素肌の時間：目を閉じてリラックス */
+        "https://file.mysquadbeyond.com/uploads/article_photo/photo/7539264/6d0999ad-a931-443e-b07a-8cb7132bd7a4.png", /* Q3 香りの本音：両手を合わせてうっとり */
+        "https://file.mysquadbeyond.com/uploads/article_photo/photo/7539258/4c36416b-9586-4dd0-8d1a-d18c3b6ea1f0.png", /* Q4 近い距離：いたずらに身を乗り出す */
+        "https://file.mysquadbeyond.com/uploads/article_photo/photo/7543452/8436acde-616f-4f40-9d4c-22087b18aa9d.png", /* Q5 ご褒美の夜：座ってくつろぐ */
+        "https://file.mysquadbeyond.com/uploads/article_photo/photo/7539256/486c169f-c8cd-4403-8d2a-fcbe1ae467ea.png", /* Q6 ギャップ：ウインクで腰に手 */
+        "https://file.mysquadbeyond.com/uploads/article_photo/photo/7539257/a529ff98-a530-4c76-91ac-e72378415334.png" /* Q7 仕上げの願い：手を伸ばして振る */
+    ];
+
+    var yrCQ = 0,
+        yrVT = null;
+    var yrSC = {
+        ama: 0,
+        iro: 0,
+        aso: 0,
+        kaku: 0
+    };
+    var yrHistory = [];
+
+    /* ---- タイプ判定（同点処理込み・codex_package 4章の対応表） ----
+       1) 遊がどの軸よりも多い（単独最多）→ きまぐれ小悪魔
+       2) 隠が単独最多 → よくばり女神
+       3) 甘＞色 → 隠2つ以上なら不意打ちの魔性／それ未満はとろける天使
+       4) 色＞甘 → しずかな魔女
+       5) 甘＝色 → よくばり女神 */
+    function bbJudge(sc) {
+        if (sc.aso > sc.ama && sc.aso > sc.iro && sc.aso > sc.kaku) return "koakuma";
+        if (sc.kaku > sc.ama && sc.kaku > sc.iro && sc.kaku > sc.aso) return "megami";
+        if (sc.ama > sc.iro) return (sc.kaku >= 2) ? "masei" : "tenshi";
+        if (sc.iro > sc.ama) return "majo";
+        return "megami";
+    }
+
+    function yrShow(id) {
+        var l = document.querySelectorAll("#yuriiro-app .yr-screen");
+        for (var i = 0; i < l.length; i++) {
+            l[i].classList.add("yr-hidden");
+        }
+        var el = document.getElementById("yr-screen-" + id);
+        if (!el) return;
+        el.classList.remove("yr-hidden");
+        el.style.animation = "none";
+        void el.offsetHeight;
+        el.style.animation = "";
+    }
+
+    function yrDrawQ() {
+        var q = yrQ[yrCQ];
+        document.getElementById("yr-q-category").textContent = q.cat;
+        document.getElementById("yr-q-num").textContent = "Q" + (yrCQ + 1) + " / " + yrQ.length;
+        document.getElementById("yr-progress-fill").style.width = (((yrCQ + 1) / yrQ.length) * 100) + "%";
+        var rem = yrQ.length - yrCQ - 1;
+        document.getElementById("yr-progress-remaining").textContent = rem > 0 ? "あと " + rem + " 問" : "ラスト！";
+
+        document.getElementById("yr-q-text").innerHTML = q.q.replace(/\n/g, '<br>');
+        document.getElementById("yr-q-hint").textContent = q.hint;
+
+        var noteEl = document.getElementById("yr-q-note");
+        if (noteEl) {
+            noteEl.textContent = q.note || "";
+        }
+
+        var grid = document.getElementById("yr-answers-grid");
+        grid.innerHTML = "";
+        grid.style.animation = "none";
+        void grid.offsetHeight;
+        grid.style.animation = "";
+
+        for (var i = 0; i < q.a.length; i++) {
+            var btn = document.createElement("button");
+            btn.className = "yr-answer-btn";
+            btn.innerHTML = q.a[i].t.replace(/\n/g, '<br>');
+            btn.setAttribute("data-s", q.a[i].s);
+            btn.onclick = yrPick;
+            grid.appendChild(btn);
+        }
+
+        var backBtn = document.getElementById("yr-back-btn");
+        if (yrCQ === 0) {
+            backBtn.textContent = "← 最初の画面に戻る";
+        } else {
+            backBtn.textContent = "← ひとつ前の質問に戻る";
+        }
+
+        /* 設問ごとにベティの全身ポーズを切り替え */
+        var qb = document.getElementById("bb-q-betty");
+        if (qb && bbQBetty[yrCQ]) {
+            qb.src = bbQBetty[yrCQ];
+        }
+    }
+
+    function yrPick(e) {
+        var btn = e.currentTarget;
+        var key = btn.getAttribute("data-s");
+        var all = document.querySelectorAll(".yr-answer-btn");
+        for (var i = 0; i < all.length; i++) {
+            all[i].onclick = null;
+            all[i].style.pointerEvents = "none";
+        }
+        btn.classList.add("yr-selected");
+        btn.blur();
+
+        /* 回答した瞬間、隅のベティがぴょこんと跳ねる */
+        var corner = document.querySelector(".bb-slot-corner");
+        if (corner) {
+            corner.classList.remove("bb-hop");
+            void corner.offsetWidth;
+            corner.classList.add("bb-hop");
+        }
+        setTimeout(function() {
+            yrSC[key]++;
+            yrHistory.push(key);
+            if (yrCQ < yrQ.length - 1) {
+                yrCQ++;
+                yrDrawQ();
+            } else {
+                yrVT = bbJudge(yrSC);
+                yrShow("loading");
+                setTimeout(function() {
+                    yrDrawR(yrVT);
+                    yrShow("result");
+                    window.scrollTo(0, 0);
+                }, 2400);
+            }
+        }, 400);
+    }
+
+    function yrDrawR(tk) {
+        var t = bbT[tk];
+        yrVT = tk;
+
+        document.getElementById("bb-type-name").textContent = t.name;
+        document.getElementById("yr-result-headline").innerHTML = t.headline.replace(/\n/g, '<br>');
+        document.getElementById("yr-result-desc").textContent = t.desc;
+        document.getElementById("bb-kasane-text").textContent = t.kasane;
+        document.getElementById("yr-result-note").textContent = bbProduct.note;
+
+        /* ★タイプ別画像：URLが入っているタイプだけ、結果ヒーローの画像を差し替える。
+           Beyondのlazyloadに上書きされないよう data-src も同時に更新（Q1画像と同じ対策） */
+        var heroImg = document.querySelector("#yr-screen-result .bb-slot-result .bb-art");
+        if (heroImg && bbTypeImg[tk] && bbTypeImg[tk].indexOf("http") === 0) {
+            heroImg.src = bbTypeImg[tk];
+            heroImg.setAttribute("data-src", bbTypeImg[tk]);
+        }
+
+        var ctaText = "私の香りを受け取る";
+        var ctaBtn = document.getElementById("yr-cta-btn");
+        if (ctaBtn) {
+            ctaBtn.textContent = ctaText;
+            ctaBtn.onclick = function() {
+                if (bbCtaUrl && bbCtaUrl.indexOf("http") === 0) window.location.href = bbCtaUrl;
+            };
+        }
+        var ctaAbout = document.getElementById("yr-cta-btn-about");
+        if (ctaAbout) {
+            ctaAbout.textContent = ctaText;
+            ctaAbout.onclick = function() {
+                if (bbCtaUrl && bbCtaUrl.indexOf("http") === 0) window.location.href = bbCtaUrl;
+            };
+        }
+
+        var fc = document.getElementById("yr-femcare-text");
+        if (fc) {
+            fc.innerHTML =
+                'あなたの素肌と混ざり合い<span class="bb-mark">※1</span>、<br>' +
+                'ピーチムスクは“あなただけの香り”になる。<br><br>' +
+                'フェムゾーンも、全身も。<br>' +
+                '使うほどに、色気がにじみ出る<span class="bb-mark">※2</span>。' +
+                '<span class="bb-note">※1 角質層まで<br>※2 香りによるカバー</span>';
+        }
+
+        /* ピラミッド：香調確定後に bb-pending を外して有効化（テキストはbbProduct.top/mid/lastへ） */
+        if (bbProduct.top) {
+            document.getElementById("yrpsvg1-txt").textContent = bbProduct.top;
+            document.getElementById("yrpsvg2-txt").textContent = bbProduct.mid;
+            document.getElementById("yrpsvg3-txt").textContent = bbProduct.last;
+        }
+    }
+
+    function yrBind() {
+        var s = document.getElementById("yr-btn-start");
+        if (!s) return false;
+        s.onclick = function() {
+            yrShow("question");
+            yrDrawQ();
+        };
+        var r = document.getElementById("yr-retry-btn");
+        if (r) {
+            r.onclick = function() {
+                yrCQ = 0;
+                yrSC = {
+                    ama: 0,
+                    iro: 0,
+                    aso: 0,
+                    kaku: 0
+                };
+                yrHistory = [];
+                yrVT = null;
+                yrShow("intro");
+                window.scrollTo(0, 0);
+            };
+        }
+        var back = document.getElementById("yr-back-btn");
+        if (back) {
+            back.onclick = function() {
+                if (yrCQ > 0) {
+                    var prev = yrHistory.pop();
+                    yrSC[prev]--;
+                    yrCQ--;
+                    yrDrawQ();
+                } else {
+                    yrShow("intro");
+                    window.scrollTo(0, 0);
+                }
+            };
+        }
+        return true;
+    }
+
+    var yrN = 0,
+        yrTI = setInterval(function() {
+            yrN++;
+            if (yrBind() || yrN > 200) {
+                clearInterval(yrTI);
+            }
+        }, 50);
+</script><script>/* Inline shim: defines Array.prototype.values for legacy browsers (no external CDN). */
+
+(function(self, undefined) {Object.defineProperty(Array.prototype,"values",{value:Array.prototype[Symbol.iterator],enumerable:!1,writable:!1});})('object' === typeof window && window || 'object' === typeof self && self || 'object' === typeof global && global || {});</script><script>/*! URI.js v1.19.2 http://medialize.github.io/URI.js/ */
+/* build contains: IPv6.js, punycode.js, SecondLevelDomains.js, URI.js, URITemplate.js */
+(function(f,n){"object"===typeof module&&module.exports?module.exports=n():"function"===typeof define&&define.amd?define(n):f.IPv6=n(f)})(this,function(f){var n=f&&f.IPv6;return{best:function(h){h=h.toLowerCase().split(":");var k=h.length,b=8;""===h[0]&&""===h[1]&&""===h[2]?(h.shift(),h.shift()):""===h[0]&&""===h[1]?h.shift():""===h[k-1]&&""===h[k-2]&&h.pop();k=h.length;-1!==h[k-1].indexOf(".")&&(b=7);var q;for(q=0;q<k&&""!==h[q];q++);if(q<b)for(h.splice(q,1,"0000");h.length<b;)h.splice(q,0,"0000");
+for(q=0;q<b;q++){k=h[q].split("");for(var f=0;3>f;f++)if("0"===k[0]&&1<k.length)k.splice(0,1);else break;h[q]=k.join("")}k=-1;var n=f=0,g=-1,p=!1;for(q=0;q<b;q++)p?"0"===h[q]?n+=1:(p=!1,n>f&&(k=g,f=n)):"0"===h[q]&&(p=!0,g=q,n=1);n>f&&(k=g,f=n);1<f&&h.splice(k,f,"");k=h.length;b="";""===h[0]&&(b=":");for(q=0;q<k;q++){b+=h[q];if(q===k-1)break;b+=":"}""===h[k-1]&&(b+=":");return b},noConflict:function(){f.IPv6===this&&(f.IPv6=n);return this}}});
+(function(f){function n(b){throw new RangeError(w[b]);}function h(b,e){for(var g=b.length,h=[];g--;)h[g]=e(b[g]);return h}function k(b,e){var g=b.split("@"),f="";1<g.length&&(f=g[0]+"@",b=g[1]);b=b.replace(C,".");g=b.split(".");g=h(g,e).join(".");return f+g}function b(b){for(var e=[],g=0,h=b.length,f,a;g<h;)f=b.charCodeAt(g++),55296<=f&&56319>=f&&g<h?(a=b.charCodeAt(g++),56320==(a&64512)?e.push(((f&1023)<<10)+(a&1023)+65536):(e.push(f),g--)):e.push(f);return e}function q(b){return h(b,function(b){var e=
+"";65535<b&&(b-=65536,e+=t(b>>>10&1023|55296),b=56320|b&1023);return e+=t(b)}).join("")}function z(b,e){return b+22+75*(26>b)-((0!=e)<<5)}function u(b,g,h){var f=0;b=h?e(b/700):b>>1;for(b+=e(b/g);455<b;f+=36)b=e(b/35);return e(f+36*b/(b+38))}function g(b){var g=[],h=b.length,f=0,k=128,a=72,c,d;var l=b.lastIndexOf("-");0>l&&(l=0);for(c=0;c<l;++c)128<=b.charCodeAt(c)&&n("not-basic"),g.push(b.charCodeAt(c));for(l=0<l?l+1:0;l<h;){c=f;var m=1;for(d=36;;d+=36){l>=h&&n("invalid-input");var x=b.charCodeAt(l++);
+x=10>x-48?x-22:26>x-65?x-65:26>x-97?x-97:36;(36<=x||x>e((2147483647-f)/m))&&n("overflow");f+=x*m;var p=d<=a?1:d>=a+26?26:d-a;if(x<p)break;x=36-p;m>e(2147483647/x)&&n("overflow");m*=x}m=g.length+1;a=u(f-c,m,0==c);e(f/m)>2147483647-k&&n("overflow");k+=e(f/m);f%=m;g.splice(f++,0,k)}return q(g)}function p(g){var h,f,k,p=[];g=b(g);var a=g.length;var c=128;var d=0;var l=72;for(k=0;k<a;++k){var m=g[k];128>m&&p.push(t(m))}for((h=f=p.length)&&p.push("-");h<a;){var x=2147483647;for(k=0;k<a;++k)m=g[k],m>=c&&
+m<x&&(x=m);var q=h+1;x-c>e((2147483647-d)/q)&&n("overflow");d+=(x-c)*q;c=x;for(k=0;k<a;++k)if(m=g[k],m<c&&2147483647<++d&&n("overflow"),m==c){var r=d;for(x=36;;x+=36){m=x<=l?1:x>=l+26?26:x-l;if(r<m)break;var A=r-m;r=36-m;p.push(t(z(m+A%r,0)));r=e(A/r)}p.push(t(z(r,0)));l=u(d,q,h==f);d=0;++h}++d;++c}return p.join("")}var D="object"==typeof exports&&exports&&!exports.nodeType&&exports,A="object"==typeof module&&module&&!module.nodeType&&module,B="object"==typeof global&&global;if(B.global===B||B.window===
+B||B.self===B)f=B;var E=/^xn--/,r=/[^\x20-\x7E]/,C=/[\x2E\u3002\uFF0E\uFF61]/g,w={overflow:"Overflow: input needs wider integers to process","not-basic":"Illegal input >= 0x80 (not a basic code point)","invalid-input":"Invalid input"},e=Math.floor,t=String.fromCharCode,y;var v={version:"1.3.2",ucs2:{decode:b,encode:q},decode:g,encode:p,toASCII:function(b){return k(b,function(b){return r.test(b)?"xn--"+p(b):b})},toUnicode:function(b){return k(b,function(b){return E.test(b)?g(b.slice(4).toLowerCase()):
+b})}};if("function"==typeof define&&"object"==typeof define.amd&&define.amd)define("punycode",function(){return v});else if(D&&A)if(module.exports==D)A.exports=v;else for(y in v)v.hasOwnProperty(y)&&(D[y]=v[y]);else f.punycode=v})(this);
+(function(f,n){"object"===typeof module&&module.exports?module.exports=n():"function"===typeof define&&define.amd?define(n):f.SecondLevelDomains=n(f)})(this,function(f){var n=f&&f.SecondLevelDomains,h={list:{ac:" com gov mil net org ",ae:" ac co gov mil name net org pro sch ",af:" com edu gov net org ",al:" com edu gov mil net org ",ao:" co ed gv it og pb ",ar:" com edu gob gov int mil net org tur ",at:" ac co gv or ",au:" asn com csiro edu gov id net org ",ba:" co com edu gov mil net org rs unbi unmo unsa untz unze ",
+bb:" biz co com edu gov info net org store tv ",bh:" biz cc com edu gov info net org ",bn:" com edu gov net org ",bo:" com edu gob gov int mil net org tv ",br:" adm adv agr am arq art ato b bio blog bmd cim cng cnt com coop ecn edu eng esp etc eti far flog fm fnd fot fst g12 ggf gov imb ind inf jor jus lel mat med mil mus net nom not ntr odo org ppg pro psc psi qsl rec slg srv tmp trd tur tv vet vlog wiki zlg ",bs:" com edu gov net org ",bz:" du et om ov rg ",ca:" ab bc mb nb nf nl ns nt nu on pe qc sk yk ",
+ck:" biz co edu gen gov info net org ",cn:" ac ah bj com cq edu fj gd gov gs gx gz ha hb he hi hl hn jl js jx ln mil net nm nx org qh sc sd sh sn sx tj tw xj xz yn zj ",co:" com edu gov mil net nom org ",cr:" ac c co ed fi go or sa ",cy:" ac biz com ekloges gov ltd name net org parliament press pro tm ","do":" art com edu gob gov mil net org sld web ",dz:" art asso com edu gov net org pol ",ec:" com edu fin gov info med mil net org pro ",eg:" com edu eun gov mil name net org sci ",er:" com edu gov ind mil net org rochest w ",
+es:" com edu gob nom org ",et:" biz com edu gov info name net org ",fj:" ac biz com info mil name net org pro ",fk:" ac co gov net nom org ",fr:" asso com f gouv nom prd presse tm ",gg:" co net org ",gh:" com edu gov mil org ",gn:" ac com gov net org ",gr:" com edu gov mil net org ",gt:" com edu gob ind mil net org ",gu:" com edu gov net org ",hk:" com edu gov idv net org ",hu:" 2000 agrar bolt casino city co erotica erotika film forum games hotel info ingatlan jogasz konyvelo lakas media news org priv reklam sex shop sport suli szex tm tozsde utazas video ",
+id:" ac co go mil net or sch web ",il:" ac co gov idf k12 muni net org ","in":" ac co edu ernet firm gen gov i ind mil net nic org res ",iq:" com edu gov i mil net org ",ir:" ac co dnssec gov i id net org sch ",it:" edu gov ",je:" co net org ",jo:" com edu gov mil name net org sch ",jp:" ac ad co ed go gr lg ne or ",ke:" ac co go info me mobi ne or sc ",kh:" com edu gov mil net org per ",ki:" biz com de edu gov info mob net org tel ",km:" asso com coop edu gouv k medecin mil nom notaires pharmaciens presse tm veterinaire ",
+kn:" edu gov net org ",kr:" ac busan chungbuk chungnam co daegu daejeon es gangwon go gwangju gyeongbuk gyeonggi gyeongnam hs incheon jeju jeonbuk jeonnam k kg mil ms ne or pe re sc seoul ulsan ",kw:" com edu gov net org ",ky:" com edu gov net org ",kz:" com edu gov mil net org ",lb:" com edu gov net org ",lk:" assn com edu gov grp hotel int ltd net ngo org sch soc web ",lr:" com edu gov net org ",lv:" asn com conf edu gov id mil net org ",ly:" com edu gov id med net org plc sch ",ma:" ac co gov m net org press ",
+mc:" asso tm ",me:" ac co edu gov its net org priv ",mg:" com edu gov mil nom org prd tm ",mk:" com edu gov inf name net org pro ",ml:" com edu gov net org presse ",mn:" edu gov org ",mo:" com edu gov net org ",mt:" com edu gov net org ",mv:" aero biz com coop edu gov info int mil museum name net org pro ",mw:" ac co com coop edu gov int museum net org ",mx:" com edu gob net org ",my:" com edu gov mil name net org sch ",nf:" arts com firm info net other per rec store web ",ng:" biz com edu gov mil mobi name net org sch ",
+ni:" ac co com edu gob mil net nom org ",np:" com edu gov mil net org ",nr:" biz com edu gov info net org ",om:" ac biz co com edu gov med mil museum net org pro sch ",pe:" com edu gob mil net nom org sld ",ph:" com edu gov i mil net ngo org ",pk:" biz com edu fam gob gok gon gop gos gov net org web ",pl:" art bialystok biz com edu gda gdansk gorzow gov info katowice krakow lodz lublin mil net ngo olsztyn org poznan pwr radom slupsk szczecin torun warszawa waw wroc wroclaw zgora ",pr:" ac biz com edu est gov info isla name net org pro prof ",
+ps:" com edu gov net org plo sec ",pw:" belau co ed go ne or ",ro:" arts com firm info nom nt org rec store tm www ",rs:" ac co edu gov in org ",sb:" com edu gov net org ",sc:" com edu gov net org ",sh:" co com edu gov net nom org ",sl:" com edu gov net org ",st:" co com consulado edu embaixada gov mil net org principe saotome store ",sv:" com edu gob org red ",sz:" ac co org ",tr:" av bbs bel biz com dr edu gen gov info k12 name net org pol tel tsk tv web ",tt:" aero biz cat co com coop edu gov info int jobs mil mobi museum name net org pro tel travel ",
+tw:" club com ebiz edu game gov idv mil net org ",mu:" ac co com gov net or org ",mz:" ac co edu gov org ",na:" co com ",nz:" ac co cri geek gen govt health iwi maori mil net org parliament school ",pa:" abo ac com edu gob ing med net nom org sld ",pt:" com edu gov int net nome org publ ",py:" com edu gov mil net org ",qa:" com edu gov mil net org ",re:" asso com nom ",ru:" ac adygeya altai amur arkhangelsk astrakhan bashkiria belgorod bir bryansk buryatia cbg chel chelyabinsk chita chukotka chuvashia com dagestan e-burg edu gov grozny int irkutsk ivanovo izhevsk jar joshkar-ola kalmykia kaluga kamchatka karelia kazan kchr kemerovo khabarovsk khakassia khv kirov koenig komi kostroma kranoyarsk kuban kurgan kursk lipetsk magadan mari mari-el marine mil mordovia mosreg msk murmansk nalchik net nnov nov novosibirsk nsk omsk orenburg org oryol penza perm pp pskov ptz rnd ryazan sakhalin samara saratov simbirsk smolensk spb stavropol stv surgut tambov tatarstan tom tomsk tsaritsyn tsk tula tuva tver tyumen udm udmurtia ulan-ude vladikavkaz vladimir vladivostok volgograd vologda voronezh vrn vyatka yakutia yamal yekaterinburg yuzhno-sakhalinsk ",
+rw:" ac co com edu gouv gov int mil net ",sa:" com edu gov med net org pub sch ",sd:" com edu gov info med net org tv ",se:" a ac b bd c d e f g h i k l m n o org p parti pp press r s t tm u w x y z ",sg:" com edu gov idn net org per ",sn:" art com edu gouv org perso univ ",sy:" com edu gov mil net news org ",th:" ac co go in mi net or ",tj:" ac biz co com edu go gov info int mil name net nic org test web ",tn:" agrinet com defense edunet ens fin gov ind info intl mincom nat net org perso rnrt rns rnu tourism ",
+tz:" ac co go ne or ",ua:" biz cherkassy chernigov chernovtsy ck cn co com crimea cv dn dnepropetrovsk donetsk dp edu gov if in ivano-frankivsk kh kharkov kherson khmelnitskiy kiev kirovograd km kr ks kv lg lugansk lutsk lviv me mk net nikolaev od odessa org pl poltava pp rovno rv sebastopol sumy te ternopil uzhgorod vinnica vn zaporizhzhe zhitomir zp zt ",ug:" ac co go ne or org sc ",uk:" ac bl british-library co cym gov govt icnet jet lea ltd me mil mod national-library-scotland nel net nhs nic nls org orgn parliament plc police sch scot soc ",
+us:" dni fed isa kids nsn ",uy:" com edu gub mil net org ",ve:" co com edu gob info mil net org web ",vi:" co com k12 net org ",vn:" ac biz com edu gov health info int name net org pro ",ye:" co com gov ltd me net org plc ",yu:" ac co edu gov org ",za:" ac agric alt bourse city co cybernet db edu gov grondar iaccess imt inca landesign law mil net ngo nis nom olivetti org pix school tm web ",zm:" ac co com edu gov net org sch ",com:"ar br cn de eu gb gr hu jpn kr no qc ru sa se uk us uy za ",net:"gb jp se uk ",
+org:"ae",de:"com "},has:function(f){var b=f.lastIndexOf(".");if(0>=b||b>=f.length-1)return!1;var k=f.lastIndexOf(".",b-1);if(0>=k||k>=b-1)return!1;var n=h.list[f.slice(b+1)];return n?0<=n.indexOf(" "+f.slice(k+1,b)+" "):!1},is:function(f){var b=f.lastIndexOf(".");if(0>=b||b>=f.length-1||0<=f.lastIndexOf(".",b-1))return!1;var k=h.list[f.slice(b+1)];return k?0<=k.indexOf(" "+f.slice(0,b)+" "):!1},get:function(f){var b=f.lastIndexOf(".");if(0>=b||b>=f.length-1)return null;var k=f.lastIndexOf(".",b-1);
+if(0>=k||k>=b-1)return null;var n=h.list[f.slice(b+1)];return!n||0>n.indexOf(" "+f.slice(k+1,b)+" ")?null:f.slice(k+1)},noConflict:function(){f.SecondLevelDomains===this&&(f.SecondLevelDomains=n);return this}};return h});
+(function(f,n){"object"===typeof module&&module.exports?module.exports=n(require("./punycode"),require("./IPv6"),require("./SecondLevelDomains")):"function"===typeof define&&define.amd?define(["./punycode","./IPv6","./SecondLevelDomains"],n):f.URI=n(f.punycode,f.IPv6,f.SecondLevelDomains,f)})(this,function(f,n,h,k){function b(a,c){var d=1<=arguments.length,l=2<=arguments.length;if(!(this instanceof b))return d?l?new b(a,c):new b(a):new b;if(void 0===a){if(d)throw new TypeError("undefined is not a valid argument for URI");
+a="undefined"!==typeof location?location.href+"":""}if(null===a&&d)throw new TypeError("null is not a valid argument for URI");this.href(a);return void 0!==c?this.absoluteTo(c):this}function q(a){return a.replace(/([.*+?^=!:${}()|[\]\/\\])/g,"\\$1")}function z(a){return void 0===a?"Undefined":String(Object.prototype.toString.call(a)).slice(8,-1)}function u(a){return"Array"===z(a)}function g(a,c){var d={},b;if("RegExp"===z(c))d=null;else if(u(c)){var m=0;for(b=c.length;m<b;m++)d[c[m]]=!0}else d[c]=
+!0;m=0;for(b=a.length;m<b;m++)if(d&&void 0!==d[a[m]]||!d&&c.test(a[m]))a.splice(m,1),b--,m--;return a}function p(a,c){var d;if(u(c)){var b=0;for(d=c.length;b<d;b++)if(!p(a,c[b]))return!1;return!0}var m=z(c);b=0;for(d=a.length;b<d;b++)if("RegExp"===m){if("string"===typeof a[b]&&a[b].match(c))return!0}else if(a[b]===c)return!0;return!1}function D(a,c){if(!u(a)||!u(c)||a.length!==c.length)return!1;a.sort();c.sort();for(var d=0,b=a.length;d<b;d++)if(a[d]!==c[d])return!1;return!0}function A(a){return a.replace(/^\/+|\/+$/g,
+"")}function B(a){return escape(a)}function E(a){return encodeURIComponent(a).replace(/[!'()*]/g,B).replace(/\*/g,"%2A")}function r(a){return function(c,d){if(void 0===c)return this._parts[a]||"";this._parts[a]=c||null;this.build(!d);return this}}function C(a,c){return function(d,b){if(void 0===d)return this._parts[a]||"";null!==d&&(d+="",d.charAt(0)===c&&(d=d.substring(1)));this._parts[a]=d;this.build(!b);return this}}var w=k&&k.URI;b.version="1.19.2";var e=b.prototype,t=Object.prototype.hasOwnProperty;
+b._parts=function(){return{protocol:null,username:null,password:null,hostname:null,urn:null,port:null,path:null,query:null,fragment:null,preventInvalidHostname:b.preventInvalidHostname,duplicateQueryParameters:b.duplicateQueryParameters,escapeQuerySpace:b.escapeQuerySpace}};b.preventInvalidHostname=!1;b.duplicateQueryParameters=!1;b.escapeQuerySpace=!0;b.protocol_expression=/^[a-z][a-z0-9.+-]*$/i;b.idn_expression=/[^a-z0-9\._-]/i;b.punycode_expression=/(xn--)/i;b.ip4_expression=/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
+b.ip6_expression=/^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/;
+b.find_uri_expression=/\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?\u00ab\u00bb\u201c\u201d\u2018\u2019]))/ig;b.findUri={start:/\b(?:([a-z][a-z0-9.+-]*:\/\/)|www\.)/gi,end:/[\s\r\n]|$/,trim:/[`!()\[\]{};:'".,<>?\u00ab\u00bb\u201c\u201d\u201e\u2018\u2019]+$/,parens:/(\([^\)]*\)|\[[^\]]*\]|\{[^}]*\}|<[^>]*>)/g};b.defaultPorts={http:"80",https:"443",ftp:"21",
+gopher:"70",ws:"80",wss:"443"};b.hostProtocols=["http","https"];b.invalid_hostname_characters=/[^a-zA-Z0-9\.\-:_]/;b.domAttributes={a:"href",blockquote:"cite",link:"href",base:"href",script:"src",form:"action",img:"src",area:"href",iframe:"src",embed:"src",source:"src",track:"src",input:"src",audio:"src",video:"src"};b.getDomAttribute=function(a){if(a&&a.nodeName){var c=a.nodeName.toLowerCase();if("input"!==c||"image"===a.type)return b.domAttributes[c]}};b.encode=E;b.decode=decodeURIComponent;b.iso8859=
+function(){b.encode=escape;b.decode=unescape};b.unicode=function(){b.encode=E;b.decode=decodeURIComponent};b.characters={pathname:{encode:{expression:/%(24|26|2B|2C|3B|3D|3A|40)/ig,map:{"%24":"$","%26":"&","%2B":"+","%2C":",","%3B":";","%3D":"=","%3A":":","%40":"@"}},decode:{expression:/[\/\?#]/g,map:{"/":"%2F","?":"%3F","#":"%23"}}},reserved:{encode:{expression:/%(21|23|24|26|27|28|29|2A|2B|2C|2F|3A|3B|3D|3F|40|5B|5D)/ig,map:{"%3A":":","%2F":"/","%3F":"?","%23":"#","%5B":"[","%5D":"]","%40":"@",
+"%21":"!","%24":"$","%26":"&","%27":"'","%28":"(","%29":")","%2A":"*","%2B":"+","%2C":",","%3B":";","%3D":"="}}},urnpath:{encode:{expression:/%(21|24|27|28|29|2A|2B|2C|3B|3D|40)/ig,map:{"%21":"!","%24":"$","%27":"'","%28":"(","%29":")","%2A":"*","%2B":"+","%2C":",","%3B":";","%3D":"=","%40":"@"}},decode:{expression:/[\/\?#:]/g,map:{"/":"%2F","?":"%3F","#":"%23",":":"%3A"}}}};b.encodeQuery=function(a,c){var d=b.encode(a+"");void 0===c&&(c=b.escapeQuerySpace);return c?d.replace(/%20/g,"+"):d};b.decodeQuery=
+function(a,c){a+="";void 0===c&&(c=b.escapeQuerySpace);try{return b.decode(c?a.replace(/\+/g,"%20"):a)}catch(d){return a}};var y={encode:"encode",decode:"decode"},v,F=function(a,c){return function(d){try{return b[c](d+"").replace(b.characters[a][c].expression,function(d){return b.characters[a][c].map[d]})}catch(l){return d}}};for(v in y)b[v+"PathSegment"]=F("pathname",y[v]),b[v+"UrnPathSegment"]=F("urnpath",y[v]);y=function(a,c,d){return function(l){var m=d?function(a){return b[c](b[d](a))}:b[c];
+l=(l+"").split(a);for(var e=0,g=l.length;e<g;e++)l[e]=m(l[e]);return l.join(a)}};b.decodePath=y("/","decodePathSegment");b.decodeUrnPath=y(":","decodeUrnPathSegment");b.recodePath=y("/","encodePathSegment","decode");b.recodeUrnPath=y(":","encodeUrnPathSegment","decode");b.encodeReserved=F("reserved","encode");b.parse=function(a,c){c||(c={preventInvalidHostname:b.preventInvalidHostname});var d=a.indexOf("#");-1<d&&(c.fragment=a.substring(d+1)||null,a=a.substring(0,d));d=a.indexOf("?");-1<d&&(c.query=
+a.substring(d+1)||null,a=a.substring(0,d));"//"===a.substring(0,2)?(c.protocol=null,a=a.substring(2),a=b.parseAuthority(a,c)):(d=a.indexOf(":"),-1<d&&(c.protocol=a.substring(0,d)||null,c.protocol&&!c.protocol.match(b.protocol_expression)?c.protocol=void 0:"//"===a.substring(d+1,d+3)?(a=a.substring(d+3),a=b.parseAuthority(a,c)):(a=a.substring(d+1),c.urn=!0)));c.path=a;return c};b.parseHost=function(a,c){a||(a="");a=a.replace(/\\/g,"/");var d=a.indexOf("/");-1===d&&(d=a.length);if("["===a.charAt(0)){var l=
+a.indexOf("]");c.hostname=a.substring(1,l)||null;c.port=a.substring(l+2,d)||null;"/"===c.port&&(c.port=null)}else{var m=a.indexOf(":");l=a.indexOf("/");m=a.indexOf(":",m+1);-1!==m&&(-1===l||m<l)?(c.hostname=a.substring(0,d)||null,c.port=null):(l=a.substring(0,d).split(":"),c.hostname=l[0]||null,c.port=l[1]||null)}c.hostname&&"/"!==a.substring(d).charAt(0)&&(d++,a="/"+a);c.preventInvalidHostname&&b.ensureValidHostname(c.hostname,c.protocol);c.port&&b.ensureValidPort(c.port);return a.substring(d)||
+"/"};b.parseAuthority=function(a,c){a=b.parseUserinfo(a,c);return b.parseHost(a,c)};b.parseUserinfo=function(a,c){var d=a.indexOf("/"),l=a.lastIndexOf("@",-1<d?d:a.length-1);-1<l&&(-1===d||l<d)?(d=a.substring(0,l).split(":"),c.username=d[0]?b.decode(d[0]):null,d.shift(),c.password=d[0]?b.decode(d.join(":")):null,a=a.substring(l+1)):(c.username=null,c.password=null);return a};b.parseQuery=function(a,c){if(!a)return{};a=a.replace(/&+/g,"&").replace(/^\?*&*|&+$/g,"");if(!a)return{};for(var d={},l=a.split("&"),
+m=l.length,e,g,f=0;f<m;f++)if(e=l[f].split("="),g=b.decodeQuery(e.shift(),c),e=e.length?b.decodeQuery(e.join("="),c):null,t.call(d,g)){if("string"===typeof d[g]||null===d[g])d[g]=[d[g]];d[g].push(e)}else d[g]=e;return d};b.build=function(a){var c="",d=!1;a.protocol&&(c+=a.protocol+":");a.urn||!c&&!a.hostname||(c+="//",d=!0);c+=b.buildAuthority(a)||"";"string"===typeof a.path&&("/"!==a.path.charAt(0)&&d&&(c+="/"),c+=a.path);"string"===typeof a.query&&a.query&&(c+="?"+a.query);"string"===typeof a.fragment&&
+a.fragment&&(c+="#"+a.fragment);return c};b.buildHost=function(a){var c="";if(a.hostname)c=b.ip6_expression.test(a.hostname)?c+("["+a.hostname+"]"):c+a.hostname;else return"";a.port&&(c+=":"+a.port);return c};b.buildAuthority=function(a){return b.buildUserinfo(a)+b.buildHost(a)};b.buildUserinfo=function(a){var c="";a.username&&(c+=b.encode(a.username));a.password&&(c+=":"+b.encode(a.password));c&&(c+="@");return c};b.buildQuery=function(a,c,d){var l="",m,e;for(m in a)if(t.call(a,m))if(u(a[m])){var g=
+{};var f=0;for(e=a[m].length;f<e;f++)void 0!==a[m][f]&&void 0===g[a[m][f]+""]&&(l+="&"+b.buildQueryParameter(m,a[m][f],d),!0!==c&&(g[a[m][f]+""]=!0))}else void 0!==a[m]&&(l+="&"+b.buildQueryParameter(m,a[m],d));return l.substring(1)};b.buildQueryParameter=function(a,c,d){return b.encodeQuery(a,d)+(null!==c?"="+b.encodeQuery(c,d):"")};b.addQuery=function(a,c,d){if("object"===typeof c)for(var l in c)t.call(c,l)&&b.addQuery(a,l,c[l]);else if("string"===typeof c)void 0===a[c]?a[c]=d:("string"===typeof a[c]&&
+(a[c]=[a[c]]),u(d)||(d=[d]),a[c]=(a[c]||[]).concat(d));else throw new TypeError("URI.addQuery() accepts an object, string as the name parameter");};b.setQuery=function(a,c,d){if("object"===typeof c)for(var l in c)t.call(c,l)&&b.setQuery(a,l,c[l]);else if("string"===typeof c)a[c]=void 0===d?null:d;else throw new TypeError("URI.setQuery() accepts an object, string as the name parameter");};b.removeQuery=function(a,c,d){var l;if(u(c))for(d=0,l=c.length;d<l;d++)a[c[d]]=void 0;else if("RegExp"===z(c))for(l in a)c.test(l)&&
+(a[l]=void 0);else if("object"===typeof c)for(l in c)t.call(c,l)&&b.removeQuery(a,l,c[l]);else if("string"===typeof c)void 0!==d?"RegExp"===z(d)?!u(a[c])&&d.test(a[c])?a[c]=void 0:a[c]=g(a[c],d):a[c]!==String(d)||u(d)&&1!==d.length?u(a[c])&&(a[c]=g(a[c],d)):a[c]=void 0:a[c]=void 0;else throw new TypeError("URI.removeQuery() accepts an object, string, RegExp as the first parameter");};b.hasQuery=function(a,c,d,l){switch(z(c)){case "String":break;case "RegExp":for(var m in a)if(t.call(a,m)&&c.test(m)&&
+(void 0===d||b.hasQuery(a,m,d)))return!0;return!1;case "Object":for(var e in c)if(t.call(c,e)&&!b.hasQuery(a,e,c[e]))return!1;return!0;default:throw new TypeError("URI.hasQuery() accepts a string, regular expression or object as the name parameter");}switch(z(d)){case "Undefined":return c in a;case "Boolean":return a=!(u(a[c])?!a[c].length:!a[c]),d===a;case "Function":return!!d(a[c],c,a);case "Array":return u(a[c])?(l?p:D)(a[c],d):!1;case "RegExp":return u(a[c])?l?p(a[c],d):!1:!(!a[c]||!a[c].match(d));
+case "Number":d=String(d);case "String":return u(a[c])?l?p(a[c],d):!1:a[c]===d;default:throw new TypeError("URI.hasQuery() accepts undefined, boolean, string, number, RegExp, Function as the value parameter");}};b.joinPaths=function(){for(var a=[],c=[],d=0,l=0;l<arguments.length;l++){var m=new b(arguments[l]);a.push(m);m=m.segment();for(var e=0;e<m.length;e++)"string"===typeof m[e]&&c.push(m[e]),m[e]&&d++}if(!c.length||!d)return new b("");c=(new b("")).segment(c);""!==a[0].path()&&"/"!==a[0].path().slice(0,
+1)||c.path("/"+c.path());return c.normalize()};b.commonPath=function(a,c){var d=Math.min(a.length,c.length),b;for(b=0;b<d;b++)if(a.charAt(b)!==c.charAt(b)){b--;break}if(1>b)return a.charAt(0)===c.charAt(0)&&"/"===a.charAt(0)?"/":"";if("/"!==a.charAt(b)||"/"!==c.charAt(b))b=a.substring(0,b).lastIndexOf("/");return a.substring(0,b+1)};b.withinString=function(a,c,d){d||(d={});var l=d.start||b.findUri.start,e=d.end||b.findUri.end,g=d.trim||b.findUri.trim,f=d.parens||b.findUri.parens,h=/[a-z0-9-]=["']?$/i;
+for(l.lastIndex=0;;){var k=l.exec(a);if(!k)break;var p=k.index;if(d.ignoreHtml){var n=a.slice(Math.max(p-3,0),p);if(n&&h.test(n))continue}var r=p+a.slice(p).search(e);n=a.slice(p,r);for(r=-1;;){var q=f.exec(n);if(!q)break;r=Math.max(r,q.index+q[0].length)}n=-1<r?n.slice(0,r)+n.slice(r).replace(g,""):n.replace(g,"");n.length<=k[0].length||d.ignore&&d.ignore.test(n)||(r=p+n.length,k=c(n,p,r,a),void 0===k?l.lastIndex=r:(k=String(k),a=a.slice(0,p)+k+a.slice(r),l.lastIndex=p+k.length))}l.lastIndex=0;return a};
+b.ensureValidHostname=function(a,c){var d=!!a,l=!1;c&&(l=p(b.hostProtocols,c));if(l&&!d)throw new TypeError("Hostname cannot be empty, if protocol is "+c);if(a&&a.match(b.invalid_hostname_characters)){if(!f)throw new TypeError('Hostname "'+a+'" contains characters other than [A-Z0-9.-:_] and Punycode.js is not available');if(f.toASCII(a).match(b.invalid_hostname_characters))throw new TypeError('Hostname "'+a+'" contains characters other than [A-Z0-9.-:_]');}};b.ensureValidPort=function(a){if(a){var c=
+Number(a);if(!(/^[0-9]+$/.test(c)&&0<c&&65536>c))throw new TypeError('Port "'+a+'" is not a valid port');}};b.noConflict=function(a){if(a)return a={URI:this.noConflict()},k.URITemplate&&"function"===typeof k.URITemplate.noConflict&&(a.URITemplate=k.URITemplate.noConflict()),k.IPv6&&"function"===typeof k.IPv6.noConflict&&(a.IPv6=k.IPv6.noConflict()),k.SecondLevelDomains&&"function"===typeof k.SecondLevelDomains.noConflict&&(a.SecondLevelDomains=k.SecondLevelDomains.noConflict()),a;k.URI===this&&(k.URI=
+w);return this};e.build=function(a){if(!0===a)this._deferred_build=!0;else if(void 0===a||this._deferred_build)this._string=b.build(this._parts),this._deferred_build=!1;return this};e.clone=function(){return new b(this)};e.valueOf=e.toString=function(){return this.build(!1)._string};e.protocol=r("protocol");e.username=r("username");e.password=r("password");e.hostname=r("hostname");e.port=r("port");e.query=C("query","?");e.fragment=C("fragment","#");e.search=function(a,c){var b=this.query(a,c);return"string"===
+typeof b&&b.length?"?"+b:b};e.hash=function(a,c){var b=this.fragment(a,c);return"string"===typeof b&&b.length?"#"+b:b};e.pathname=function(a,c){if(void 0===a||!0===a){var d=this._parts.path||(this._parts.hostname?"/":"");return a?(this._parts.urn?b.decodeUrnPath:b.decodePath)(d):d}this._parts.path=this._parts.urn?a?b.recodeUrnPath(a):"":a?b.recodePath(a):"/";this.build(!c);return this};e.path=e.pathname;e.href=function(a,c){var d;if(void 0===a)return this.toString();this._string="";this._parts=b._parts();
+var l=a instanceof b,e="object"===typeof a&&(a.hostname||a.path||a.pathname);a.nodeName&&(e=b.getDomAttribute(a),a=a[e]||"",e=!1);!l&&e&&void 0!==a.pathname&&(a=a.toString());if("string"===typeof a||a instanceof String)this._parts=b.parse(String(a),this._parts);else if(l||e){l=l?a._parts:a;for(d in l)"query"!==d&&t.call(this._parts,d)&&(this._parts[d]=l[d]);l.query&&this.query(l.query,!1)}else throw new TypeError("invalid input");this.build(!c);return this};e.is=function(a){var c=!1,d=!1,e=!1,m=!1,
+g=!1,f=!1,k=!1,p=!this._parts.urn;this._parts.hostname&&(p=!1,d=b.ip4_expression.test(this._parts.hostname),e=b.ip6_expression.test(this._parts.hostname),c=d||e,g=(m=!c)&&h&&h.has(this._parts.hostname),f=m&&b.idn_expression.test(this._parts.hostname),k=m&&b.punycode_expression.test(this._parts.hostname));switch(a.toLowerCase()){case "relative":return p;case "absolute":return!p;case "domain":case "name":return m;case "sld":return g;case "ip":return c;case "ip4":case "ipv4":case "inet4":return d;case "ip6":case "ipv6":case "inet6":return e;
+case "idn":return f;case "url":return!this._parts.urn;case "urn":return!!this._parts.urn;case "punycode":return k}return null};var G=e.protocol,H=e.port,I=e.hostname;e.protocol=function(a,c){if(a&&(a=a.replace(/:(\/\/)?$/,""),!a.match(b.protocol_expression)))throw new TypeError('Protocol "'+a+"\" contains characters other than [A-Z0-9.+-] or doesn't start with [A-Z]");return G.call(this,a,c)};e.scheme=e.protocol;e.port=function(a,c){if(this._parts.urn)return void 0===a?"":this;void 0!==a&&(0===a&&
+(a=null),a&&(a+="",":"===a.charAt(0)&&(a=a.substring(1)),b.ensureValidPort(a)));return H.call(this,a,c)};e.hostname=function(a,c){if(this._parts.urn)return void 0===a?"":this;if(void 0!==a){var d={preventInvalidHostname:this._parts.preventInvalidHostname};if("/"!==b.parseHost(a,d))throw new TypeError('Hostname "'+a+'" contains characters other than [A-Z0-9.-]');a=d.hostname;this._parts.preventInvalidHostname&&b.ensureValidHostname(a,this._parts.protocol)}return I.call(this,a,c)};e.origin=function(a,
+c){if(this._parts.urn)return void 0===a?"":this;if(void 0===a){var d=this.protocol();return this.authority()?(d?d+"://":"")+this.authority():""}d=b(a);this.protocol(d.protocol()).authority(d.authority()).build(!c);return this};e.host=function(a,c){if(this._parts.urn)return void 0===a?"":this;if(void 0===a)return this._parts.hostname?b.buildHost(this._parts):"";if("/"!==b.parseHost(a,this._parts))throw new TypeError('Hostname "'+a+'" contains characters other than [A-Z0-9.-]');this.build(!c);return this};
+e.authority=function(a,c){if(this._parts.urn)return void 0===a?"":this;if(void 0===a)return this._parts.hostname?b.buildAuthority(this._parts):"";if("/"!==b.parseAuthority(a,this._parts))throw new TypeError('Hostname "'+a+'" contains characters other than [A-Z0-9.-]');this.build(!c);return this};e.userinfo=function(a,c){if(this._parts.urn)return void 0===a?"":this;if(void 0===a){var d=b.buildUserinfo(this._parts);return d?d.substring(0,d.length-1):d}"@"!==a[a.length-1]&&(a+="@");b.parseUserinfo(a,
+this._parts);this.build(!c);return this};e.resource=function(a,c){if(void 0===a)return this.path()+this.search()+this.hash();var d=b.parse(a);this._parts.path=d.path;this._parts.query=d.query;this._parts.fragment=d.fragment;this.build(!c);return this};e.subdomain=function(a,c){if(this._parts.urn)return void 0===a?"":this;if(void 0===a){if(!this._parts.hostname||this.is("IP"))return"";var d=this._parts.hostname.length-this.domain().length-1;return this._parts.hostname.substring(0,d)||""}d=this._parts.hostname.length-
+this.domain().length;d=this._parts.hostname.substring(0,d);d=new RegExp("^"+q(d));a&&"."!==a.charAt(a.length-1)&&(a+=".");if(-1!==a.indexOf(":"))throw new TypeError("Domains cannot contain colons");a&&b.ensureValidHostname(a,this._parts.protocol);this._parts.hostname=this._parts.hostname.replace(d,a);this.build(!c);return this};e.domain=function(a,c){if(this._parts.urn)return void 0===a?"":this;"boolean"===typeof a&&(c=a,a=void 0);if(void 0===a){if(!this._parts.hostname||this.is("IP"))return"";var d=
+this._parts.hostname.match(/\./g);if(d&&2>d.length)return this._parts.hostname;d=this._parts.hostname.length-this.tld(c).length-1;d=this._parts.hostname.lastIndexOf(".",d-1)+1;return this._parts.hostname.substring(d)||""}if(!a)throw new TypeError("cannot set domain empty");if(-1!==a.indexOf(":"))throw new TypeError("Domains cannot contain colons");b.ensureValidHostname(a,this._parts.protocol);!this._parts.hostname||this.is("IP")?this._parts.hostname=a:(d=new RegExp(q(this.domain())+"$"),this._parts.hostname=
+this._parts.hostname.replace(d,a));this.build(!c);return this};e.tld=function(a,c){if(this._parts.urn)return void 0===a?"":this;"boolean"===typeof a&&(c=a,a=void 0);if(void 0===a){if(!this._parts.hostname||this.is("IP"))return"";var b=this._parts.hostname.lastIndexOf(".");b=this._parts.hostname.substring(b+1);return!0!==c&&h&&h.list[b.toLowerCase()]?h.get(this._parts.hostname)||b:b}if(a)if(a.match(/[^a-zA-Z0-9-]/))if(h&&h.is(a))b=new RegExp(q(this.tld())+"$"),this._parts.hostname=this._parts.hostname.replace(b,
+a);else throw new TypeError('TLD "'+a+'" contains characters other than [A-Z0-9]');else{if(!this._parts.hostname||this.is("IP"))throw new ReferenceError("cannot set TLD on non-domain host");b=new RegExp(q(this.tld())+"$");this._parts.hostname=this._parts.hostname.replace(b,a)}else throw new TypeError("cannot set TLD empty");this.build(!c);return this};e.directory=function(a,c){if(this._parts.urn)return void 0===a?"":this;if(void 0===a||!0===a){if(!this._parts.path&&!this._parts.hostname)return"";
+if("/"===this._parts.path)return"/";var d=this._parts.path.length-this.filename().length-1;d=this._parts.path.substring(0,d)||(this._parts.hostname?"/":"");return a?b.decodePath(d):d}d=this._parts.path.length-this.filename().length;d=this._parts.path.substring(0,d);d=new RegExp("^"+q(d));this.is("relative")||(a||(a="/"),"/"!==a.charAt(0)&&(a="/"+a));a&&"/"!==a.charAt(a.length-1)&&(a+="/");a=b.recodePath(a);this._parts.path=this._parts.path.replace(d,a);this.build(!c);return this};e.filename=function(a,
+c){if(this._parts.urn)return void 0===a?"":this;if("string"!==typeof a){if(!this._parts.path||"/"===this._parts.path)return"";var d=this._parts.path.lastIndexOf("/");d=this._parts.path.substring(d+1);return a?b.decodePathSegment(d):d}d=!1;"/"===a.charAt(0)&&(a=a.substring(1));a.match(/\.?\//)&&(d=!0);var e=new RegExp(q(this.filename())+"$");a=b.recodePath(a);this._parts.path=this._parts.path.replace(e,a);d?this.normalizePath(c):this.build(!c);return this};e.suffix=function(a,c){if(this._parts.urn)return void 0===
+a?"":this;if(void 0===a||!0===a){if(!this._parts.path||"/"===this._parts.path)return"";var d=this.filename(),e=d.lastIndexOf(".");if(-1===e)return"";d=d.substring(e+1);d=/^[a-z0-9%]+$/i.test(d)?d:"";return a?b.decodePathSegment(d):d}"."===a.charAt(0)&&(a=a.substring(1));if(d=this.suffix())e=a?new RegExp(q(d)+"$"):new RegExp(q("."+d)+"$");else{if(!a)return this;this._parts.path+="."+b.recodePath(a)}e&&(a=b.recodePath(a),this._parts.path=this._parts.path.replace(e,a));this.build(!c);return this};e.segment=
+function(a,c,b){var d=this._parts.urn?":":"/",e=this.path(),g="/"===e.substring(0,1);e=e.split(d);void 0!==a&&"number"!==typeof a&&(b=c,c=a,a=void 0);if(void 0!==a&&"number"!==typeof a)throw Error('Bad segment "'+a+'", must be 0-based integer');g&&e.shift();0>a&&(a=Math.max(e.length+a,0));if(void 0===c)return void 0===a?e:e[a];if(null===a||void 0===e[a])if(u(c)){e=[];a=0;for(var f=c.length;a<f;a++)if(c[a].length||e.length&&e[e.length-1].length)e.length&&!e[e.length-1].length&&e.pop(),e.push(A(c[a]))}else{if(c||
+"string"===typeof c)c=A(c),""===e[e.length-1]?e[e.length-1]=c:e.push(c)}else c?e[a]=A(c):e.splice(a,1);g&&e.unshift("");return this.path(e.join(d),b)};e.segmentCoded=function(a,c,d){var e;"number"!==typeof a&&(d=c,c=a,a=void 0);if(void 0===c){a=this.segment(a,c,d);if(u(a)){var g=0;for(e=a.length;g<e;g++)a[g]=b.decode(a[g])}else a=void 0!==a?b.decode(a):void 0;return a}if(u(c))for(g=0,e=c.length;g<e;g++)c[g]=b.encode(c[g]);else c="string"===typeof c||c instanceof String?b.encode(c):c;return this.segment(a,
+c,d)};var J=e.query;e.query=function(a,c){if(!0===a)return b.parseQuery(this._parts.query,this._parts.escapeQuerySpace);if("function"===typeof a){var d=b.parseQuery(this._parts.query,this._parts.escapeQuerySpace),e=a.call(this,d);this._parts.query=b.buildQuery(e||d,this._parts.duplicateQueryParameters,this._parts.escapeQuerySpace);this.build(!c);return this}return void 0!==a&&"string"!==typeof a?(this._parts.query=b.buildQuery(a,this._parts.duplicateQueryParameters,this._parts.escapeQuerySpace),this.build(!c),
+this):J.call(this,a,c)};e.setQuery=function(a,c,d){var e=b.parseQuery(this._parts.query,this._parts.escapeQuerySpace);if("string"===typeof a||a instanceof String)e[a]=void 0!==c?c:null;else if("object"===typeof a)for(var g in a)t.call(a,g)&&(e[g]=a[g]);else throw new TypeError("URI.addQuery() accepts an object, string as the name parameter");this._parts.query=b.buildQuery(e,this._parts.duplicateQueryParameters,this._parts.escapeQuerySpace);"string"!==typeof a&&(d=c);this.build(!d);return this};e.addQuery=
+function(a,c,d){var e=b.parseQuery(this._parts.query,this._parts.escapeQuerySpace);b.addQuery(e,a,void 0===c?null:c);this._parts.query=b.buildQuery(e,this._parts.duplicateQueryParameters,this._parts.escapeQuerySpace);"string"!==typeof a&&(d=c);this.build(!d);return this};e.removeQuery=function(a,c,d){var e=b.parseQuery(this._parts.query,this._parts.escapeQuerySpace);b.removeQuery(e,a,c);this._parts.query=b.buildQuery(e,this._parts.duplicateQueryParameters,this._parts.escapeQuerySpace);"string"!==
+typeof a&&(d=c);this.build(!d);return this};e.hasQuery=function(a,c,d){var e=b.parseQuery(this._parts.query,this._parts.escapeQuerySpace);return b.hasQuery(e,a,c,d)};e.setSearch=e.setQuery;e.addSearch=e.addQuery;e.removeSearch=e.removeQuery;e.hasSearch=e.hasQuery;e.normalize=function(){return this._parts.urn?this.normalizeProtocol(!1).normalizePath(!1).normalizeQuery(!1).normalizeFragment(!1).build():this.normalizeProtocol(!1).normalizeHostname(!1).normalizePort(!1).normalizePath(!1).normalizeQuery(!1).normalizeFragment(!1).build()};
+e.normalizeProtocol=function(a){"string"===typeof this._parts.protocol&&(this._parts.protocol=this._parts.protocol.toLowerCase(),this.build(!a));return this};e.normalizeHostname=function(a){this._parts.hostname&&(this.is("IDN")&&f?this._parts.hostname=f.toASCII(this._parts.hostname):this.is("IPv6")&&n&&(this._parts.hostname=n.best(this._parts.hostname)),this._parts.hostname=this._parts.hostname.toLowerCase(),this.build(!a));return this};e.normalizePort=function(a){"string"===typeof this._parts.protocol&&
+this._parts.port===b.defaultPorts[this._parts.protocol]&&(this._parts.port=null,this.build(!a));return this};e.normalizePath=function(a){var c=this._parts.path;if(!c)return this;if(this._parts.urn)return this._parts.path=b.recodeUrnPath(this._parts.path),this.build(!a),this;if("/"===this._parts.path)return this;c=b.recodePath(c);var d="";if("/"!==c.charAt(0)){var e=!0;c="/"+c}if("/.."===c.slice(-3)||"/."===c.slice(-2))c+="/";c=c.replace(/(\/(\.\/)+)|(\/\.$)/g,"/").replace(/\/{2,}/g,"/");e&&(d=c.substring(1).match(/^(\.\.\/)+/)||
+"")&&(d=d[0]);for(;;){var g=c.search(/\/\.\.(\/|$)/);if(-1===g)break;else if(0===g){c=c.substring(3);continue}var f=c.substring(0,g).lastIndexOf("/");-1===f&&(f=g);c=c.substring(0,f)+c.substring(g+3)}e&&this.is("relative")&&(c=d+c.substring(1));this._parts.path=c;this.build(!a);return this};e.normalizePathname=e.normalizePath;e.normalizeQuery=function(a){"string"===typeof this._parts.query&&(this._parts.query.length?this.query(b.parseQuery(this._parts.query,this._parts.escapeQuerySpace)):this._parts.query=
+null,this.build(!a));return this};e.normalizeFragment=function(a){this._parts.fragment||(this._parts.fragment=null,this.build(!a));return this};e.normalizeSearch=e.normalizeQuery;e.normalizeHash=e.normalizeFragment;e.iso8859=function(){var a=b.encode,c=b.decode;b.encode=escape;b.decode=decodeURIComponent;try{this.normalize()}finally{b.encode=a,b.decode=c}return this};e.unicode=function(){var a=b.encode,c=b.decode;b.encode=E;b.decode=unescape;try{this.normalize()}finally{b.encode=a,b.decode=c}return this};
+e.readable=function(){var a=this.clone();a.username("").password("").normalize();var c="";a._parts.protocol&&(c+=a._parts.protocol+"://");a._parts.hostname&&(a.is("punycode")&&f?(c+=f.toUnicode(a._parts.hostname),a._parts.port&&(c+=":"+a._parts.port)):c+=a.host());a._parts.hostname&&a._parts.path&&"/"!==a._parts.path.charAt(0)&&(c+="/");c+=a.path(!0);if(a._parts.query){for(var d="",e=0,g=a._parts.query.split("&"),h=g.length;e<h;e++){var k=(g[e]||"").split("=");d+="&"+b.decodeQuery(k[0],this._parts.escapeQuerySpace).replace(/&/g,
+"%26");void 0!==k[1]&&(d+="="+b.decodeQuery(k[1],this._parts.escapeQuerySpace).replace(/&/g,"%26"))}c+="?"+d.substring(1)}return c+=b.decodeQuery(a.hash(),!0)};e.absoluteTo=function(a){var c=this.clone(),d=["protocol","username","password","hostname","port"],e,g;if(this._parts.urn)throw Error("URNs do not have any generally defined hierarchical components");a instanceof b||(a=new b(a));if(c._parts.protocol)return c;c._parts.protocol=a._parts.protocol;if(this._parts.hostname)return c;for(e=0;g=d[e];e++)c._parts[g]=
+a._parts[g];c._parts.path?(".."===c._parts.path.substring(-2)&&(c._parts.path+="/"),"/"!==c.path().charAt(0)&&(d=(d=a.directory())?d:0===a.path().indexOf("/")?"/":"",c._parts.path=(d?d+"/":"")+c._parts.path,c.normalizePath())):(c._parts.path=a._parts.path,c._parts.query||(c._parts.query=a._parts.query));c.build();return c};e.relativeTo=function(a){var c=this.clone().normalize();if(c._parts.urn)throw Error("URNs do not have any generally defined hierarchical components");a=(new b(a)).normalize();var d=
+c._parts;var e=a._parts;var g=c.path();a=a.path();if("/"!==g.charAt(0))throw Error("URI is already relative");if("/"!==a.charAt(0))throw Error("Cannot calculate a URI relative to another relative URI");d.protocol===e.protocol&&(d.protocol=null);if(d.username===e.username&&d.password===e.password&&null===d.protocol&&null===d.username&&null===d.password&&d.hostname===e.hostname&&d.port===e.port)d.hostname=null,d.port=null;else return c.build();if(g===a)return d.path="",c.build();g=b.commonPath(g,a);
+if(!g)return c.build();e=e.path.substring(g.length).replace(/[^\/]*$/,"").replace(/.*?\//g,"../");d.path=e+d.path.substring(g.length)||"./";return c.build()};e.equals=function(a){var c=this.clone(),d=new b(a);a={};var e;c.normalize();d.normalize();if(c.toString()===d.toString())return!0;var g=c.query();var f=d.query();c.query("");d.query("");if(c.toString()!==d.toString()||g.length!==f.length)return!1;c=b.parseQuery(g,this._parts.escapeQuerySpace);f=b.parseQuery(f,this._parts.escapeQuerySpace);for(e in c)if(t.call(c,
+e)){if(!u(c[e])){if(c[e]!==f[e])return!1}else if(!D(c[e],f[e]))return!1;a[e]=!0}for(e in f)if(t.call(f,e)&&!a[e])return!1;return!0};e.preventInvalidHostname=function(a){this._parts.preventInvalidHostname=!!a;return this};e.duplicateQueryParameters=function(a){this._parts.duplicateQueryParameters=!!a;return this};e.escapeQuerySpace=function(a){this._parts.escapeQuerySpace=!!a;return this};return b});
+(function(f,n){"object"===typeof module&&module.exports?module.exports=n(require("./URI")):"function"===typeof define&&define.amd?define(["./URI"],n):f.URITemplate=n(f.URI,f)})(this,function(f,n){function h(b){if(h._cache[b])return h._cache[b];if(!(this instanceof h))return new h(b);this.expression=b;h._cache[b]=this;return this}function k(b){this.data=b;this.cache={}}var b=n&&n.URITemplate,q=Object.prototype.hasOwnProperty,z=h.prototype,u={"":{prefix:"",separator:",",named:!1,empty_name_separator:!1,
+encode:"encode"},"+":{prefix:"",separator:",",named:!1,empty_name_separator:!1,encode:"encodeReserved"},"#":{prefix:"#",separator:",",named:!1,empty_name_separator:!1,encode:"encodeReserved"},".":{prefix:".",separator:".",named:!1,empty_name_separator:!1,encode:"encode"},"/":{prefix:"/",separator:"/",named:!1,empty_name_separator:!1,encode:"encode"},";":{prefix:";",separator:";",named:!0,empty_name_separator:!1,encode:"encode"},"?":{prefix:"?",separator:"&",named:!0,empty_name_separator:!0,encode:"encode"},
+"&":{prefix:"&",separator:"&",named:!0,empty_name_separator:!0,encode:"encode"}};h._cache={};h.EXPRESSION_PATTERN=/\{([^a-zA-Z0-9%_]?)([^\}]+)(\}|$)/g;h.VARIABLE_PATTERN=/^([^*:.](?:\.?[^*:.])*)((\*)|:(\d+))?$/;h.VARIABLE_NAME_PATTERN=/[^a-zA-Z0-9%_.]/;h.LITERAL_PATTERN=/[<>{}"`^| \\]/;h.expand=function(b,f,k){var g=u[b.operator],p=g.named?"Named":"Unnamed";b=b.variables;var n=[],r,q;for(q=0;r=b[q];q++){var w=f.get(r.name);if(0===w.type&&k&&k.strict)throw Error('Missing expansion value for variable "'+
+r.name+'"');if(w.val.length){if(1<w.type&&r.maxlength)throw Error('Invalid expression: Prefix modifier not applicable to variable "'+r.name+'"');n.push(h["expand"+p](w,g,r.explode,r.explode&&g.separator||",",r.maxlength,r.name))}else w.type&&n.push("")}return n.length?g.prefix+n.join(g.separator):""};h.expandNamed=function(b,h,k,n,q,u){var g="",p=h.encode;h=h.empty_name_separator;var A=!b[p].length,e=2===b.type?"":f[p](u),t;var y=0;for(t=b.val.length;y<t;y++){if(q){var v=f[p](b.val[y][1].substring(0,
+q));2===b.type&&(e=f[p](b.val[y][0].substring(0,q)))}else A?(v=f[p](b.val[y][1]),2===b.type?(e=f[p](b.val[y][0]),b[p].push([e,v])):b[p].push([void 0,v])):(v=b[p][y][1],2===b.type&&(e=b[p][y][0]));g&&(g+=n);k?g+=e+(h||v?"=":"")+v:(y||(g+=f[p](u)+(h||v?"=":"")),2===b.type&&(g+=e+","),g+=v)}return g};h.expandUnnamed=function(b,h,k,n,q){var g="",p=h.encode;h=h.empty_name_separator;var A=!b[p].length,w;var e=0;for(w=b.val.length;e<w;e++){if(q)var t=f[p](b.val[e][1].substring(0,q));else A?(t=f[p](b.val[e][1]),
+b[p].push([2===b.type?f[p](b.val[e][0]):void 0,t])):t=b[p][e][1];g&&(g+=n);if(2===b.type){var u=q?f[p](b.val[e][0].substring(0,q)):b[p][e][0];g+=u;g=k?g+(h||t?"=":""):g+","}g+=t}return g};h.noConflict=function(){n.URITemplate===h&&(n.URITemplate=b);return h};z.expand=function(b,f){var g="";this.parts&&this.parts.length||this.parse();b instanceof k||(b=new k(b));for(var p=0,n=this.parts.length;p<n;p++)g+="string"===typeof this.parts[p]?this.parts[p]:h.expand(this.parts[p],b,f);return g};z.parse=function(){var b=
+this.expression,f=h.EXPRESSION_PATTERN,k=h.VARIABLE_PATTERN,n=h.VARIABLE_NAME_PATTERN,q=h.LITERAL_PATTERN,z=[],r=0,C=function(b){if(b.match(q))throw Error('Invalid Literal "'+b+'"');return b};for(f.lastIndex=0;;){var w=f.exec(b);if(null===w){z.push(C(b.substring(r)));break}else z.push(C(b.substring(r,w.index))),r=w.index+w[0].length;if(!u[w[1]])throw Error('Unknown Operator "'+w[1]+'" in "'+w[0]+'"');if(!w[3])throw Error('Unclosed Expression "'+w[0]+'"');var e=w[2].split(",");for(var t=0,y=e.length;t<
+y;t++){var v=e[t].match(k);if(null===v)throw Error('Invalid Variable "'+e[t]+'" in "'+w[0]+'"');if(v[1].match(n))throw Error('Invalid Variable Name "'+v[1]+'" in "'+w[0]+'"');e[t]={name:v[1],explode:!!v[3],maxlength:v[4]&&parseInt(v[4],10)}}if(!e.length)throw Error('Expression Missing Variable(s) "'+w[0]+'"');z.push({expression:w[0],operator:w[1],variables:e})}z.length||z.push(C(b));this.parts=z;return this};k.prototype.get=function(b){var f=this.data,g={type:0,val:[],encode:[],encodeReserved:[]};
+if(void 0!==this.cache[b])return this.cache[b];this.cache[b]=g;f="[object Function]"===String(Object.prototype.toString.call(f))?f(b):"[object Function]"===String(Object.prototype.toString.call(f[b]))?f[b](b):f[b];if(void 0!==f&&null!==f)if("[object Array]"===String(Object.prototype.toString.call(f))){var h=0;for(b=f.length;h<b;h++)void 0!==f[h]&&null!==f[h]&&g.val.push([void 0,String(f[h])]);g.val.length&&(g.type=3)}else if("[object Object]"===String(Object.prototype.toString.call(f))){for(h in f)q.call(f,
+h)&&void 0!==f[h]&&null!==f[h]&&g.val.push([h,String(f[h])]);g.val.length&&(g.type=2)}else g.type=1,g.val.push([void 0,String(f)]);return g};f.expand=function(b,k){var g=(new h(b)).expand(k);return new f(g)};return h});</script><script>/*! SmoothScroll v16.1.4 | (c) 2020 Chris Ferdinandi | MIT License | http://github.com/cferdinandi/smooth-scroll */
+!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):(e=e||self).SmoothScroll=t()}(this,(function(){"use strict";var e={ignore:"[data-scroll-ignore]",header:null,topOnEmptyHash:!0,speed:500,speedAsDuration:!1,durationMax:null,durationMin:null,clip:!0,offset:0,easing:"easeInOutCubic",customEasing:null,updateURL:!0,popstate:!0,emitEvents:!0},t=function(){var e={};return Array.prototype.forEach.call(arguments,(function(t){for(var n in t){if(!t.hasOwnProperty(n))return;e[n]=t[n]}})),e},n=function(e){"#"===e.charAt(0)&&(e=e.substr(1));for(var t,n=String(e),o=n.length,a=-1,i="",r=n.charCodeAt(0);++a<o;){if(0===(t=n.charCodeAt(a)))throw new InvalidCharacterError("Invalid character: the input contains U+0000.");t>=1&&t<=31||127==t||0===a&&t>=48&&t<=57||1===a&&t>=48&&t<=57&&45===r?i+="\\"+t.toString(16)+" ":i+=t>=128||45===t||95===t||t>=48&&t<=57||t>=65&&t<=90||t>=97&&t<=122?n.charAt(a):"\\"+n.charAt(a)}return"#"+i},o=function(){return Math.max(document.body.scrollHeight,document.documentElement.scrollHeight,document.body.offsetHeight,document.documentElement.offsetHeight,document.body.clientHeight,document.documentElement.clientHeight)},a=function(e){return e?(t=e,parseInt(window.getComputedStyle(t).height,10)+e.offsetTop):0;var t},i=function(e,t,n){0===e&&document.body.focus(),n||(e.focus(),document.activeElement!==e&&(e.setAttribute("tabindex","-1"),e.focus(),e.style.outline="none"),window.scrollTo(0,t))},r=function(e,t,n,o){if(t.emitEvents&&"function"==typeof window.CustomEvent){var a=new CustomEvent(e,{bubbles:!0,detail:{anchor:n,toggle:o}});document.dispatchEvent(a)}};return function(s,c){var u,l,d,f,m={};m.cancelScroll=function(e){cancelAnimationFrame(f),f=null,e||r("scrollCancel",u)},m.animateScroll=function(n,s,c){m.cancelScroll();var l=t(u||e,c||{}),h="[object Number]"===Object.prototype.toString.call(n),p=h||!n.tagName?null:n;if(h||p){var w=window.pageYOffset;l.header&&!d&&(d=document.querySelector(l.header));var g,y,v,S=a(d),E=h?n:function(e,t,n,a){var i=0;if(e.offsetParent)do{i+=e.offsetTop,e=e.offsetParent}while(e);return i=Math.max(i-t-n,0),a&&(i=Math.min(i,o()-window.innerHeight)),i}(p,S,parseInt("function"==typeof l.offset?l.offset(n,s):l.offset,10),l.clip),b=E-w,O=o(),I=0,M=function(e,t){var n=t.speedAsDuration?t.speed:Math.abs(e/1e3*t.speed);return t.durationMax&&n>t.durationMax?t.durationMax:t.durationMin&&n<t.durationMin?t.durationMin:parseInt(n,10)}(b,l),A=function(e){g||(g=e),I+=e-g,v=w+b*function(e,t){var n;return"easeInQuad"===e.easing&&(n=t*t),"easeOutQuad"===e.easing&&(n=t*(2-t)),"easeInOutQuad"===e.easing&&(n=t<.5?2*t*t:(4-2*t)*t-1),"easeInCubic"===e.easing&&(n=t*t*t),"easeOutCubic"===e.easing&&(n=--t*t*t+1),"easeInOutCubic"===e.easing&&(n=t<.5?4*t*t*t:(t-1)*(2*t-2)*(2*t-2)+1),"easeInQuart"===e.easing&&(n=t*t*t*t),"easeOutQuart"===e.easing&&(n=1- --t*t*t*t),"easeInOutQuart"===e.easing&&(n=t<.5?8*t*t*t*t:1-8*--t*t*t*t),"easeInQuint"===e.easing&&(n=t*t*t*t*t),"easeOutQuint"===e.easing&&(n=1+--t*t*t*t*t),"easeInOutQuint"===e.easing&&(n=t<.5?16*t*t*t*t*t:1+16*--t*t*t*t*t),e.customEasing&&(n=e.customEasing(t)),n||t}(l,y=(y=0===M?0:I/M)>1?1:y),window.scrollTo(0,Math.floor(v)),function(e,t){var o=window.pageYOffset;if(e==t||o==t||(w<t&&window.innerHeight+o)>=O)return m.cancelScroll(!0),i(n,t,h),r("scrollStop",l,n,s),g=null,f=null,!0}(v,E)||(f=window.requestAnimationFrame(A),g=e)};0===window.pageYOffset&&window.scrollTo(0,0),function(e,t,n){t||history.pushState&&n.updateURL&&history.pushState({smoothScroll:JSON.stringify(n),anchor:e.id},document.title,e===document.documentElement?"#top":"#"+e.id)}(n,h,l),"matchMedia"in window&&window.matchMedia("(prefers-reduced-motion)").matches?i(n,Math.floor(E),!1):(r("scrollStart",l,n,s),m.cancelScroll(!0),window.requestAnimationFrame(A))}};var h=function(e){if(!e.defaultPrevented&&!(0!==e.button||e.metaKey||e.ctrlKey||e.shiftKey)&&"closest"in e.target&&(l=e.target.closest(s))&&"a"===l.tagName.toLowerCase()&&!e.target.closest(u.ignore)&&l.hostname===window.location.hostname&&l.pathname===window.location.pathname&&/#/.test(l.href)){var t,o;try{t=n(decodeURIComponent(l.hash))}catch(e){t=n(l.hash)}if("#"===t){if(!u.topOnEmptyHash)return;o=document.documentElement}else o=document.querySelector(t);(o=o||"#top"!==t?o:document.documentElement)&&(e.preventDefault(),function(e){if(history.replaceState&&e.updateURL&&!history.state){var t=window.location.hash;t=t||"",history.replaceState({smoothScroll:JSON.stringify(e),anchor:t||window.pageYOffset},document.title,t||window.location.href)}}(u),m.animateScroll(o,l))}},p=function(){if(null!==history.state&&history.state.smoothScroll&&history.state.smoothScroll===JSON.stringify(u)){var e=history.state.anchor;"string"==typeof e&&e&&!(e=document.querySelector(n(history.state.anchor)))||m.animateScroll(e,null,{updateURL:!1})}};m.destroy=function(){u&&(document.removeEventListener("click",h,!1),window.removeEventListener("popstate",p,!1),m.cancelScroll(),u=null,l=null,d=null,f=null)};return function(){if(!("querySelector"in document&&"addEventListener"in window&&"requestAnimationFrame"in window&&"closest"in window.Element.prototype))throw"Smooth Scroll: This browser does not support the required JavaScript methods and browser APIs.";m.destroy(),u=t(e,c||{}),d=u.header?document.querySelector(u.header):null,document.addEventListener("click",h,!1),u.updateURL&&u.popstate&&window.addEventListener("popstate",p,!1)}(),m}}));</script></head><body><script>function getSbCookie(name) {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  if (match) return match[2];
+}
+
+function generateArticleUrl(articleUid) {
+  const currentUrl = new URL(window.location.href);
+
+  const currentHost = currentUrl.host;
+  const newPath = '/articles/' + articleUid;
+  const newUrl = new URL(newPath, 'https://' + currentHost);
+  currentUrl.searchParams.forEach((value, key) => {
+    newUrl.searchParams.set(key, value);
+  });
+  return newUrl.toString();
+}
+
+const articleUid = "VhkDzkapKupwpGkp_azQ"
+
+window.sb_global_id = getSbCookie('_sb_global');
+window.sb_visitor_id = getSbCookie('_sb_tu');
+window.sb_article_url = generateArticleUrl(articleUid);</script><script>document.addEventListener("DOMContentLoaded", function() {
+  document.querySelector('.js-v-id').dataset.value = window.sb_visitor_id;
+});</script><div class="js-t-id" data-value="8910ebea-6839-4392-8340-b19f8a671584"></div><div class="js-m-id" data-value="55"></div><div class="js-v-id" data-value="e649206c-f19d-4d3c-87f1-c64e60a2b30e"></div><div class="js-a-id" data-value="VhkDzkapKupwpGkp_azQ"></div><div class="js-ab-id" data-value="yuri-f3-49bq-fk01"></div><div class="js-f-id" data-value="ab7f69cf-9dea-4d7b-aab0-e87d3626b9d6"></div><div class="js-asp-session" data-value="{&quot;session_id&quot;:null}"></div><div class="js-folder-form-host" data-value="sb-form.mysquadbeyond.com"></div><div class="js-has-funnel" data-value="false"></div><style>@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap&display=swap');
+
+#yuriiro-app * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+#yuriiro-app {
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    -webkit-font-smoothing: antialiased;
+    background: #FAF6F1;
+}
+
+#yuriiro-app::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+}
+
+#yuriiro-app .yr-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    position: relative;
+    z-index: 1;
+    animation: yrFadeIn 0.8s ease both;
+}
+
+#yuriiro-app .yr-screen.yr-hidden {
+    display: none;
+}
+
+@keyframes yrFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes yrSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== INTRO ===== */
+#yr-screen-intro {
+    background: linear-gradient(160deg, #FDF4EC 0%, #F5E6D8 40%, #EDD5C5 100%);
+}
+
+#yuriiro-app .yr-intro-brand {
+    font-family: 'Cormorant Garamond', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.35em;
+    color: #B8957A;
+    text-transform: uppercase;
+    margin-bottom: 48px;
+    display: none;
+    /* ← 追加 */
+}
+
+#yuriiro-app .yr-intro-ornament {
+    width: 1px;
+    height: 40px;
+    /* ← 60px から変更 */
+    background: linear-gradient(to bottom, transparent, #C8A48A, transparent);
+    margin: 0 auto 24px;
+    /* ← 36px から変更 */
+}
+
+/* タイトル：iPhone SE (320px) で「なりたい私に出会う」が1行に収まるサイズ */
+#yuriiro-app .yr-intro-title {
+    font-family: 'Cormorant Garamond', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: clamp(28px, 6.5vw, 48px);
+    font-weight: 300;
+    color: #3A2A1E;
+    letter-spacing: 0.03em;
+    line-height: 1.25;
+    text-align: center;
+    margin-bottom: 4px;
+    /* ← 8px から変更 */
+}
+
+#yuriiro-app .yr-intro-title span {
+    font-style: italic;
+    color: #C8845A;
+}
+
+#yuriiro-app .yr-intro-sub {
+    font-size: 14px;
+    font-weight: 200;
+    color: #8A7060;
+    letter-spacing: 0.18em;
+    text-align: center;
+    margin-bottom: 48px;
+    line-height: 2;
+}
+
+#yuriiro-app .yr-intro-desc {
+    max-width: 320px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 300;
+    color: #9A8070;
+    line-height: 2.2;
+    letter-spacing: 0.08em;
+    margin-bottom: 52px;
+    padding: 24px;
+    border: 1px solid rgba(200, 165, 138, 0.25);
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 2px;
+}
+
+#yuriiro-app .yr-intro-desc-time {
+    font-family: 'Cormorant Garamond', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: #C8845A;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+#yuriiro-app .yr-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 48px;
+    background: #3A2A1E;
+    color: #FAF6F1;
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: 0.25em;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+#yuriiro-app .yr-btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.08);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+#yuriiro-app .yr-btn-primary:hover::after {
+    transform: scaleX(1);
+}
+
+#yuriiro-app .yr-btn-primary:hover {
+    letter-spacing: 0.3em;
+}
+
+/* ===== QUESTION ===== */
+#yr-screen-question {
+    background: linear-gradient(160deg, #FAF7F3 0%, #F3EDE5 100%);
+    justify-content: flex-start;
+    padding-top: 60px;
+}
+
+#yuriiro-app .yr-progress-wrap {
+    width: 100%;
+    max-width: 480px;
+    margin-bottom: 40px;
+}
+
+#yuriiro-app .yr-progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#yuriiro-app .yr-progress-category {
+    font-family: 'Cormorant Garamond', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    color: #C8845A;
+    text-transform: uppercase;
+    font-style: italic;
+}
+
+#yuriiro-app .yr-progress-num {
+    font-family: 'Cormorant Garamond', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: 14px;
+    color: #B8A090;
+    letter-spacing: 0.1em;
+}
+
+#yuriiro-app .yr-progress-track {
+    height: 1px;
+    background: rgba(200, 165, 138, 0.2);
+    position: relative;
+}
+
+#yuriiro-app .yr-progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #C8845A, #E8B4C8);
+    transition: width 0.6s ease;
+}
+
+#yuriiro-app .yr-progress-remaining {
+    text-align: right;
+    font-size: 11px;
+    font-weight: 200;
+    color: #C8845A;
+    letter-spacing: 0.15em;
+    margin-top: 6px;
+    min-height: 14px;
+}
+
+/* 質問テキスト：40代でも読みやすいサイズ */
+#yuriiro-app .yr-question-text {
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: clamp(22px, 5.5vw, 28px);
+    font-weight: 300;
+    color: #2A1A10;
+    text-align: center;
+    line-height: 1.7;
+    letter-spacing: 0.08em;
+    white-space: pre-line;
+    margin-bottom: 10px;
+    max-width: 340px;
+    /* 少し狭めて折り返しを防ぐ */
+    word-break: keep-all;
+    /* 日本語の不自然な折り返しを防ぐ */
+}
+
+#yuriiro-app .yr-question-hint {
+    font-size: 14px;
+    font-weight: 200;
+    color: #B8A090;
+    letter-spacing: 0.25em;
+    margin-bottom: 40px;
+}
+
+#yuriiro-app .yr-answers-grid {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    animation: yrSlideUp 0.5s ease 0.1s both;
+}
+
+/* 回答ボタン：文字サイズアップ */
+#yuriiro-app .yr-answer-btn {
+    width: 100%;
+    padding: 20px 24px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(200, 165, 138, 0.2);
+    cursor: pointer;
+    text-align: left;
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: 14.5px;
+    font-weight: 300;
+    color: #4A3A2E;
+    line-height: 1.7;
+    letter-spacing: 0.06em;
+    transition: all 0.25s ease;
+    white-space: pre-line;
+    position: relative;
+    overflow: hidden;
+    border-radius: 1px;
+}
+
+#yuriiro-app .yr-answer-btn::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, #C8845A, #E8B4C8);
+    transform: scaleY(0);
+    transition: transform 0.25s ease;
+}
+
+#yuriiro-app .yr-answer-btn:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(200, 132, 90, 0.4);
+    transform: translateX(4px);
+    color: #2A1A10;
+}
+
+#yuriiro-app .yr-answer-btn:hover::before {
+    transform: scaleY(1);
+}
+
+#yuriiro-app .yr-answer-btn.yr-selected {
+    background: #3A2A1E;
+    color: #FAF6F1;
+    border-color: #3A2A1E;
+}
+
+#yuriiro-app .yr-answer-btn.yr-selected::before {
+    transform: scaleY(1);
+    background: #C8845A;
+}
+
+/* ===== BACK BUTTON ===== */
+#yuriiro-app .yr-back-btn {
+    background: none;
+    border: none;
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: 12px;
+    font-weight: 200;
+    color: #B8A090;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    margin-top: 24px;
+    padding: 12px 16px;
+    transition: color 0.2s ease;
+}
+
+#yuriiro-app .yr-back-btn:hover {
+    color: #8A7060;
+}
+
+/* ===== LOADING ===== */
+#yr-screen-loading {
+    background: linear-gradient(160deg, #2A1A10 0%, #1A0A04 100%);
+}
+
+#yuriiro-app .yr-loading-text {
+    font-family: 'Cormorant Garamond', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: 15px;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.3em;
+    margin-bottom: 32px;
+}
+
+#yuriiro-app .yr-loading-dots {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 40px;
+}
+
+#yuriiro-app .yr-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgba(200, 165, 138, 0.6);
+    animation: yrPulse 1.4s ease infinite;
+}
+
+#yuriiro-app .yr-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+#yuriiro-app .yr-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes yrPulse {
+
+    0%,
+    80%,
+    100% {
+        opacity: 0.3;
+        transform: scale(0.8);
+    }
+
+    40% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+#yuriiro-app .yr-loading-trust {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.35);
+    letter-spacing: 0.15em;
+}
+
+#yuriiro-app .yr-trust-divider {
+    opacity: 0.3;
+}
+
+/* ===== RESULT ===== */
+#yr-screen-result {
+    background: #FAF6F1;
+    justify-content: flex-start;
+    padding: 0;
+    overflow-y: auto;
+}
+
+/* ヒーロー：イラスト背景 + オーバーレイで色味を乗せる */
+#yuriiro-app .yr-result-hero {
+    width: 100%;
+    min-height: 55vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px 48px;
+    text-align: center;
+    background: linear-gradient(160deg, #5A4030 0%, #3A2A1E 50%, #2A1A10 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+/* オーバーレイ：イラストの上に香りカラーを乗せる */
+#yuriiro-app .yr-result-hero #yr-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    transition: background 0.5s ease;
+    /* backdrop-filter で軽くぼかしてイラストを馴染ませる */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+#yuriiro-app .yr-result-badge {
+    display: inline-block;
+    font-family: 'Cormorant Garamond', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 32px;
+}
+
+#yuriiro-app .yr-result-emoji {
+    font-size: 48px;
+    margin-bottom: 16px;
+    display: none;
+    /* 絵文字非表示 */
+}
+
+#yuriiro-app .yr-result-name-en {
+    font-family: 'Cormorant Garamond', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: clamp(32px, 9vw, 54px);
+    font-weight: 300;
+    color: #FFFFFF;
+    letter-spacing: 0.08em;
+    line-height: 1.1;
+    margin-bottom: 8px;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.15);
+}
+
+#yuriiro-app .yr-result-name-jp {
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: 15px;
+    font-weight: 200;
+    color: rgba(255, 255, 255, 0.75);
+    letter-spacing: 0.25em;
+    margin-bottom: 32px;
+}
+
+#yuriiro-app .yr-result-headline {
+    font-size: clamp(16px, 3.8vw, 19px);
+    font-weight: 300;
+    color: #FFFFFF;
+    line-height: 2;
+    letter-spacing: 0.1em;
+    white-space: pre-line;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+#yuriiro-app .yr-limited-hero-badge {
+    margin-top: 24px;
+    padding: 6px 16px;
+    background: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    font-family: 'Cormorant Garamond', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    display: inline-block;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+#yuriiro-app .yr-result-body {
+    width: 100%;
+    max-width: 480px;
+    padding: 48px 24px;
+    margin: 0 auto;
+}
+
+/* ===== イラストスペース ===== */
+#yuriiro-app .yr-illust-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 32px;
+    margin-top: 40px;
+}
+
+#yuriiro-app .yr-illust-img {
+    width: 250px;
+    height: auto;
+    object-fit: contain;
+    border-radius: 0;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+/* ===== 商品画像 ===== */
+#yuriiro-app .yr-product-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 32px;
+}
+
+#yuriiro-app .yr-product-img {
+    width: 300px;
+    max-width: 80%;
+    height: auto;
+    object-fit: contain;
+}
+
+#yuriiro-app .yr-result-appeal {
+    font-family: 'Cormorant Garamond', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: #C8845A;
+    letter-spacing: 0.1em;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+#yuriiro-app .yr-result-desc {
+    font-size: 14px;
+    font-weight: 300;
+    color: #6A5A4A;
+    line-height: 2.2;
+    letter-spacing: 0.06em;
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+#yuriiro-app .yr-femcare-section {
+    background: rgba(58, 42, 30, 0.04);
+    padding: 32px 24px;
+    margin: 32px 0;
+    border-radius: 2px;
+    text-align: center;
+}
+
+#yuriiro-app .yr-femcare-title {
+    font-family: 'Cormorant Garamond', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    color: #C8845A;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
+
+#yuriiro-app .yr-femcare-text {
+    font-size: 13px;
+    font-weight: 200;
+    color: #6A5A4A;
+    line-height: 2.2;
+    letter-spacing: 0.05em;
+}
+
+#yuriiro-app .yr-note-box {
+    padding: 20px 24px;
+    border: 1px solid rgba(200, 165, 138, 0.25);
+    background: rgba(255, 255, 255, 0.5);
+    margin-bottom: 40px;
+    border-radius: 1px;
+}
+
+#yuriiro-app .yr-note-label {
+    font-family: 'Cormorant Garamond', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: #B8957A;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+#yuriiro-app .yr-note-text {
+    font-size: 13px;
+    font-weight: 200;
+    color: #8A7060;
+    letter-spacing: 0.1em;
+    line-height: 2;
+}
+
+#yuriiro-app .yr-limited-wrap {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+#yuriiro-app .yr-limited-warn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #C8845A;
+    letter-spacing: 0.2em;
+    padding: 8px 16px;
+    border: 1px solid rgba(200, 132, 90, 0.3);
+    background: rgba(200, 132, 90, 0.05);
+    margin-bottom: 20px;
+}
+
+#yuriiro-app .yr-cta-btn {
+    display: block;
+    width: 100%;
+    padding: 22px 32px;
+    text-align: center;
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    color: #FAF6F1;
+    background: #3A2A1E;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 14px;
+}
+
+#yuriiro-app .yr-cta-btn:hover {
+    background: #2A1A10;
+    letter-spacing: 0.25em;
+}
+
+#yuriiro-app .yr-cta-sub {
+    display: block;
+    width: 100%;
+    padding: 18px 32px;
+    text-align: center;
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    color: #8A7060;
+    background: transparent;
+    border: 1px solid rgba(138, 112, 96, 0.3);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    margin-bottom: 32px;
+}
+
+#yuriiro-app .yr-cta-sub:hover {
+    background: rgba(138, 112, 96, 0.05);
+}
+
+#yuriiro-app .yr-all-frags {
+    padding-top: 32px;
+    border-top: 1px solid rgba(200, 165, 138, 0.2);
+}
+
+#yuriiro-app .yr-af-label {
+    font-family: 'Cormorant Garamond', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    color: #B8A090;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#yuriiro-app .yr-af-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+}
+
+#yuriiro-app .yr-af-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 4px;
+    border: 1px solid rgba(200, 165, 138, 0.2);
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 1px;
+}
+
+#yuriiro-app .yr-af-item:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+}
+
+#yuriiro-app .yr-af-item.yr-active {
+    border-color: #C8845A;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+#yuriiro-app .yr-af-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#yuriiro-app .yr-af-name {
+    font-size: 10px;
+    font-weight: 300;
+    color: #8A7060;
+    letter-spacing: 0.05em;
+    text-align: center;
+    line-height: 1.4;
+    white-space: pre-line;
+}
+
+#yuriiro-app .yr-af-limited {
+    font-size: 9px;
+    color: #C8845A;
+}
+
+#yuriiro-app .yr-af-hint {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 11px;
+    color: #B8A090;
+    letter-spacing: 0.15em;
+}
+
+/* ===== ABOUT YURiiRO ===== */
+#yuriiro-app .yr-about-section {
+    margin-top: 48px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(200, 165, 138, 0.2);
+}
+
+#yuriiro-app .yr-about-label {
+    font-family: 'Cormorant Garamond', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    color: #B8A090;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+#yuriiro-app .yr-about-lead {
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: 16px;
+    font-weight: 200;
+    font-style: italic;
+    color: #C8845A;
+    text-align: center;
+    letter-spacing: 0.12em;
+    line-height: 1.8;
+    margin-bottom: 32px;
+}
+
+#yuriiro-app .yr-about-features {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+#yuriiro-app .yr-about-feature {
+    text-align: center;
+    padding: 24px 16px;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(200, 165, 138, 0.18);
+    border-radius: 2px;
+}
+
+#yuriiro-app .yr-about-feature-label {
+    font-family: 'Cormorant Garamond', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    color: #C8845A;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+#yuriiro-app .yr-about-feature-text {
+    font-size: 13px;
+    font-weight: 200;
+    color: #6A5A4A;
+    line-height: 2;
+    letter-spacing: 0.06em;
+}
+
+#yuriiro-app .yr-about-social {
+    font-size: 12px;
+    font-weight: 200;
+    color: #9A8070;
+    text-align: center;
+    line-height: 2;
+    letter-spacing: 0.08em;
+    margin-bottom: 32px;
+}
+
+#yuriiro-app .yr-about-price-card {
+    background: rgba(58, 42, 30, 0.04);
+    border: 1px solid rgba(200, 165, 138, 0.25);
+    border-radius: 2px;
+    padding: 28px 24px;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+#yuriiro-app .yr-about-price-badge {
+    display: inline-block;
+    font-family: 'Cormorant Garamond', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    color: #C8845A;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border: 1px solid rgba(200, 132, 90, 0.3);
+    margin-bottom: 20px;
+}
+
+#yuriiro-app .yr-about-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(200, 165, 138, 0.12);
+}
+
+#yuriiro-app .yr-about-price-row:last-of-type {
+    border-bottom: none;
+}
+
+#yuriiro-app .yr-about-price-name {
+    font-size: 12px;
+    font-weight: 300;
+    color: #6A5A4A;
+    letter-spacing: 0.06em;
+}
+
+#yuriiro-app .yr-about-price-value {
+    font-family: 'Cormorant Garamond', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: 26px;
+    font-weight: 400;
+    color: #3A2A1E;
+    letter-spacing: 0.02em;
+}
+
+#yuriiro-app .yr-about-price-tax {
+    font-size: 11px;
+    font-weight: 300;
+    color: #8A7060;
+    letter-spacing: 0.05em;
+}
+
+#yuriiro-app .yr-about-price-note {
+    font-size: 10px;
+    font-weight: 200;
+    color: #B8A090;
+    letter-spacing: 0.08em;
+    margin-top: 14px;
+    line-height: 1.8;
+}
+
+#yuriiro-app .yr-cta-btn-about {
+    margin-top: 8px;
+    margin-bottom: 0;
+}
+
+#yuriiro-app .yr-retry-btn {
+    background: none;
+    border: none;
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', serif;
+    font-size: 12px;
+    color: #B8A090;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    display: block;
+    margin: 0 auto;
+    padding: 40px 0;
+
+    #yuriiro-app .yr-offer-box p:last-of-type {
+        color: #B8A090;
+        /* ←ここ好きな色に変更 */
+    }
+}
+
+/* Safari fallback */
+#yuriiro-app h1,
+#yuriiro-app h2,
+#yuriiro-app h3 {
+    font-family: 'Cormorant Garamond', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', 'Noto Serif JP', serif !important;
+    font-weight: 300 !important;
+}
+
+#yuriiro-app .yr-pyramid-title {
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+    font-size: 19px;
+    font-weight: 200;
+    letter-spacing: 0.06em;
+    text-transform: none;
+    text-align: left;
+    margin-bottom: 8px;
+}
+
+#yuriiro-app .yr-pyramid-sub {
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+    font-size: 13px;
+    font-weight: 200;
+    color: #8A7060;
+    letter-spacing: 0.06em;
+    line-height: 2;
+    margin-bottom: 16px;
+}
+
+/* 注釈エリアの強制的な右寄せ設定 */
+.yr-q-note-container {
+    width: 100% !important;
+    max-width: 400px;
+    margin: 4px auto 0 auto !important;
+    text-align: right !important;
+    /* 強制的に右寄せ */
+    display: block !important;
+    /* flexの影響を受けないようにする */
+}
+
+/* 注釈テキスト自体のスタイル */
+#yr-q-note {
+    display: inline-block;
+    font-size: 10px;
+    color: #888;
+    margin: 0;
+    padding-right: 10px;
+    text-align: right;
+
+}
+
+/* 注釈の外枠 */
+.yr-headline-note-container {
+    width: 100%;
+    max-width: 320px;
+    /* 見出しの幅に合わせて調整 */
+    margin: 4px auto 0;
+    /* 中央に配置しつつ、上と少し隙間を空ける */
+    text-align: right;
+    /* 中身を右寄せにする */
+}
+
+/* 注釈テキスト */
+#yr-result-headline-note {
+    font-size: 10px;
+    /* 小さく控えめに */
+    color: #ffffff;
+    /* 文字色（背景に合わせて調整） */
+    opacity: 0.8;
+    /* 少し透けさせて馴染ませる */
+    display: inline-block;
+    padding-right: 5px;
+    /* 右端に寄りすぎないよう微調整 */
+}
+
+/* ===== OFFER BLOCK（CTA直前のオファー） ===== */
+#yuriiro-app .yr-offer-box {
+    padding: 28px 24px;
+    margin: 32px 0 18px;
+    /* 上に余白＝Noteボックスと分離 */
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(200, 165, 138, 0.3);
+    border-radius: 2px;
+    text-align: center;
+}
+
+#yuriiro-app .yr-offer-scent {
+    font-family: 'Cormorant Garamond', 'Hiragino Mincho ProN', serif;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    color: #C8845A;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+
+#yuriiro-app .yr-offer-lead {
+    font-size: 15px;
+    font-weight: 300;
+    color: #3A2A1E;
+    line-height: 1.95;
+    letter-spacing: 0.08em;
+    margin-bottom: 18px;
+}
+
+#yuriiro-app .yr-offer-points {
+    list-style: none;
+    /* 黒丸を消す */
+    text-align: left;
+    max-width: 300px;
+    margin: 0 auto 18px;
+    padding: 0;
+}
+
+#yuriiro-app .yr-offer-points li {
+    font-size: 12.5px;
+    font-weight: 300;
+    color: #6A5A4A;
+    line-height: 1.6;
+    letter-spacing: 0.04em;
+    padding: 7px 0 7px 22px;
+    position: relative;
+}
+
+#yuriiro-app .yr-offer-points li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #C8845A;
+}
+
+#yuriiro-app .yr-offer-points strong {
+    font-weight: 400;
+    color: #3A2A1E;
+}
+
+#yuriiro-app .yr-offer-stock {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: #C8845A;
+    border: 1px solid rgba(200, 132, 90, 0.3);
+    background: rgba(200, 132, 90, 0.05);
+    padding: 8px 16px;
+    margin-bottom: 14px;
+}
+
+#yuriiro-app .yr-offer-next {
+    font-size: 11px;
+    font-weight: 300;
+    color: #8A7060;
+    letter-spacing: 0.08em;
+}
+
+#yuriiro-app .yr-cta-note {
+    font-size: 11px;
+    font-weight: 300;
+    color: #8A7060;
+    letter-spacing: 0.05em;
+    text-align: center;
+    margin: -4px 0 28px;
+    /* CTAボタン直下に寄せる */
+    line-height: 1.7;
+}
+
+
+/* ============================================================
+   ★ここから BETTY BOOP™ 10月版 P-2「モーヴ・トワイライト」上書き層
+   （上のベースCSS＝本番実データはそのまま。後勝ちで色・形だけ差し替え）
+   トークン：背景 #4A3560→#38254C→#241536 ／ 文字 #F1EAF6系 ／ 金 #D8B36A
+   造形原則：ピル・角丸カード禁止／罫線区切り／囲うのはアート枠・商品写真・CTAのみ
+   ============================================================ */
+
+#yuriiro-app {
+    background: #241536;
+}
+
+/* ---- 画面地色（動画未差し込み時のフォールバック） ---- */
+#yuriiro-app #yr-screen-intro {
+    background: radial-gradient(140% 60% at 50% -8%, #4A3560 0%, #38254C 52%, #241536 100%);
+}
+
+#yuriiro-app #yr-screen-question {
+    background: linear-gradient(180deg, #38254C 0%, #241536 100%);
+}
+
+#yuriiro-app #yr-screen-loading {
+    background: radial-gradient(120% 70% at 50% 40%, #4A3560 0%, #2C1B40 60%, #1C102E 100%);
+}
+
+/* ---- 共通部品 ---- */
+#yuriiro-app .bb-brand {
+    font-family: 'Cormorant Garamond', 'Didot', serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: #D3C4E2;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+#yuriiro-app .bb-limited-tag {
+    font-family: 'Cormorant Garamond', 'Didot', serif;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: #D8B36A;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+}
+
+#yuriiro-app .bb-rights {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -28px;
+    text-align: center;
+    font-size: 8px;
+    letter-spacing: 0.06em;
+    color: rgba(212, 196, 226, 0.55);
+    pointer-events: none;
+}
+
+#yuriiro-app .yr-screen {
+    padding-bottom: 64px;
+    /* rights の逃げ場 */
+}
+
+/* ---- ベティ公式アート差し込み枠（細線二重の長方形） ---- */
+#yuriiro-app .bb-slot {
+    position: relative;
+    border: 1px solid #D8B36A;
+    background: linear-gradient(180deg, rgba(251, 247, 253, 0.07), rgba(251, 247, 253, 0.03));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #D8B36A;
+}
+
+#yuriiro-app .bb-slot::after {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    border: 1px dashed rgba(235, 222, 245, 0.35);
+    pointer-events: none;
+}
+
+#yuriiro-app .bb-slot-mark {
+    font-family: serif;
+    font-size: 16px;
+    line-height: 1;
+    margin-bottom: 6px;
+}
+
+#yuriiro-app .bb-slot-label {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    line-height: 1.9;
+    font-weight: 600;
+}
+
+#yuriiro-app .bb-slot-label small {
+    font-size: 8px;
+    opacity: 0.7;
+    font-weight: 400;
+}
+
+#yuriiro-app .bb-slot-hero {
+    width: 138px;
+    height: 184px;
+    margin: 4px 0 26px;
+}
+
+/* アート差し込み済みの枠：金の額装の中に透過PNGを浮かせる */
+#yuriiro-app .bb-slot.bb-filled {
+    background: linear-gradient(180deg, rgba(251, 247, 253, 0.05), rgba(251, 247, 253, 0.02));
+    padding: 12px;
+}
+
+#yuriiro-app .bb-slot.bb-filled .bb-art {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.35));
+}
+
+#yuriiro-app .bb-slot-corner.bb-filled {
+    border: none;
+    background: transparent;
+    padding: 0;
+    width: 52px;
+    height: 52px;
+}
+
+#yuriiro-app .bb-slot-corner.bb-filled::after {
+    display: none;
+}
+
+#yuriiro-app .bb-slot-corner {
+    position: absolute;
+    right: 16px;
+    bottom: 44px;
+    width: 44px;
+    height: 58px;
+    z-index: 3;
+    opacity: 0.9;
+}
+
+#yuriiro-app .bb-slot-corner .bb-slot-mark {
+    margin: 0;
+    font-size: 12px;
+}
+
+#yuriiro-app .bb-slot-result {
+    width: 112px;
+    height: 148px;
+    margin: 26px 0 8px;
+}
+
+/* ---- INTRO ---- */
+#yuriiro-app .yr-intro-brand {
+    display: none;
+}
+
+#yuriiro-app .yr-intro-ornament {
+    background: linear-gradient(to bottom, transparent, #D8B36A, transparent);
+    display: none;
+}
+
+#yuriiro-app #yr-screen-intro h1.yr-intro-title,
+#yuriiro-app .yr-intro-title {
+    color: #FBF7FD;
+    text-shadow: 0 2px 18px rgba(216, 154, 196, 0.35);
+    font-size: clamp(23px, 5.6vw, 36px);
+    font-weight: 600;
+    line-height: 1.5;
+    letter-spacing: 0.07em;
+}
+
+#yuriiro-app .yr-intro-title span {
+    color: #FBF7FD;
+    font-size: 1.06em;
+}
+
+#yuriiro-app .yr-intro-title span::before,
+#yuriiro-app .yr-intro-title span::after {
+    content: '✦';
+    font-family: serif;
+    font-size: 0.38em;
+    color: #D8B36A;
+    vertical-align: 0.6em;
+    margin: 0 0.35em;
+}
+
+#yuriiro-app .yr-intro-sub {
+    color: #D3C4E2;
+    letter-spacing: 0.1em;
+    margin-bottom: 30px;
+}
+
+/* 説明ボックス：囲いを外す（罫線と余白だけ） */
+#yuriiro-app .yr-intro-desc {
+    border: none;
+    background: transparent;
+    border-top: 1px solid rgba(235, 222, 245, 0.3);
+    border-bottom: 1px solid rgba(235, 222, 245, 0.3);
+    border-radius: 0;
+    color: #C9BADB;
+    padding: 20px 24px;
+    margin-bottom: 40px;
+    line-height: 2.1;
+}
+
+#yuriiro-app .yr-intro-desc-time {
+    color: #D8B36A;
+    letter-spacing: 0.26em;
+}
+
+/* CTA：ピル→細線の長方形（内側に二重線） */
+#yuriiro-app .yr-btn-primary {
+    background: rgba(216, 179, 106, 0.1);
+    color: #FBF7FD;
+    border: 1px solid #D8B36A;
+    border-radius: 0;
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.3em;
+    padding: 18px 54px;
+    box-shadow: inset 0 0 0 4px #241536, inset 0 0 0 5px rgba(235, 222, 245, 0.3);
+    text-shadow: none;
+    animation: none;
+}
+
+#yuriiro-app .yr-btn-primary:active {
+    background: rgba(216, 179, 106, 0.2);
+    box-shadow: inset 0 0 0 4px #241536, inset 0 0 0 5px rgba(235, 222, 245, 0.3);
+    transform: scale(0.99);
+}
+
+/* ---- QUESTION ---- */
+#yuriiro-app .yr-progress-category {
+    color: #D8B36A;
+    letter-spacing: 0.24em;
+}
+
+#yuriiro-app .yr-progress-num {
+    color: #A493BC;
+}
+
+#yuriiro-app .yr-progress-track {
+    background: rgba(235, 222, 245, 0.18);
+}
+
+#yuriiro-app .yr-progress-fill {
+    background: linear-gradient(90deg, #D8B36A, #EBD298);
+}
+
+#yuriiro-app .yr-progress-remaining {
+    color: #C9A6C4;
+}
+
+#yuriiro-app .yr-question-text {
+    color: #FBF7FD;
+    font-weight: 600;
+}
+
+#yuriiro-app .yr-question-hint {
+    color: #A493BC !important;
+    font-weight: 300;
+}
+
+/* 回答：箱を外して罫線区切りの行に（49qの流儀） */
+#yuriiro-app .yr-answer-btn {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(235, 222, 245, 0.3);
+    border-radius: 0;
+    color: #F1EAF6;
+    padding: 15px 8px;
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+    font-weight: 500;
+    text-align: left;
+}
+
+#yuriiro-app .yr-answers-grid {
+    gap: 0;
+}
+
+#yuriiro-app .yr-answers-grid .yr-answer-btn:first-of-type {
+    border-top: 1px solid rgba(235, 222, 245, 0.3);
+}
+
+#yuriiro-app .yr-answer-btn::before {
+    width: 2px;
+    background: #D8B36A;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    #yuriiro-app .yr-answer-btn:hover {
+        background: rgba(216, 179, 106, 0.07);
+        border-color: rgba(216, 179, 106, 0.6);
+        transform: none;
+        color: #FFFFFF;
+    }
+}
+
+#yuriiro-app .yr-answer-btn.yr-selected {
+    background: rgba(216, 179, 106, 0.14);
+    color: #FBF7FD;
+    border-color: #D8B36A;
+    box-shadow: none;
+    font-weight: 600;
+}
+
+#yuriiro-app .yr-answer-btn.yr-selected::before {
+    background: #D8B36A;
+}
+
+#yuriiro-app .yr-back-btn {
+    color: #A493BC;
+}
+
+#yuriiro-app .yr-back-btn:hover {
+    color: #D3C4E2;
+}
+
+/* ---- LOADING ---- */
+#yuriiro-app .yr-loading-text {
+    color: #FBF7FD;
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-shadow: 0 2px 16px rgba(216, 154, 196, 0.4);
+    margin-bottom: 14px;
+}
+
+#yuriiro-app .bb-loading-sub {
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+    font-size: 13px;
+    color: #D3C4E2;
+    line-height: 2;
+    letter-spacing: 0.08em;
+    margin-bottom: 30px;
+}
+
+#yuriiro-app .yr-dot {
+    background: #D8B36A;
+}
+
+#yuriiro-app .yr-loading-trust {
+    color: #A493BC;
+}
+
+#yuriiro-app .yr-trust-divider {
+    color: #D8B36A;
+}
+
+/* ---- RESULT：診断ゾーン（ヒーロー） ---- */
+#yuriiro-app .yr-result-hero {
+    background: radial-gradient(140% 70% at 50% -8%, #4A3560 0%, #38254C 55%, #241536 100%);
+    padding-bottom: 64px;
+}
+
+#yuriiro-app .yr-result-badge {
+    border-color: rgba(216, 179, 106, 0.6);
+    color: #D8B36A;
+    letter-spacing: 0.42em;
+    margin-bottom: 20px;
+}
+
+#yuriiro-app .bb-type-name {
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+    font-size: clamp(26px, 7vw, 34px);
+    font-weight: 600;
+    color: #FBF7FD;
+    letter-spacing: 0.14em;
+    line-height: 1.4;
+    margin-bottom: 12px;
+    text-shadow: 0 2px 20px rgba(216, 154, 196, 0.45);
+}
+
+#yuriiro-app .yr-result-headline {
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+    color: #D3C4E2;
+    font-size: clamp(14px, 3.4vw, 17px);
+    letter-spacing: 0.08em;
+}
+
+#yuriiro-app .yr-limited-hero-badge {
+    display: inline-block;
+    background: transparent;
+    border: 1px solid rgba(216, 179, 106, 0.6);
+    color: #D8B36A;
+    margin-top: 20px;
+}
+
+/* ---- RESULT：本文（購入ゾーン） ---- */
+#yuriiro-app #yr-screen-result {
+    background: #241536;
+}
+
+#yuriiro-app .yr-result-desc {
+    color: #E4DAEE;
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+    text-align: left;
+    line-height: 2.2;
+}
+
+#yuriiro-app .bb-kasane {
+    border-top: 1px solid rgba(235, 222, 245, 0.3);
+    border-bottom: 1px solid rgba(235, 222, 245, 0.3);
+    padding: 22px 4px;
+    margin-bottom: 28px;
+}
+
+#yuriiro-app .bb-kasane-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    color: #D8B36A;
+    margin-bottom: 10px;
+}
+
+#yuriiro-app .bb-kasane-text {
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+    font-size: 13.5px;
+    color: #E4DAEE;
+    line-height: 2.2;
+    letter-spacing: 0.04em;
+}
+
+#yuriiro-app .bb-fin {
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+    font-size: 13.5px;
+    color: #FBF7FD;
+    text-align: center;
+    line-height: 2.2;
+    letter-spacing: 0.05em;
+    margin-bottom: 34px;
+}
+
+#yuriiro-app .bb-fin span {
+    color: #EBD298;
+}
+
+/* 商品写真：白の長方形プレート＋外側に金の細線 */
+#yuriiro-app .yr-product-img {
+    background: #FFFFFF;
+    padding: 14px;
+    width: 260px;
+    outline: 1px solid #D8B36A;
+    outline-offset: 6px;
+}
+
+#yuriiro-app .yr-product-wrap {
+    margin-bottom: 20px;
+}
+
+#yuriiro-app .bb-limited-line {
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+    font-size: 12px;
+    color: #D3C4E2;
+    text-align: center;
+    letter-spacing: 0.1em;
+    margin-bottom: 34px;
+}
+
+#yuriiro-app .yr-femcare-section {
+    background: rgba(251, 247, 253, 0.05);
+    border-radius: 0;
+    border-top: 1px solid rgba(235, 222, 245, 0.2);
+    border-bottom: 1px solid rgba(235, 222, 245, 0.2);
+}
+
+#yuriiro-app .yr-femcare-title {
+    color: #D8B36A;
+}
+
+#yuriiro-app .yr-femcare-text {
+    color: #D3C4E2;
+}
+
+/* ピラミッド：香調確定まで非表示 */
+#yuriiro-app .bb-pending {
+    display: none !important;
+}
+
+#yuriiro-app .yr-pyramid-title,
+#yuriiro-app .yr-pyramid-sub {
+    color: #D3C4E2;
+}
+
+#yuriiro-app .yr-note-box {
+    border: none;
+    border-top: 1px solid rgba(235, 222, 245, 0.3);
+    border-bottom: 1px solid rgba(235, 222, 245, 0.3);
+    background: transparent;
+    border-radius: 0;
+}
+
+#yuriiro-app .yr-note-label {
+    color: #D8B36A;
+}
+
+#yuriiro-app .yr-note-text {
+    color: #C9BADB;
+}
+
+#yuriiro-app .yr-limited-warn {
+    color: #EBD298;
+    border: 1px solid rgba(216, 179, 106, 0.5);
+    background: rgba(216, 179, 106, 0.07);
+}
+
+/* 結果CTA：金の細線長方形（内側二重線） */
+#yuriiro-app .yr-cta-btn {
+    background: rgba(216, 179, 106, 0.12);
+    color: #FBF7FD;
+    border: 1px solid #D8B36A;
+    font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    box-shadow: inset 0 0 0 4px #241536, inset 0 0 0 5px rgba(235, 222, 245, 0.3);
+}
+
+#yuriiro-app .yr-cta-btn:hover {
+    background: rgba(216, 179, 106, 0.22);
+    letter-spacing: 0.3em;
+}
+
+/* ---- ABOUT ---- */
+#yuriiro-app .yr-all-frags {
+    border-top: none;
+    padding-top: 0;
+}
+
+#yuriiro-app .yr-about-section {
+    border-top: 1px solid rgba(235, 222, 245, 0.2);
+}
+
+#yuriiro-app .yr-about-label {
+    color: #A493BC;
+}
+
+#yuriiro-app .yr-about-lead {
+    color: #EBD298;
+}
+
+#yuriiro-app .yr-about-feature {
+    background: rgba(251, 247, 253, 0.05);
+    border: 1px solid rgba(235, 222, 245, 0.2);
+    border-radius: 0;
+}
+
+#yuriiro-app .yr-about-feature-label {
+    color: #D8B36A;
+}
+
+#yuriiro-app .yr-about-feature-text {
+    color: #D3C4E2;
+}
+
+#yuriiro-app .yr-about-social {
+    color: #C9BADB;
+}
+
+#yuriiro-app .yr-about-price-card {
+    background: rgba(251, 247, 253, 0.05);
+    border: 1px solid rgba(216, 179, 106, 0.45);
+    border-radius: 0;
+}
+
+#yuriiro-app .yr-about-price-badge {
+    color: #D8B36A;
+    border-color: rgba(216, 179, 106, 0.5);
+}
+
+#yuriiro-app .yr-about-price-name {
+    color: #D3C4E2;
+}
+
+#yuriiro-app .yr-about-price-value {
+    color: #FBF7FD;
+}
+
+#yuriiro-app .yr-about-price-tax {
+    color: #A493BC;
+}
+
+#yuriiro-app .yr-about-price-note {
+    color: #A493BC;
+}
+
+#yuriiro-app .yr-retry-btn {
+    color: #A493BC;
+}
+
+/* Safariフォールバック（ベースのh1-h3 serif指定はそのまま活かす） */
+
+/* ============================================================
+   ★v2追記（2026-09-24）：FVをどのデバイスでも1画面に収める
+   svh基準＋clampで SE級(667px)〜Pro Max(932px) を1画面化。
+   svh非対応ブラウザは従来のスクロールにフォールバック。
+   ============================================================ */
+
+#yuriiro-app #yr-screen-intro {
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: max(14px, 2.6svh) 20px max(12px, 2svh);
+    justify-content: center;
+}
+
+#yuriiro-app #yr-screen-intro .bb-brand {
+    margin-bottom: 6px;
+    font-size: clamp(9px, 2.6vw, 11px);
+}
+
+#yuriiro-app #yr-screen-intro .bb-limited-tag {
+    margin-bottom: clamp(10px, 2svh, 22px);
+}
+
+#yuriiro-app #yr-screen-intro .bb-slot-hero {
+    width: auto;
+    aspect-ratio: 3 / 4;
+    height: clamp(112px, 23svh, 190px);
+    margin: 0 0 clamp(12px, 2.2svh, 24px);
+}
+
+#yuriiro-app #yr-screen-intro h1.yr-intro-title {
+    font-size: clamp(20px, 5.4vw, 34px);
+    margin-bottom: clamp(4px, 1svh, 8px);
+}
+
+#yuriiro-app #yr-screen-intro .yr-intro-sub {
+    margin-bottom: clamp(10px, 2svh, 24px);
+    font-size: clamp(12px, 3.4vw, 14px);
+    line-height: 1.9;
+}
+
+#yuriiro-app #yr-screen-intro .yr-intro-desc {
+    margin-bottom: clamp(14px, 2.6svh, 34px);
+    padding: clamp(10px, 1.8svh, 18px) 22px;
+    font-size: clamp(11px, 3vw, 13px);
+    line-height: 2;
+}
+
+#yuriiro-app #yr-screen-intro .yr-intro-desc-time {
+    margin-bottom: clamp(6px, 1svh, 12px);
+}
+
+#yuriiro-app #yr-screen-intro .yr-btn-primary {
+    padding: clamp(13px, 2svh, 17px) 48px;
+    font-size: clamp(14px, 3.8vw, 16px);
+}
+
+#yuriiro-app #yr-screen-intro .bb-rights {
+    position: static;
+    margin-top: clamp(8px, 1.6svh, 14px);
+}
+
+/* Q7の＊（注釈マーク）を小さく上付きに */
+#yuriiro-app .yr-star {
+    font-size: 0.5em !important;
+    vertical-align: super !important;
+    display: inline !important;
+}
+
+/* ============================================================
+   ★v3追記（2026-09-25）：ベティ全身化
+   設問＝全身ポーズのローテ＋回答時に跳ねる／調合中＝魔法ポーズ／
+   結果＝「重ねると」の先生ポーズ＋限定ボトル横の投げキッス
+   ============================================================ */
+
+/* 設問の隅：顔→全身に合わせて枠を縦長に（2026-09-25 拡大：68×112 → 96×158） */
+#yuriiro-app .bb-slot-corner.bb-filled {
+    width: 96px;
+    height: 158px;
+    right: 10px;
+    bottom: 40px;
+}
+
+#yuriiro-app .bb-slot-corner.bb-filled .bb-art {
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.45));
+}
+
+/* 回答した瞬間のぴょこん */
+#yuriiro-app .bb-hop {
+    animation: bbHop 0.4s ease;
+}
+
+@keyframes bbHop {
+    0% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-10px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #yuriiro-app .bb-hop {
+        animation: none;
+    }
+}
+
+/* 調合中：魔法をかけるベティ */
+#yuriiro-app .bb-loading-betty {
+    height: clamp(100px, 15svh, 150px);
+    width: auto;
+    margin-bottom: 18px;
+    filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.4));
+}
+
+/* 結果：「ピーチムスクを重ねると」 */
+#yuriiro-app .bb-kasane {
+    position: relative;
+    padding-right: 0;
+    /* ★右側の余白(80px)を消して「0」にします */
+    text-align: center;
+    /* ★テキスト全体を中央揃えにします */
+}
+
+/* ベティちゃんの絶対配置CSSは不要になったため削除（またはコメントアウト） */
+/*
+#yuriiro-app .bb-kasane-betty {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 98px;
+    width: auto;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+}
+*/
+/* 結果：限定ボトルの白プレートに寄り添う投げキッス */
+#yuriiro-app .yr-product-wrap {
+    position: relative;
+}
+
+#yuriiro-app .bb-product-betty {
+    position: absolute;
+    right: 2px;
+    bottom: -12px;
+    height: 106px;
+    width: auto;
+    z-index: 2;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.45));
+}
+
+/* ============================================================
+   ★v4追記（2026-09-25）：設問のベティを「最下段の選択肢の下線」に揃える
+   画面基準の絶対配置をやめ、選択肢グリッドと同じステージ（.bb-q-stage）
+   基準に変更。ベティの下端＝グリッド下端（＝最下段の下線）。
+   選択肢の改行・文言は元のまま。
+   ============================================================ */
+
+#yuriiro-app .bb-q-stage {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+}
+
+#yuriiro-app .bb-q-stage .yr-answers-grid {
+    max-width: none;
+    width: 100%;
+}
+
+#yuriiro-app .bb-slot-corner.bb-filled {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    top: auto;
+    width: 96px;
+    height: 158px;
+    z-index: 3;
+}
+
+
+/* 外枠の大きさは変えず、中のイラストだけを枠いっぱいに拡大 */
+#yuriiro-app .bb-slot-result {
+    overflow: hidden !important;
+    /* 枠からはみ出る黒い余白部分をカット */
+}
+
+#yuriiro-app .bb-slot-result img,
+#yuriiro-app .bb-slot-result .bb-art {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    /* 枠の縦横比に合わせてイラストをめいっぱい拡大 */
+    transform: scale(1.0) !important;
+    /* イラストをさらに1.3倍にズームアップ */
+}
+
+/* ===== 注釈（2026-09-30追記） ===== */
+/* 本文につける小さい上付きの※ */
+#yuriiro-app .bb-mark {
+    font-size: 0.6em;
+    vertical-align: super;
+    line-height: 0;
+}
+/* 右寄せの小さい注釈文 */
+#yuriiro-app .bb-note {
+    display: block;
+    text-align: right;
+    font-size: 9px;
+    color: #A493BC;
+    letter-spacing: 0.05em;
+    line-height: 1.6;
+    margin-top: 6px;
+}</style><div class="article-body">
+<div id="yuriiro-app">
+    <!-- ============================================================
+         YURiiRO × BETTY BOOP™ 私だけの香り診断（10月ハロウィン限定・ピーチムスク）
+         正本：2026-09-24 みこ反映版（画像・設問動画＝Beyondアップロード済みURL。触らない）
+         残プレースホルダ：SILK_WEAK_MP4（結果ヒーローのみ）＝FV動画確定後に流用差し替え
+         ============================================================ -->
+    <!-- INTRO -->
+    <div id="yr-screen-intro" class="yr-screen" style="position:relative;overflow:hidden;">
+        <video autoplay loop muted playsinline style="position:absolute;top:50%;left:50%;min-width:100%;min-height:100%;width:auto;height:auto;transform:translate(-40%,-40%);object-fit:cover;z-index:0;pointer-events:none;" class="lazyload">
+            <source data-src="https://file.mysquadbeyond.com/uploads/article_photo/photo/6647147/0a7191b1-a79e-49ae-9ce9-7463a03b95d0.h265.mp4" type="video/mp4;codecs=hvc1.1.6.L120.B0"><source type="video/mp4" data-src="https://file.mysquadbeyond.com/uploads/article_photo/photo/6647147/0a7191b1-a79e-49ae-9ce9-7463a03b95d0.mp4">
+        </source></video>
+        <!-- 紫フィルタ（P-2モーヴ・トワイライト） -->
+        <div style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(74,53,96,0.62) 0%,rgba(56,37,76,0.74) 50%,rgba(36,21,54,0.88) 100%);"></div>
+        <div style="position:relative;z-index:2;width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;">
+            <div class="bb-brand">YURiiRO × BETTY BOOP™</div>
+            <div class="bb-limited-tag">HALLOWEEN LIMITED</div>
+            <!-- ★BETTY: FVメイン（Beyondアップロード済み） -->
+            <div class="bb-slot bb-slot-hero bb-filled" data-betty-slot="fv-hero">
+                <img class="bb-art lazyload" src="https://file.mysquadbeyond.com/lazy.png" alt="ベティー ブープ™" data-src="https://file.mysquadbeyond.com/uploads/article_photo/photo/7538259/58374915-ba7b-4dd4-b298-752c2edff1e9.png">
+            </div>
+            <h1 class="yr-intro-title">ベティーちゃんと見つける<br><span>私のための香り診断</span>
+            </h1>
+            <p class="yr-intro-sub">あなたの甘さと色気は、<br>どんなふうに香り立つ？</p>
+            <div class="yr-intro-desc">
+                <div class="yr-intro-desc-time">所要時間：約1分</div>
+                7つの質問に答えると、<br>
+                素肌のフェロモンと溶け合う<span class="bb-mark" style="vertical-align:baseline;"></span>＊<br>
+                "香り"に出会えます。
+                <span class="bb-note">※角質層まで</span>
+            </div>
+            <button class="yr-btn-primary" id="yr-btn-start">診断をはじめる</button>
+            <div class="bb-rights">TM &amp; © 2026 Fleischer Studios, Inc.</div>
+        </div>
+    </div>
+    <!-- QUESTION -->
+    <div id="yr-screen-question" class="yr-screen yr-hidden" style="position:relative;overflow:hidden;">
+        <video autoplay loop muted playsinline style="position:absolute;top:50%;left:50%;min-width:100%;min-height:100%;width:auto;height:auto;transform:translate(-50%,-50%);object-fit:cover;z-index:0;pointer-events:none;" class="lazyload">
+            <source data-src="https://file.mysquadbeyond.com/uploads/article_photo/photo/7539236/e3ffa539-080b-4e86-b4cd-c2c07ab70894.h265.mp4" type="video/mp4;codecs=hvc1.1.6.L120.B0"><source type="video/mp4" data-src="https://file.mysquadbeyond.com/uploads/article_photo/photo/7539236/e3ffa539-080b-4e86-b4cd-c2c07ab70894.mp4">
+        </source></video>
+        <div style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(56,37,76,0.86) 0%,rgba(36,21,54,0.92) 100%);"></div>
+        <div style="position:relative;z-index:2;width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;">
+            <div class="yr-progress-wrap">
+                <div class="yr-progress-meta">
+                    <span class="yr-progress-category" id="yr-q-category"></span>
+                    <span class="yr-progress-num" id="yr-q-num"></span>
+                </div>
+                <div class="yr-progress-track">
+                    <div class="yr-progress-fill" id="yr-progress-fill"></div>
+                </div>
+                <div class="yr-progress-remaining" id="yr-progress-remaining"></div>
+            </div>
+            <p class="yr-question-text" id="yr-q-text"></p>
+            <p class="yr-question-hint" id="yr-q-hint"></p>
+            <div style="width:100%; max-width:400px; text-align:right; margin: 4px auto; position:relative; z-index:10; opacity:1 !important;">
+                <p id="yr-q-note" style="font-size:10px; color:#A493BC !important; margin:0; padding-right:10px; display:inline-block; vertical-align:top; opacity:1 !important;"></p>
+            </div>
+            <!-- 選択肢グリッド＋ベティの共通ステージ（ベティの下端＝最下段の下線に揃う） -->
+            <div class="bb-q-stage">
+                <div class="yr-answers-grid" id="yr-answers-grid"></div>
+                <!-- ★BETTY: 設問の隅＝全身ポーズを設問ごとにローテーション（Q1〜Q7の画像はJSの bbQBetty 配列。Beyondアップロード後はJS側のURLを差し替え） -->
+                <div class="bb-slot bb-slot-corner bb-filled" data-betty-slot="q-corner">
+                    <img class="bb-art lazyload" id="bb-q-betty" src="https://file.mysquadbeyond.com/lazy.png" alt="ベティー ブープ™" data-src="https://file.mysquadbeyond.com/uploads/article_photo/photo/7539251/4cb5f44e-2ed0-43b5-b871-8163cb3b1dcb.png">
+                </div>
+            </div>
+            <button class="yr-back-btn" id="yr-back-btn">← ひとつ前の質問に戻る</button>
+            <div class="bb-rights">TM &amp; © 2026 Fleischer Studios, Inc.</div>
+        </div>
+    </div>
+    <!-- LOADING（調合中）-->
+    <div id="yr-screen-loading" class="yr-screen yr-hidden" style="position:relative;overflow:hidden;">
+        <video autoplay loop muted playsinline style="position:absolute;top:50%;left:50%;min-width:100%;min-height:100%;width:auto;height:auto;transform:translate(-50%,-50%);object-fit:cover;z-index:0;pointer-events:none;" class="lazyload">
+            <source data-src="https://file.mysquadbeyond.com/uploads/article_photo/photo/7539224/374e8f1a-4bb2-4f22-a632-37874cb7a8ad.h265.mp4" type="video/mp4;codecs=hvc1.1.6.L120.B0"><source type="video/mp4" data-src="https://file.mysquadbeyond.com/uploads/article_photo/photo/7539224/374e8f1a-4bb2-4f22-a632-37874cb7a8ad.mp4">
+        </source></video>
+        <div style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(56,37,76,0.66) 0%,rgba(36,21,54,0.82) 100%);"></div>
+        <div style="position:relative;z-index:2;width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;">
+            <!-- ★BETTY: 調合中＝FC02（両手を上げて魔法をかける全身ポーズ）。Beyondアップロード後にURL差し替え -->
+            <img class="bb-art bb-loading-betty lazyload" src="https://file.mysquadbeyond.com/lazy.png" alt="ベティー ブープ™" data-src="https://file.mysquadbeyond.com/uploads/article_photo/photo/7539250/f21e0e0a-7cda-44d0-a522-098daf674100.png">
+            <p class="yr-loading-text">あなたの香りを、<br>ベティーちゃんが調合中…</p>
+            <p class="bb-loading-sub">甘さと、色気と、<br>ほんの少しの魔法。</p>
+            <div class="yr-loading-dots">
+                <div class="yr-dot"></div>
+                <div class="yr-dot"></div>
+                <div class="yr-dot"></div>
+            </div>
+            <div>
+                <div class="yr-loading-trust">
+                    <div class="yr-trust-item">天然由来オイル配合<span class="bb-mark">※1</span>
+                    </div>
+                    <div class="yr-trust-divider">|</div>
+                    <div class="yr-trust-item">皮膚科医・婦人科医監修<span class="bb-mark">※2</span>
+                    </div>
+                </div>
+                <span class="bb-note">※1 ミネラルオイルを含む<br>※2 PR</span>
+            </div>
+            <div class="bb-rights">TM &amp; © 2026 Fleischer Studios, Inc.</div>
+        </div>
+    </div>
+    <!-- RESULT -->
+    <div id="yr-screen-result" class="yr-screen yr-hidden">
+        <!-- ===== 診断ゾーン：タイプ発表（ベティの世界・人物なし） ===== -->
+        <div class="yr-result-hero" id="yr-result-hero" style="position:relative;overflow:hidden;">
+            <video id="yr-result-video" autoplay loop muted playsinline style="position:absolute;top:50%;left:50%;min-width:100%;min-height:100%;width:auto;height:auto;transform:translate(-50%,-50%);object-fit:cover;z-index:0;pointer-events:none;" class="lazyload">
+                <source type="video/mp4" data-src="SILK_WEAK_MP4">
+            </source></video>
+            <div id="yr-hero-overlay" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(74,53,96,0.66) 0%,rgba(36,21,54,0.88) 100%);"></div>
+            <div style="position:relative;z-index:2;width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;">
+                <div class="yr-result-badge">Your Type</div>
+                <div class="bb-type-name" id="bb-type-name"></div>
+                <div class="yr-result-headline" id="yr-result-headline"></div>
+                <div class="yr-limited-hero-badge" id="yr-limited-hero-badge">✦ ハロウィン限定の香り</div>
+                <!-- ★BETTY: 結果の祝福（Beyondアップロード済み） -->
+                <div class="bb-slot bb-slot-result bb-filled" data-betty-slot="result-hero">
+                    <img class="bb-art lazyload" src="https://file.mysquadbeyond.com/lazy.png" alt="ベティー ブープ™" data-src="https://file.mysquadbeyond.com/uploads/article_photo/photo/7538272/2c64530b-df6f-4d35-9a65-b04cce71497e.png">
+                </div>
+                <!-- <div class="bb-rights">TM &amp; © 2026 Fleischer Studios, Inc.</div> -->
+            </div>
+        </div>
+        <div class="yr-result-body">
+            <!-- 人物描写（比喩1行＋回答に沿った描写） -->
+            <p class="yr-result-desc" id="yr-result-desc"></p>
+            <!-- ピーチムスクを重ねると -->
+            <div class="bb-kasane">
+
+                <div class="bb-kasane-label">ピーチムスクを重ねると</div>
+                <div class="bb-kasane-text" id="bb-kasane-text"></div>
+            </div>
+            <!-- 回収の一文 -->
+            <p class="bb-fin">診断でわかったのは、香りの名前じゃない。<br><span>この香りが、あなたの素肌でどう完成するか。</span></p>
+            <!-- ===== 購入ゾーン：ここから実写解禁（実写オイル素材の差し込み位置） ===== -->
+            <!-- 商品画像（Beyondアップロード済み） -->
+            <div class="yr-product-wrap" id="yr-product-wrap">
+                <img id="yr-product-img" class="yr-product-img lazyload" src="https://file.mysquadbeyond.com/lazy.png" alt="ピーチムスク ハロウィン限定ボトル" data-src="https://file.mysquadbeyond.com/uploads/article_photo/photo/7538273/900efe5b-7338-450a-a0a5-8297c97bc657.webp">
+                <!-- ★BETTY: 限定ボトルの紹介＝FC15（投げキッスの全身ポーズ）。Beyondアップロード後にURL差し替え -->
+                <img class="bb-art bb-product-betty lazyload" src="https://file.mysquadbeyond.com/lazy.png" alt="ベティー ブープ™" data-src="https://file.mysquadbeyond.com/uploads/article_photo/photo/7538259/58374915-ba7b-4dd4-b298-752c2edff1e9.png">
+            </div>
+            <p class="bb-limited-line">
+                10月<span style="font-size: 0.6em; vertical-align: super;">＊</span>だけ、ベティーちゃんと作った1本。<br>
+                <small style="font-size: 8px; opacity: 0.55; display: block; margin-top: 4px;">TM &amp; © 2026 Fleischer Studios, Inc.</small>
+                <small style="font-size: 8px; opacity: 0.55; display: block; margin-top: 4px;">※10月1日から10月31日まで販売。17,500個限定のためなくなり次第終了。次回の販売は未定となります。香りは予告なく変更する可能性がございます。</small>
+            </p>
+
+            <div class="yr-femcare-section">
+                <div class="yr-femcare-title">Femcare + Body Care Oil</div>
+                <div class="yr-femcare-text" id="yr-femcare-text"></div>
+            </div>
+            <!-- FRAGRANCE PYRAMID（香調＝2026-09-24確定） -->
+            <div class="yr-pyramid-wrap">
+                <div class="yr-pyramid-title">
+                    <div class="yr-pyramid-title" style="font-size:19px;">Fragrance Pyramid</div>
+                    <div class="yr-pyramid-sub">体温とともに香りが3段階に変化。<br>時間が経つほど、あなただけの香りに。</div>
+                </div>
+                <svg id="yr-pyramid-svg" viewbox="-50 0 400 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;margin:0 auto;">
+                    <defs>
+                        <lineargradient id="yrpg1" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" id="yrpg1a" stop-color="#C9A6C4" stop-opacity="1"></stop>
+                            <stop offset="100%" id="yrpg1b" stop-color="#A87AA0" stop-opacity="1"></stop>
+                        </lineargradient>
+                        <lineargradient id="yrpg2" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" id="yrpg2a" stop-color="#A87AA0" stop-opacity="1"></stop>
+                            <stop offset="100%" id="yrpg2b" stop-color="#7A5580"></stop>
+                        </lineargradient>
+                        <lineargradient id="yrpg3" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" id="yrpg3a" stop-color="#7A5580"></stop>
+                            <stop offset="100%" id="yrpg3b" stop-color="#3E2A52"></stop>
+                        </lineargradient>
+                    </defs>
+                    <polygon id="yrpsvg1" points="150,8 204,90 96,90" fill="url(#yrpg1)"></polygon>
+                    <polygon id="yrpsvg2" points="96,92 204,92 251,162 49,162" fill="url(#yrpg2)"></polygon>
+                    <polygon id="yrpsvg3" points="49,164 251,164 290,222 10,222" fill="url(#yrpg3)"></polygon>
+                    <text x="150" y="76" font-size="11" fill="white" text-anchor="middle" font-family="serif" font-weight="bold" id="yrpsvg1-txt"></text>
+                    <text x="150" y="134" font-size="12" fill="white" text-anchor="middle" font-family="serif" font-weight="bold" id="yrpsvg2-txt"></text>
+                    <text x="150" y="199" font-size="12" fill="white" text-anchor="middle" font-family="serif" font-weight="bold" id="yrpsvg3-txt"></text>
+                    <text x="-8" y="52" font-size="9" fill="#D8B36A" text-anchor="end" font-family="serif" letter-spacing="1">TOP</text>
+                    <text x="-8" y="130" font-size="9" fill="#D8B36A" text-anchor="end" font-family="serif" letter-spacing="1">MID</text>
+                    <text x="-8" y="196" font-size="9" fill="#D8B36A" text-anchor="end" font-family="serif" letter-spacing="1">BASE</text>
+                    <text x="298" y="52" font-size="9" fill="#D8B36A" text-anchor="start" font-family="serif">〜30分</text>
+                    <text x="298" y="130" font-size="9" fill="#D8B36A" text-anchor="start" font-family="serif">〜3時間</text>
+                    <text x="298" y="196" font-size="9" fill="#D8B36A" text-anchor="start" font-family="serif">〜6時間</text>
+                </svg>
+            </div>
+            <div class="yr-note-box">
+                <div class="yr-note-label">Fragrance Note</div>
+                <div class="yr-note-text" id="yr-result-note"></div>
+            </div>
+            <div class="yr-limited-wrap" id="yr-limited-wrap">
+                <div class="yr-limited-warn">ハロウィン限定 <span class="bb-mark">※</span> — なくなり次第終了</div>
+            </div>
+            <button class="yr-cta-btn" id="yr-cta-btn"></button>
+            <div style="font-size:8px;color:#A493BC;text-align:center;margin-top:8px;line-height:1.8;letter-spacing:0.05em;">
+                ※10月1日から10月31日まで販売。17,500個限定のためなくなり次第終了。次回の販売は未定となります。香りは予告なく変更する可能性がございます。
+            </div>
+            <!-- ABOUT YURiiRO（本番の教育ブロックを継承） -->
+            <div class="yr-about-section">
+                <div class="yr-about-label">About YURiiRO</div>
+                <p class="yr-about-lead">素肌と溶け合い<span class="bb-mark">※</span>、あなただけの香りになる。</p>
+                <span class="bb-note" style="margin-top:-24px;margin-bottom:24px;">※角質層まで</span>
+                <div style="width:100%;text-align:center;margin:16px 0;">
+                    <!-- 購入ゾーン：実写オイル素材の差し込み位置（Higgsfield生成 or 既存商品カット） -->
+                </div>
+                <div class="yr-about-features">
+                    <div class="yr-about-feature">
+                        <div class="yr-about-feature-label">Two Layers</div>
+                        <div class="yr-about-feature-text">
+                            美容液層とピュアオイル層。<br>振って混ぜる2層処方で、<br>肌に溶け込む<span class="bb-mark">※</span>。
+                            <div style="text-align:right;margin-top:4px;">
+                                <span style="font-size:9px;color:#A493BC;letter-spacing:0.05em;">※角質層まで</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="yr-about-feature">
+                        <div class="yr-about-feature-label">Designed by Scent</div>
+                        <div class="yr-about-feature-text">国際アロマセラピスト＊が<br>心理学に基づいて調香。<br>香りが3段階に変化。</div>
+                        <div style="font-size:11px;color:#A493BC;text-align:right;margin-top:8px;line-height:1.8;letter-spacing:0.05em;">
+                            ※PR
+                        </div>
+                        <div class="yr-about-feature">
+                            <div class="yr-about-feature-label">All in One</div>
+                            <div class="yr-about-feature-text">デリケートゾーンから髪まで<br>全身にこれ1本。<br>皮膚科医・婦人科医監修<span class="bb-mark">※</span>。</div>
+                            <span class="bb-note">※PR</span>
+                        </div>
+                    </div>
+                    <p class="yr-about-social">神田うのさん、紺野あさ美さん＊をはじめ、<br>多くの女性に選ばれています。</p>
+                    <div style="font-size:11px;color:#A493BC;text-align:right;margin-top:8px;line-height:1.8;letter-spacing:0.05em;">
+                        ※PR
+                        <div class="yr-about-price-card">
+                            <div class="yr-about-price-badge">定期初回限定</div>
+                            <div class="yr-about-price-row">
+                                <span class="yr-about-price-name">オイル単品</span>
+                                <span class="yr-about-price-value">1,990<span class="yr-about-price-tax">円（税別）</span><br><span style="font-size:11px;color:#A493BC;font-weight:300;">（税込2,189円）</span></span>
+                            </div>
+                            <div class="yr-about-price-row">
+                                <span class="yr-about-price-name">オイル+ウォッシュセット</span>
+                                <span class="yr-about-price-value">3,980<span class="yr-about-price-tax">円（税別）</span><br><span style="font-size:11px;color:#A493BC;font-weight:300;">（税込4,378円）</span></span>
+                            </div>
+                            <div class="yr-about-price-note">※1世帯1回限り・定期コースはいつでも解約OK</div>
+                        </div>
+                        <button class="yr-cta-btn yr-cta-btn-about" id="yr-cta-btn-about"></button>
+                    </div>
+                    <button class="yr-retry-btn" id="yr-retry-btn">もう一度診断する</button>
+                    <div class="bb-rights" style="position:static;margin:12px auto 0;">TM &amp; © 2026 Fleischer Studios, Inc.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div><script>const lazyLoadInstance = new LazyLoad({
+  elements_selector: '.lazyload',
+  callback_loaded: function(element) {
+    element.classList.remove('lazyload');
+  }
+});</script><script>'use strict';
+
+(function() {
+  function Heatmap() {
+    this.exclusionTags = ['script', 'noscript', 'link', 'style', 'meta'];
+    this.windowWidth = window.innerWidth || document.documentElement.clientWidth || 0;
+    this.windowHeight = window.innerHeight || document.body.clientHeight || 0;
+    this.indexedElements = [];
+    this.isScrollStop = true;
+    this.scrollStopTime = new Date();
+    this.scrollStartTime = 0;
+
+    this.dbName = 'production_squadbeyond';
+
+    this.exitVisibilityChange = '';
+    if (document.hidden != null) {
+      this.exitVisibilityChange = 'visibilitychange';
+    } else if (document.mozHidden != null) {
+      this.exitVisibilityChange = 'mozvisibilitychange';
+    } else if (document.msHidden != null) {
+      this.exitVisibilityChange = 'msvisibilitychange';
+    } else if (document.webkitHidden != null) {
+      this.exitVisibilityChange = 'webkitvisibilitychange';
+    }
+
+    this.lambdaApi = "https://hd4wr2if8b.execute-api.ap-northeast-1.amazonaws.com/default/squadbeyond_bigquery_api_02";
+    this.maxArrivalPosition = 0;
+    this.arrivalIndexes = [];
+
+    this.widgetList = [];
+    this.viewedWidgetClassnameList = [];
+  }
+
+  Heatmap.prototype = {
+    getBqApi: function(table, rows) {
+      const uri = new URI("https://bq-api.squadbeyond.com/articles/actions");
+      uri.setSearch('table', table);
+      uri.setSearch('articleUid', "VhkDzkapKupwpGkp_azQ");
+      uri.setSearch('environment', 'production');
+      uri.setSearch('visitor_id', window.sb_visitor_id);
+      rows.url = window.sb_article_url;
+      rows.article_uid = "VhkDzkapKupwpGkp_azQ";
+      rows.visitor_global_id = window.sb_global_id;
+      rows.visitor_id = window.sb_visitor_id;
+      rows.window_width = this.windowWidth;
+      rows.window_height = this.windowHeight;
+      rows.user_agent = navigator.userAgent;
+      uri.setSearch('rows', encodeURIComponent(JSON.stringify(rows)));
+      const xmlHttp = new XMLHttpRequest();
+      xmlHttp.open('GET', uri.toString(), true);
+      xmlHttp.send(null);
+    },
+    assignIndexAttribute: function() {
+      let _this = this;
+      let articleBody = document.body.querySelector('.article-body');
+      articleBody.dataset.sbhi = 3;
+      const articeBodyNodelist = articleBody.querySelectorAll('*');
+      const articeBodyNode = Array.prototype.slice.call(articeBodyNodelist, 0);
+      articeBodyNode.forEach(function(element, index) {
+        index = index + 4;
+        if (element.classList.contains('sb-fixed')) { return; }
+        let tagName = element.tagName.toLowerCase();
+        if (_this.exclusionTags.indexOf(tagName) != -1) { return; }
+        if (getComputedStyle(element, null).position === 'fixed') {
+          const elementNodelist = element.querySelectorAll('*');
+          const elementNode = Array.prototype.slice.call(elementNodelist, 0);
+          elementNode.forEach(function(element) {
+            element.classList.add('sb-fixed');
+          });
+          return;
+        }
+        element.dataset.sbhi = index;
+      });
+      const indexedElements = document.querySelectorAll('[data-sbhi]');
+      this.indexedElements = Array.prototype.slice.call(indexedElements, 0);
+    },
+    fetchWidgetList: function() {
+      const widgetList = document.querySelectorAll("[id^='sb-part-'], [data-sb-part-id]");
+      this.widgetList = Array.prototype.slice.call(widgetList, 0);
+    },
+    assignCursorPointer: function() {
+      let ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      if (ios) {
+        document.body.style.cursor = 'pointer';
+      }
+    },
+    assignParameterToLink: function() {
+      const currentPageUri = new URI(location.href);
+      currentPageUri.removeQuery('sbrd'); // For egg cart
+      currentPageUri.removeQuery('sb_tu_id');
+      currentPageUri.removeQuery('step_uid');
+      const currentPageQueries = currentPageUri.query(true);
+
+      const aspSession = JSON.parse(document.querySelector('.js-asp-session').dataset.value)
+
+      const nodelist = document.body.querySelectorAll("a[href^=http") 
+      const node = Array.prototype.slice.call(nodelist, 0);
+      node.forEach(function(element) {
+        if (element.href.includes('tel:')) return
+        const uri = new URI(element.href);
+        uri.addQuery(currentPageQueries);
+        uri.removeQuery('squadbeyond_uid');
+        uri.addQuery('squadbeyond_uid', window.sb_visitor_id);
+        uri.removeQuery('sb_article_uid');
+        uri.addQuery('sb_article_uid', "VhkDzkapKupwpGkp_azQ");
+        element.href = uri.toString();
+
+        if (aspSession.session_id) {
+          const uri = new URI(element.href);
+          uri.removeQuery(aspSession.session_id);
+          uri.addQuery(aspSession.session_id, window.sb_visitor_id);
+          element.href = uri.toString();
+        }
+
+        const isRedirectLink = element.href.match(/\/redirect_pages\//) != null;
+        if (isRedirectLink) {
+          const uri = new URI(element.href);
+          uri.removeQuery('article_url');
+          uri.addQuery('article_url', window.sb_article_url);
+          element.href = uri.toString();
+        }
+
+        element.addEventListener('click', function(event) {
+          try {
+            currentPageUri.removeQuery('sb_article_uid');
+            currentPageUri.addQuery('sb_article_uid', "VhkDzkapKupwpGkp_azQ");
+            currentPageUri.removeQuery('sb_tu_id');
+            currentPageUri.addQuery('sb_tu_id', window.sb_visitor_id);
+            history.replaceState(null, null, currentPageUri.toString());
+          }
+          catch(e) {
+          }
+        });
+      });
+    },
+    isAnyPartOfElementInViewport: function(element) {
+      let rect = element.getBoundingClientRect();
+      let windowHeight = (window.innerHeight || document.documentElement.clientHeight);
+      let windowWidth = (window.innerWidth || document.documentElement.clientWidth);
+      let widthInView = (rect.top <= windowHeight) && ((rect.top + rect.height) >= 0);
+      let heightInView = (rect.left <= windowWidth) && ((rect.left + rect.width) >= 0);
+      return (widthInView && heightInView);
+    },
+    fetchElementInViewport: function(position) {
+      let _this = this;
+      let elementFromPoint = null;
+      let baseY = 0;
+      let scroll = (window.pageYOffset !== undefined) ? window.pageYOffset : document.documentElement.scrollTop;
+      switch(position) {
+        case 'center':
+          elementFromPoint = document.elementFromPoint(this.windowWidth / 2, this.windowHeight / 2);
+          let center = this.windowHeight / 2;
+          baseY = scroll + center;
+          break;
+        case 'bottom':
+          elementFromPoint = document.elementFromPoint(this.windowWidth / 2, this.windowHeight - 1);
+          baseY = scroll + this.windowHeight;
+          break;
+      }
+      if (elementFromPoint != null && elementFromPoint.dataset.sbhi) {
+        return elementFromPoint;
+      }
+      let prevDiff = 0;
+      let closestElement = null;
+      this.indexedElements.forEach(function(element) {
+        if (_this.isAnyPartOfElementInViewport(element)) {
+          let elementClientRect = element.getBoundingClientRect();
+          let diff = Math.abs(baseY - (elementClientRect.top + scroll));
+          if (prevDiff > diff) {
+            closestElement = element;
+          }
+          prevDiff = diff;
+        }
+      });
+      return closestElement;
+    },
+    renderArrivalImage: function() {
+      let bottomElement = this.fetchElementInViewport('bottom');
+      if (!bottomElement) { return; }
+      const index = bottomElement.dataset.sbhi;
+      let scroll = (window.pageYOffset !== undefined) ? window.pageYOffset : document.documentElement.scrollTop;
+      let rect = bottomElement.getBoundingClientRect();
+      let bottomElementTop = scroll + rect.top;
+      let arrivedAtElementY = (scroll + this.windowHeight) - bottomElementTop;
+      let yPercent = Math.floor(((arrivedAtElementY / rect.height) * 100));
+
+      const bgArrivalPosition = scroll + this.windowHeight;
+      if (this.maxArrivalPosition < bgArrivalPosition && !this.arrivalIndexes.includes(index)) {
+        this.getBqApi(
+          'visitor_arrivals',
+          {
+            index: index,
+            y_percent: yPercent,
+          }
+        );
+        this.arrivalIndexes.push(index);
+        this.maxArrivalPosition = bgArrivalPosition;
+      }
+    },
+    renderVisibleWidget: function() {
+      try {
+        let _this = this;
+        this.widgetList.forEach(function(element) {
+          const widgetId = element.getAttribute('id') || `sb-part-${element.dataset.sbPartId}` || '';
+          const r = widgetId.match(/^sb\-part\-(.*)$/);
+          const isInViewport = _this.isAnyPartOfElementInViewport(element);
+          const className = element.className;
+          if (r && isInViewport && !_this.viewedWidgetClassnameList.includes(className)) {
+            _this.getBqApi(
+              'widget_vimp_logs',
+              {
+                widget_id: widgetId,
+              }
+            );
+            _this.viewedWidgetClassnameList.push(className);
+          }
+        });
+      } catch (e) {
+      }
+    },
+    renderAttentionImage: function() {
+      if (this.scrollStopTime === 0) { return; }
+      const secondWithDecimalPoint = (this.scrollStartTime.getTime() - this.scrollStopTime.getTime()) / 1000;
+      if (secondWithDecimalPoint < 1.0) { return; }
+      let second = Math.round(((this.scrollStartTime.getTime() - this.scrollStopTime.getTime()) / 1000));
+      let centerElement = this.fetchElementInViewport('center');
+      if (!centerElement) { return; }
+      let scroll = (window.pageYOffset !== undefined) ? window.pageYOffset : document.documentElement.scrollTop;
+      let rect = centerElement.getBoundingClientRect();
+      let centerElementTop = Math.floor(scroll + rect.top);
+      let pageCenter = (scroll + (this.windowHeight / 2))
+      let yPercent = Math.floor((pageCenter - centerElementTop) / rect.height * 100);
+
+      this.getBqApi(
+        'visitor_attentions',
+        {
+          index: centerElement.dataset.sbhi,
+          y_percent: yPercent,
+          second: second,
+        }
+      );
+    },
+    renderScrollImages: function() {
+      let _this = this;
+      let isScrolling;
+      window.addEventListener('scroll', function (event) {
+        window.clearTimeout(isScrolling);
+        _this.isScrollStop = false;
+        _this.scrollStartTime = new Date();
+        _this.renderAttentionImage();
+        _this.scrollStopTime = 0;
+        isScrolling = setTimeout(function() {
+          _this.renderArrivalImage();
+          _this.renderVisibleWidget();
+          _this.isScrollStop = true;
+          _this.scrollStopTime = new Date();
+          _this.scrollStartTime = 0;
+        }, 200);
+      }, false);
+    },
+    getTouchPosition: function(event) {
+      let x = undefined;
+      let y = undefined;
+      if (event.changedTouches && event.changedTouches[0]) {
+        let touchObject = event.changedTouches[0];
+        x = touchObject.pageX;
+        y = touchObject.pageY;
+      } else if (event.originalEvent && event.originalEvent.touches) {
+        x = event.originalEvent.touches[0].pageX;
+        y = event.originalEvent.touches[0].pageY;
+      } else {
+        x = event.pageX;
+        y = event.pageY;
+      }
+      return { x: x, y: y };
+    },
+    renderClickImage: function() {
+      let _this = this;
+      document.body.addEventListener('click', function(event) {
+        let redirectUrl = '';
+        let anchorTagIndex = null;
+        let isTracking = null;
+        let currentNode = event.target;
+        while (currentNode && currentNode.tagName !== 'BODY') {
+          const tagName = currentNode.tagName;
+          if (tagName && tagName === 'A' && redirectUrl === '') {
+            redirectUrl = currentNode.href || '';
+            anchorTagIndex = currentNode.dataset.sbhi || null;
+            isTracking = currentNode.dataset.sbTracking || null;
+          } else if (tagName && tagName === 'BUTTON' && currentNode.getAttribute('type') === 'submit' && redirectUrl === '') {
+            isTracking = currentNode.dataset.sbTracking || null;
+          }
+          currentNode = currentNode.parentNode;
+        }
+        let position = _this.getTouchPosition(event);
+        let rect = event.target.getBoundingClientRect();
+        let positionX = rect.left + window.pageXOffset;
+        let positionY = rect.top + window.pageYOffset;
+        let x = position.x - positionX;
+        let y = position.y - positionY;
+        let xPercent = (x / rect.width * 100).toFixed(1);
+        let yPercent = (y / rect.height * 100).toFixed(1);
+
+        _this.getBqApi(
+          'visitor_clicks',
+          {
+            index: event.target.dataset.sbhi,
+            x_percent: xPercent,
+            y_percent: yPercent,
+            link: redirectUrl,
+            anchor_tag_index: anchorTagIndex,
+            is_tracking: isTracking,
+          }
+        );
+      });
+    },
+    getCookie: function(name) {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      if (match) return match[2];
+    },
+    sendFbParams: function() {
+      const fbc = this.getCookie('_fbc') || '';
+      const fbp = this.getCookie('_fbp') || '';
+      const existsParams = fbc != '' || fbp != '';
+      if (!existsParams) {
+        return;
+      }
+      const rows = {
+        visitor_id: window.sb_visitor_id,
+        fbc: fbc,
+        fbp: fbp,
+      }
+      const uri = new URI("https://bq-api.squadbeyond.com/tables/visitor_facebook_parameters/records");
+      uri.setSearch('row', encodeURIComponent(JSON.stringify(rows)));
+      const xmlHttp = new XMLHttpRequest();
+      xmlHttp.open('GET', uri.toString(), true);
+      xmlHttp.send(null);
+    }
+  }
+
+  let heatmap = new Heatmap();
+  heatmap.assignIndexAttribute();
+  heatmap.assignCursorPointer();
+  heatmap.assignParameterToLink();
+  heatmap.renderArrivalImage();
+  heatmap.renderScrollImages();
+  heatmap.renderClickImage();
+  heatmap.sendFbParams();
+  heatmap.fetchWidgetList();
+  heatmap.renderVisibleWidget();
+})();</script><script>const storageValue = JSON.stringify({ article_uid: "VhkDzkapKupwpGkp_azQ", visitor_uid: window.sb_visitor_id });
+sessionStorage.setItem('sb_global_id', window.sb_global_id);
+sessionStorage.setItem("sb_bp_yuri-f3-49bq-fk01", storageValue);
+localStorage.setItem('sb_global_id', window.sb_global_id);
+localStorage.setItem("sb_bp_yuri-f3-49bq-fk01", storageValue);</script><script>let hasFunnel = document.querySelector('.js-has-funnel').dataset.value
+if (hasFunnel === "true") {
+  let sbUrl = new URL(location.href);
+  let sbParams = new URLSearchParams(sbUrl.search);
+  if (sbParams.get('step_uid')) {
+    sbParams.delete('step_uid')
+    history.replaceState(null, null, location.pathname + `?${sbParams.toString()}`)
+  }
+}</script><script>
+    document.addEventListener('DOMContentLoaded', sbAncChoices.init, false);
+</script>
+<!-- タグ設定のJavaScript bodyに以下をカットして貼り付けてください。
+同一widgetを複数追加する場合、複数回貼付けは不要です。 -->
+<script>
+    document.addEventListener('DOMContentLoaded', sbCurrentDate.init, false);
+</script>
+<!-- JavaScript bodyここまで -->  <div data-article-value="VhkDzkapKupwpGkp_azQ" data-team-id="499" id="link-popup-root"></div><script src="https://distribution-service-modules-assets.mysquadbeyond.com/link_popups/index.js"></script><img src="https://id.mysquadbeyond.com/pixel.gif?visitor_id=e649206c-f19d-4d3c-87f1-c64e60a2b30e&visitor_global_id=a82edf1c-1470-4d2c-85f7-1171ed4e7faa&article_uid=VhkDzkapKupwpGkp_azQ&request_url=https://sb-yuriiro-oil.newsanything.tokyo/ab/yuri-f3-49bq-fk01&redirect_sbs_id=null" alt="" style="display:none" onload="fetch('https://id.mysquadbeyond.com/visitor-cross-global-id',{credentials:'include'}).then(v=>v.text()).then(v=>{fetch('/visitor-cross-global-id',{method:'POST',body:v});});" /><script async>
+          window.addEventListener('load', function() {
+            fetch('https://id.mysquadbeyond.com/api/v1/cookie-team-uid', { credentials: 'include' })
+              .then(response => response.text())
+              .then(teamUid => {
+                fetch('/team-uid', {
+                  method: 'POST',
+                  body: teamUid,
+                });
+              });
+          });
+        </script></body></html>

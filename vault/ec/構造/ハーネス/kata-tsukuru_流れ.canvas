@@ -1,0 +1,245 @@
+{
+ "nodes": [
+  {
+   "id": "goal",
+   "type": "text",
+   "text": "ゴールを立てる（/goal）\nGOAL.md に箱7個\n判定は道具だけがする",
+   "x": 0,
+   "y": 0,
+   "width": 340,
+   "height": 150,
+   "color": "6"
+  },
+  {
+   "id": "s1",
+   "type": "text",
+   "text": "1 参考を集める（G1）\n勝っている実物を10本→5本以上\n出どころは SKILL.md の「参考の出どころ」の表",
+   "x": 0,
+   "y": 200,
+   "width": 340,
+   "height": 150,
+   "color": "4"
+  },
+  {
+   "id": "s2",
+   "type": "text",
+   "text": "2 段に割る\n参考を上から1段ずつ\n段の仕事・心理・実物の言葉",
+   "x": 0,
+   "y": 400,
+   "width": 340,
+   "height": 150,
+   "color": "4"
+  },
+  {
+   "id": "s3",
+   "type": "text",
+   "text": "3 変数の木に割る（G2）\n段をさらに小さな変数へ\n変数ごとに「差を0にする事」",
+   "x": 0,
+   "y": 600,
+   "width": 340,
+   "height": 150,
+   "color": "4"
+  },
+  {
+   "id": "s4",
+   "type": "text",
+   "text": "4 共通項を出す（G3）\n固定（3本以上で同じ）\n分岐（条件で変わる）\n誤差（決められない）",
+   "x": 0,
+   "y": 800,
+   "width": 340,
+   "height": 150,
+   "color": "4"
+  },
+  {
+   "id": "s5",
+   "type": "text",
+   "text": "5 子スキルを書く（G4）\n型を写して1本作るスキル\n最後に最終確認の箱",
+   "x": 0,
+   "y": 1020,
+   "width": 340,
+   "height": 150,
+   "color": "4"
+  },
+  {
+   "id": "s6",
+   "type": "text",
+   "text": "6 本物の商品で1本作る（G5）\nここちドライ等で端まで",
+   "x": 0,
+   "y": 1220,
+   "width": 340,
+   "height": 150,
+   "color": "4"
+  },
+  {
+   "id": "s7",
+   "type": "text",
+   "text": "7 別の AI が審査（G6）\nPASS / FAIL と理由",
+   "x": 0,
+   "y": 1400,
+   "width": 340,
+   "height": 150,
+   "color": "4"
+  },
+  {
+   "id": "judge",
+   "type": "text",
+   "text": "判定\ngoal.py check\n箱が全部○？",
+   "x": 0,
+   "y": 1580,
+   "width": 340,
+   "height": 150,
+   "color": "3"
+  },
+  {
+   "id": "ok",
+   "type": "text",
+   "text": "全部○\n本人に1回だけ出す（5行）",
+   "x": -420,
+   "y": 1780,
+   "width": 340,
+   "height": 150,
+   "color": "4"
+  },
+  {
+   "id": "ng",
+   "type": "text",
+   "text": "×がある\n理由を1行で記録",
+   "x": 420,
+   "y": 1780,
+   "width": 340,
+   "height": 150,
+   "color": "1"
+  },
+  {
+   "id": "fix",
+   "type": "text",
+   "text": "原因を割る\n同じ箱が2回×なら\nやり方・道具を変える",
+   "x": 420,
+   "y": 1980,
+   "width": 340,
+   "height": 150,
+   "color": "1"
+  },
+  {
+   "id": "put",
+   "type": "text",
+   "text": "直しを子スキルの\nその作業をする手順の位置に差し込む（G7）\n「しない一覧」にしない",
+   "x": 420,
+   "y": 2180,
+   "width": 340,
+   "height": 150,
+   "color": "1"
+  },
+  {
+   "id": "back",
+   "type": "text",
+   "text": "×の箱を作る手順へ戻る\n→ もう一度判定\n上限8周で本人に1行",
+   "x": 420,
+   "y": 2380,
+   "width": 340,
+   "height": 150,
+   "color": "1"
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "fromNode": "goal",
+   "toNode": "s1",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e1",
+   "fromNode": "s1",
+   "toNode": "s2",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e2",
+   "fromNode": "s2",
+   "toNode": "s3",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e3",
+   "fromNode": "s3",
+   "toNode": "s4",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e4",
+   "fromNode": "s4",
+   "toNode": "s5",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e5",
+   "fromNode": "s5",
+   "toNode": "s6",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e6",
+   "fromNode": "s6",
+   "toNode": "s7",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e7",
+   "fromNode": "s7",
+   "toNode": "judge",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e8",
+   "fromNode": "judge",
+   "toNode": "ok",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e9",
+   "fromNode": "judge",
+   "toNode": "ng",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e10",
+   "fromNode": "ng",
+   "toNode": "fix",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e11",
+   "fromNode": "fix",
+   "toNode": "put",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e12",
+   "fromNode": "put",
+   "toNode": "back",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "eloop",
+   "fromNode": "back",
+   "toNode": "s1",
+   "fromSide": "right",
+   "toSide": "right",
+   "label": "×の箱の手順へ"
+  }
+ ]
+}
