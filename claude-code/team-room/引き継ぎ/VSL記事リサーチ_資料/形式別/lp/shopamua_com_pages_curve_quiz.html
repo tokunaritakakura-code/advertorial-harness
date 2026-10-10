@@ -1,0 +1,907 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Amua Curve Quiz</title>
+<style>
+  :root{
+    --bg:#fffdf5;
+    --card:#ffffff;
+    --cream:#fff6d6;
+    --ink:#000000;
+    --ink-soft:#6d6552;
+    --accent:#fecd4d;
+    --accent-line:#eab93c;
+    --line:#f0e7cd;
+    --good:#2E9E6B;
+    --good-soft:#E6F4EC;
+    --bad:#D9534F;
+    --bad-soft:#FBE9E8;
+    --gold:#E8A33D;
+    --radius:16px;
+    --shadow:0 2px 10px rgba(60,50,10,.07);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .top{
+    background:var(--card);border-bottom:1px solid var(--line);
+    padding:14px 16px;display:flex;align-items:center;justify-content:center;position:relative;
+  }
+  .back{
+    position:absolute;left:10px;top:50%;transform:translateY(-50%);
+    border:0;background:none;font-size:22px;color:var(--ink-soft);cursor:pointer;
+    padding:6px 10px;border-radius:10px;visibility:hidden;
+  }
+  .back:focus-visible,.opt:focus-visible,.btn:focus-visible{outline:3px solid var(--accent-line);outline-offset:2px}
+  .logo{font-weight:900;font-size:26px;letter-spacing:-1px;line-height:1;color:var(--ink)}
+  .progress{display:flex;gap:5px;max-width:520px;margin:14px auto 0;padding:0 20px}
+  .progress span{flex:1;height:5px;border-radius:99px;background:var(--line);transition:background .3s}
+  .progress span.on{background:var(--accent)}
+  .wrap{max-width:520px;margin:0 auto;padding:22px 20px 60px}
+  .eyebrow{
+    display:inline-block;font-size:11px;font-weight:700;letter-spacing:2.2px;
+    text-transform:uppercase;color:var(--ink);background:var(--cream);
+    padding:5px 12px;border-radius:99px;margin-bottom:14px;
+  }
+  h1{font-size:25px;line-height:1.25;font-weight:800;text-wrap:balance;margin-bottom:8px}
+  .sub{color:var(--ink-soft);font-size:15px;line-height:1.55;margin-bottom:20px}
+  .sub b{color:var(--ink)}
+  .opts{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+  .opt{
+    display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+    background:var(--card);border:2px solid var(--line);border-radius:var(--radius);
+    padding:16px 16px;font-size:16px;font-weight:600;color:var(--ink);
+    cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s,transform .1s,background .15s;
+  }
+  .opt:active{transform:scale(.985)}
+  .opt .em{font-size:20px;width:26px;text-align:center;flex:none}
+  .opt.quiet{font-weight:500;color:var(--ink-soft);box-shadow:none}
+  .opt.sel{border-color:var(--accent-line);background:var(--cream)}
+  .opt .tick{
+    margin-left:auto;width:22px;height:22px;border-radius:7px;border:2px solid var(--line);
+    flex:none;display:flex;align-items:center;justify-content:center;font-size:13px;color:transparent;
+  }
+  .opt.sel .tick{background:var(--accent);border-color:var(--accent-line);color:var(--ink)}
+  .btn{
+    display:block;width:100%;border:0;cursor:pointer;margin-top:22px;
+    background:var(--accent);color:var(--ink);font-size:17px;font-weight:800;
+    padding:17px;border-radius:99px;box-shadow:0 6px 16px rgba(254,205,77,.45);
+    transition:transform .1s,background .15s;
+  }
+  .btn:active{transform:scale(.98)}
+  .btn:disabled{opacity:.4;cursor:default;box-shadow:none}
+  .microcopy{text-align:center;font-size:12.5px;color:var(--ink-soft);margin-top:12px}
+  /* checkpoint reviews */
+  .carousel{display:flex;gap:14px;overflow-x:auto;padding:6px 2px 14px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+  .rev{
+    flex:0 0 84%;scroll-snap-align:center;background:var(--card);
+    border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);
+  }
+  .imgwrap{position:relative;margin-bottom:12px}
+  .baimg{display:block;width:100%;border-radius:12px}
+  .weekchip{
+    position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.68);color:#fff;
+    font-size:10.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;
+    padding:4px 10px;border-radius:99px;
+  }
+  .rev .who{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14.5px;flex-wrap:wrap}
+  .badge{
+    font-size:10.5px;font-weight:700;color:var(--good);background:var(--good-soft);
+    border-radius:99px;padding:3px 9px;letter-spacing:.2px;
+  }
+  .stars{color:var(--gold);font-size:14px;letter-spacing:2px;margin:6px 0 8px}
+  .rev p{font-size:14px;line-height:1.55;color:var(--ink)}
+  /* education */
+  .edu-card{
+    background:var(--cream);border:1px solid #efdf9d;border-radius:var(--radius);
+    padding:18px;margin:18px 0;
+  }
+  .edu-card h2{font-size:21px;font-weight:800;line-height:1.3;margin-bottom:10px}
+  .edu-card p{font-size:14.5px;line-height:1.6}
+  .edu-card p + p{margin-top:8px}
+  .xlist{list-style:none;margin:14px 0;display:flex;flex-direction:column;gap:9px}
+  .xlist li{
+    display:flex;gap:10px;align-items:flex-start;background:var(--card);
+    border:1px solid var(--line);border-radius:12px;padding:12px 14px;
+    font-size:14.5px;font-weight:600;line-height:1.4;box-shadow:var(--shadow);
+  }
+  .xlist .x{color:var(--bad);font-weight:900;flex:none}
+  .flip{
+    background:var(--good-soft);border:1px solid #C9E8D8;border-radius:var(--radius);
+    padding:16px;font-size:14.5px;line-height:1.6;
+  }
+  .flip b{color:var(--good)}
+  .flip .big{display:block;font-weight:800;font-size:16px;margin-top:8px;color:var(--ink)}
+  .listhead{font-size:15px;font-weight:800;margin:16px 0 4px}
+  /* loader */
+  .loaderbox{text-align:center;padding-top:26px}
+  .ring{
+    width:66px;height:66px;border-radius:50%;margin:0 auto 22px;
+    border:6px solid var(--line);border-top-color:var(--accent);
+    animation:spin 1s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .checks{max-width:330px;margin:22px auto 0;text-align:left;display:flex;flex-direction:column;gap:13px}
+  .chk{display:flex;gap:11px;align-items:center;font-size:15px;font-weight:600;color:var(--ink-soft);opacity:.35;transition:opacity .4s}
+  .chk .c{
+    width:22px;height:22px;border-radius:50%;background:var(--line);flex:none;
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:900;
+    transition:background .3s;
+  }
+  .chk.done{opacity:1;color:var(--ink)}
+  .chk.done .c{background:var(--good)}
+  /* summary */
+  .expect{display:flex;flex-direction:column;gap:9px;margin:16px 0 20px}
+  .expect div{
+    display:flex;gap:9px;align-items:flex-start;font-size:14.5px;font-weight:600;line-height:1.45;
+    background:var(--good-soft);border:1px solid #C9E8D8;border-radius:12px;padding:11px 13px;
+  }
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+  .pcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:13px;box-shadow:var(--shadow)}
+  .pcard .tag{
+    display:inline-block;font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;
+    padding:4px 11px;border-radius:99px;margin-bottom:10px;
+  }
+  .pcard.now .tag{color:var(--bad);background:var(--bad-soft)}
+  .pcard.goal .tag{color:var(--good);background:var(--good-soft)}
+  .fig{
+    height:96px;border-radius:11px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;font-size:44px;
+  }
+  .pcard.now .fig{background:linear-gradient(160deg,#f6f0da,#ece2bd)}
+  .pcard.goal .fig{background:linear-gradient(160deg,#fee49b,#fecd4d)}
+  .metric{margin-bottom:11px}
+  .metric .k{font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--ink-soft)}
+  .metric .v{font-size:13px;font-weight:700;margin:2px 0 5px;line-height:1.25}
+  .bars{display:flex;gap:4px}
+  .bars i{flex:1;height:6px;border-radius:99px;background:var(--line)}
+  .now .bars i.f{background:var(--bad)}
+  .goal .bars i.f{background:var(--good)}
+  .fineprint{
+    font-size:12px;color:var(--ink-soft);line-height:1.5;text-align:center;
+    border:1px solid var(--line);background:var(--card);border-radius:12px;padding:11px 14px;margin-top:16px;
+  }
+  .fade{animation:fade .3s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){
+    .fade{animation:none}.ring{animation-duration:2.5s}
+    .opt,.btn{transition:none}
+  }
+  @media(min-width:560px){h1{font-size:28px}}
+</style>
+<!-- BEGIN app block: shopify://apps/kaching-bundles/blocks/app-embed-block/6c637362-a106-4a32-94ac-94dcfd68cdb8 -->
+<!-- Kaching Bundles App Embed -->
+
+<!-- BEGIN app snippet: app-embed-content -->
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  // Prevent duplicate initialization if both app embeds are enabled
+  if (window.kachingBundlesAppEmbedLoaded) {
+    console.warn('[Kaching Bundles] Multiple app embed blocks detected. Please disable one of them. Skipping duplicate initialization.');
+  } else {
+    window.kachingBundlesAppEmbedLoaded = true;
+    window.kachingBundlesEnabled = true;
+    window.kachingBundlesInitialized = false;
+
+    // Allow calling kachingBundlesInitialize before the script is loaded
+    (() => {
+      let shouldInitialize = false;
+      let realInitialize = null;
+
+      window.kachingBundlesInitialize = () => {
+        if (realInitialize) {
+          realInitialize();
+        } else {
+          shouldInitialize = true;
+        }
+      };
+
+      Object.defineProperty(window, '__kachingBundlesInitializeInternal', {
+        set(fn) {
+          realInitialize = fn;
+          if (shouldInitialize) {
+            shouldInitialize = false;
+            fn();
+          }
+        },
+        get() {
+          return realInitialize;
+        }
+      });
+    })();
+  }
+</script>
+
+
+
+<script id="kaching-bundles-config" type="application/json">
+  {
+    "shopifyDomain": "vgcbjh-iq.myshopify.com",
+    "moneyFormat": "${{amount}}",
+    "locale": "en",
+    "liquidLocale": "en",
+    "country": "US",
+    "currencyRate": 1,
+    "marketCurrencyCode": "USD",
+    "marketId": 116675575889,
+    "productId": null,
+    "storefrontAccessToken": "e88f7f0cc84b8f7cfd7570ca9a5b05ab",
+    "includeSellingPlans": true,
+    "includeAvailableQuantity": true,
+    "customApiHost": null,
+    "keepQuantityInput": false,
+    "ignoreDeselect": false,
+    "ignoreUnitPrice": false,
+    "requireCustomerLogin": false,
+    "abTestsRunning": false,
+    "webPixel": true,
+    "b2bCustomer": false,
+    "isLoggedIn": false,
+    "isDeprecatedAppEmbed": false,
+    "preview": false,
+    "defaultTranslations": {
+      "system.out_of_stock": "There\u0026#39;s not enough items in our stock, please select smaller bundle.",
+      "system.invalid_variant": "Sorry, this is not currently available.",
+      "system.unavailable_option_value": "Unavailable",
+      "system.confirm": "Confirm",
+      "system.cancel": "Cancel",
+      "system.free": "FREE",
+      "system.search": "Search",
+      "system.sort_by": "Sort by",
+      "system.sort_relevance": "Relevance",
+      "system.sort_newest_first": "Newest first",
+      "system.sort_price_low_to_high": "Price: Low → High",
+      "system.sort_price_high_to_low": "Price: High → Low",
+      "system.no_results_found": "No results found",
+      "system.no_results_description": "We can’t find any item matching your search.",
+      "system.clear_search": "Clear search",
+      "system.no_products_available": "No products available",
+      "system.letters_only": "Only letters are allowed.",
+      "system.numbers_only": "Only numbers are allowed.",
+      "system.select_variant_alert": "Please select a variant.",
+      "system.select_variant_placeholder": "Select",
+      "system.personalisation_required_alert": "Please add personalisation for every item to continue.",
+      "system.quantity": "Quantity",
+      "system.subscription_plan": "Subscription plan",
+      "system.remove": "Remove",
+      "system.original_price": "Original price:",
+      "system.price": "Price:"
+
+    },
+    "customSelectors": {
+      "quantity": null,
+      "addToCartButton": null,
+      "variantPicker": null,
+      "price": null,
+      "priceCompare": null,
+      "label": null
+    },
+    "shopCustomStyles": "body:has(.kaching-bundles) .kaching-bundles *{letter-spacing:normal !important;}.kaching-bundles .kaching-bundles__bar-title{color:var(--bar-title-color,#000) !important;}.kaching-bundles .kaching-bundles__bar-subtitle{font-weight:var(--bar-subtitle-font-weight) !important;color:var(--bar-subtitle-color,#555) !important;}.kaching-bundles .kaching-bundles__bar-price{font-weight:var(--bar-title-font-weight,500) !important;}.kaching-bundles .kaching-bundles__bar-full-price,.kaching-bundles .kaching-bundles__bar-unit-price{font-weight:var(--bar-subtitle-font-weight) !important;}body:has(.kaching-bundles) [class*=\"kaching-bundles__subscription\"],body:has(.kaching-bundles) [class*=\"kaching-bundles__subscription\"] *{font-family:inherit !important;letter-spacing:normal !important;}.kaching-bundles [class*=\"subscription\"] [class*=\"title\"],.kaching-bundles__subscription-title{font-family:inherit !important;font-weight:var(--bar-title-font-weight,500) !important;color:var(--bar-title-color,#000) !important;}.kaching-bundles [class*=\"subscription\"] [class*=\"subtitle\"],.kaching-bundles__subscription-subtitle{font-family:inherit !important;font-weight:var(--bar-subtitle-font-weight) !important;color:var(--bar-subtitle-color,#555) !important;}",
+    "brandColors": {"error":"#D72C2C","border":"#FECD4D4D","overlay":"#000000","badgeText":"#000000","primaryText":"#000000","primaryAccent":"#FECD4D","secondaryText":"#555555","badgeBackground":"#FECD4D","primaryAccentText":"#000000","primaryBackground":"#FFFFFF","secondaryBackground":"#F0F0F0"},
+    "featureFlags": {"atc_total_price":false,"cart_change_response_rewrite":false,"cart_interceptor_dedupe_disabled":false,"cart_interceptor_json_encoding":false,"debug_cart_add":false,"disable_nested_cart_lines":false,"early_fetch_override":false,"hide_missing_variants":true,"initialize_with_form_variant":true,"intercept_cart_request":true,"legacy_saved_percentage":false,"low_priority_scripts":false,"native_swatches_disabled":false,"observe_external_selling_plan":false,"observe_form_selling_plan":true,"percentage_cents_rounding_workaround":false,"pos_extension":false,"preserve_variant_selections":false,"price_rounding_v2":true,"propagate_line_properties":false,"propagate_picker_option_changes":false,"reinitialize_morphed_placeholders":true,"remove_variant_change_delay":false,"rever_non_returnable":false,"split_bxgy_items":false,"split_quantity_break_items":false,"storefront_metaobjects":false,"variant_images":true}
+
+  }
+</script>
+
+<!-- BEGIN app snippet: translations -->
+
+
+  
+
+<!-- END app snippet -->
+
+
+
+
+
+
+  
+  
+
+  <link rel="modulepreload" href="https://cdn.shopify.com/extensions/01a11a66-3255-717e-a3ff-80367bbc4699/kaching-bundles-2039/assets/kaching-bundles.js" crossorigin="anonymous" fetchpriority="high">
+  
+  <script type="module" src="https://cdn.shopify.com/extensions/01a11a66-3255-717e-a3ff-80367bbc4699/kaching-bundles-2039/assets/loader.js" crossorigin="anonymous" fetchpriority="high"></script>
+  <link rel="stylesheet" href="https://cdn.shopify.com/extensions/01a11a66-3255-717e-a3ff-80367bbc4699/kaching-bundles-2039/assets/kaching-bundles.css" media="print" onload="this.media='all'" fetchpriority="high">
+
+  <style>
+    .kaching-bundles__block {
+      display: none;
+    }
+
+    .kaching-bundles-sticky-atc {
+      display: none;
+    }
+  </style>
+
+
+
+<!-- END app snippet -->
+
+<!-- Kaching Bundles App Embed End -->
+
+
+<!-- END app block --><!-- BEGIN app block: shopify://apps/klaviyo-email-marketing-sms/blocks/klaviyo-onsite-embed/2632fe16-c075-4321-a88b-50b567f42507 -->
+
+
+
+
+
+
+
+
+
+
+
+
+  <script async src="https://static.klaviyo.com/onsite/js/WyxC3Y/klaviyo.js?company_id=WyxC3Y"></script>
+  <script>!function(){if(!window.klaviyo){window._klOnsite=window._klOnsite||[];try{window.klaviyo=new Proxy({},{get:function(n,i){return"push"===i?function(){var n;(n=window._klOnsite).push.apply(n,arguments)}:function(){for(var n=arguments.length,o=new Array(n),w=0;w<n;w++)o[w]=arguments[w];var t="function"==typeof o[o.length-1]?o.pop():void 0,e=new Promise((function(n){window._klOnsite.push([i].concat(o,[function(i){t&&t(i),n(i)}]))}));return e}}})}catch(n){window.klaviyo=window.klaviyo||[],window.klaviyo.push=function(){var n;(n=window._klOnsite).push.apply(n,arguments)}}}}();</script>
+
+  
+
+
+
+
+  <script>
+    window.klaviyoReviewsProductDesignMode = false
+  </script>
+
+
+
+
+
+
+
+
+
+<!-- END app block --><!-- BEGIN app block: shopify://apps/gojiberry-survey-quiz/blocks/pre_purchase/b8315024-fc1a-44bb-8f1a-fa02b41c160f --><style>
+  #gojiberry-pre-purchase * {
+    box-sizing: border-box;
+  }
+</style>
+<script type="module" src="https://cdn.shopify.com/extensions/01a0e577-59ce-7c9e-9f1d-a5ae2f76fbf4/gojiberry-255/assets/gojiberryEmbed.js" defer></script>
+
+
+<!-- END app block --><!-- BEGIN app block: shopify://apps/triplewhale/blocks/triple_pixel_snippet/483d496b-3f1a-4609-aea7-8eee3b6b7a2a --><link rel='preconnect dns-prefetch' href='https://api.config-security.com/' crossorigin />
+<link rel='preconnect dns-prefetch' href='https://conf.config-security.com/' crossorigin />
+<script>
+/* >> TriplePixel :: start*/
+window.TriplePixelData={TripleName:"vgcbjh-iq.myshopify.com",ver:"2.16",plat:"SHOPIFY",isHeadless:false,src:'SHOPIFY_EXT',product:{id:"",name:``,price:"",variant:"",av:{  }},search:"",collection:"",cart:"drawer",template:"page",curr:"USD" || "USD", market:"116675575889"},function(W,H,A,L,E,_,B,N){function O(U,T,P,H,R){void 0===R&&(R=!1),H=new XMLHttpRequest,P?(H.open("POST",U,!0),H.setRequestHeader("Content-Type","text/plain")):H.open("GET",U,!0),H.send(JSON.stringify(P||{})),H.onreadystatechange=function(){4===H.readyState&&200===H.status?(R=H.responseText,U.includes("/first")?eval(R):P||(N[B]=R)):(299<H.status||H.status<200)&&T&&!R&&(R=!0,O(U,T-1,P))}}if(N=window,!N[H+"sn"]){N[H+"sn"]=1,L=function(){return Date.now().toString(36)+"_"+Math.random().toString(36)};try{A.setItem(H,1+(0|A.getItem(H)||0)),(E=JSON.parse(A.getItem(H+"U")||"[]")).push({u:location.href,r:document.referrer,t:Date.now(),id:L()}),A.setItem(H+"U",JSON.stringify(E))}catch(e){}var i,m,p;A.getItem('"!nC`')||(_=A,A=N,A[H]||(E=A[H]=function(t,e,i){return void 0===i&&(i=[]),"State"==t?E.s:(W=L(),(E._q=E._q||[]).push([W,t,e].concat(i)),W)},E.s="Installed",E._q=[],E.ch=W,B="configSecurityConfModel",N[B]=1,O("https://conf.config-security.com/model",5),i=L(),m=A[atob("c2NyZWVu")],_.setItem("di_pmt_wt",i),p={id:i,action:"profile",avatar:_.getItem("auth-security_rand_salt_"),time:m[atob("d2lkdGg=")]+":"+m[atob("aGVpZ2h0")],host:A.TriplePixelData.TripleName,plat:A.TriplePixelData.plat,url:window.location.href.slice(0,500),ref:document.referrer,ver:A.TriplePixelData.ver},O("https://api.config-security.com/event",5,p),O("https://api.config-security.com/first?host=".concat(p.host,"&plat=").concat(p.plat),5)))}}("","TriplePixel",localStorage);
+/* << TriplePixel :: end*/
+</script>
+
+
+
+<!-- END app block --><!-- BEGIN app block: shopify://apps/ryviu-product-reviews/blocks/ryviu-js/807ad6ed-1a6a-4559-abea-ed062858d9da -->
+<script>
+  // RYVIU APP :: Settings
+  var ryviu_global_settings = {"review_settings":{"star":1,"style":"style2","title":true,"byText":"By","ofText":"of","tstar1":"Terrible","tstar2":"Poor","tstar3":"Average","tstar4":"Good","tstar5":"Excellent","average":"Average","hasOnly":"Has one","nostars":false,"nowrite":false,"seeLess":"See less","seeMore":"See more","autoplay":true,"hideFlag":true,"hidedate":true,"imageFit":"Ry-Cover-Image","loadMore":"Load more","no_write":false,"noavatar":false,"noreview":true,"order_by":"late","showText":"Show:","showspam":true,"starText":"Star","thankYou":"Thank you!","vr_color":"#fecd4d","Ry_Effect":true,"badgeHead":"r_logo","clearText":"All","clear_all":"Clear all","noReviews":"No reviews","outofText":"out of","random_to":20,"replyText":"reply","ryplyText":"Comments","starStyle":"style1","starcolor":"#D3D3D3","starsText":"Stars","timeDelay":8000,"badgeImage":"https://imgs.ryviu.com/423569675/avatar/0j0hKCVpo1LmokY2PDnA3rBJeQNcEclYrOwk74pG.png","badgeStyle":"r_style2","boostPopup":true,"colorTitle":"#6c8187","colorWrite":"#FFFFFF","customDate":"dd/MM/yy","dateSelect":"dateDefaut","helpulText":"Is this helpful?","latestText":"Latest","nolastname":false,"oldestText":"Oldest","paddingTop":0,"reviewText":"review","sortbyText":"Sort by","filter_by":"Filter by","allContent":"Text, video, images","mediaContent":"Video, images only","starHeight":13,"titleWrite":"Write a review","badgeAction":"featured_popup","borderColor":"#ffffff","borderStyle":"solid","borderWidth":0,"colorAvatar":"rgb(255, 255, 255)","filter_list":"Filter","firstReview":"Write a first review now","paddingLeft":0,"random_from":0,"repliesText":"replies","reviewsText":"reviews","s_fed_title":false,"showingText":"Showing","disableReply":true,"filter_photo":"With photos","hideRateList":true,"paddingRight":0,"payment_type":"Monthly","positionNoty":"bottom-right","textNotFound":"No results found.","textVerified":"Verified buyer","Ry_Effect_Off":true,"author_avatar":true,"bgColorAvatar":"#303030","colorVerified":"#05d92d","customer_name":"show_first_letter","disableHelpul":true,"disableWidget":false,"filter_review":"Filter","hideListImage":false,"paddingBottom":0,"s_fed_content":true,"titleCustomer":"Customer Reviews","badgeMainColor":"#5D865A","bg_button_form":"#5D865A","customerPhotos":"Customer Photos","disbaleMoreImg":true,"featureSidebar":true,"filterRateList":true,"filter_replies":"With replies","filter_reviews":"All","imagesSortText":"Images","setColorAvatar":false,"submitDoneText":"Your review has been submitted.","autoHeightImage":false,"backgroundRyviu":"transparent","backgroundWrite":"#fecd4d","defaultSortText":"Default","disablePurchase":false,"hideImageReview":false,"hideImgCarousel":false,"hideShowingText":false,"reviewTotalText":"Review","starActiveStyle":"style1","starActivecolor":"#fecd4d","submitErrorText":"Can not send your review.","badgeImageHeight":60,"badgeOrientation":"horizontal","emptyDescription":"There are no reviews.","mostLikeSortText":"Most likes","noPaddingMasonry":false,"noticeWriteFirst":"Be the first to","reviewTotalTexts":"Reviews","textHeaderFeature":"Happy Custommer","infoProductFeature":false,"show_title_customer":false,"badgeFeaturedPageURL":"","filter_reviews_local":"US","m_auto_height_carousel":false,"acceptFileVideo":"Max 20MB • Up to 5 minutes.","showFullNameOnMobile":false,"hideAvatarOnMobile":false,"enableVerticalReviewSlide":true,"enableVerticalSwipe":true,"showVerticalNavButtons":true,"hideFilter":true,"hideSortBy":true,"hideVideoUpload":true},"form_settings":{"required":"Please enter required fields","addPhotos":"Add photos","showTitle":true,"titleForm":"Write a review","titleName":"Your name","acceptFile":"JPG, PNG • Max 2MB each","acceptFileVideo":"Max 20MB • Up to 5 minutes.","colorInput":"#464646","colorTitle":"rgb(79, 79, 79)","noticeName":"Your name is required field","titleEmail":"Your email","titleReply":"Replies","autoPublish":true,"buttonReply":"Submit","colorNotice":"#dd2c00","colorSubmit":"#ffffff","noticeEmail":"Your email is required and valid email","qualityText":"Quality*","titleSubmit":"Submit Your Review","titleComment":"Comment","titleSubject":"Review Title","titleSuccess":"Thank you! Your review is submited.","colorStarForm":"#ececec","commentButton":"Comment","noticeSubject":"Title is required field","showtitleForm":true,"errorSentReply":"Can not send your reply.","rating_default":0,"titleMessenger":"","noticeMessenger":"Your review is required field","placeholderName":"","productNotFound":"Not Found","starActivecolor":"#fdbc00","titleReplyWrite":"Write a reply","backgroundSubmit":"#00aeef","placeholderEmail":"","buttonCancelReply":"Cancel","placeholderSubject":"","replyIsunderReivew":"Your reply is under review.","titleWriteEmailForm":"Rating","placeholderMessenger":"","titleFormReviewEmail":"Leave feedback","loadAfterContentLoaded":true,"placeholderCommentMessenger":""},"question_settings":{"by_text":"Author","of_text":"of","on_text":"on","des_form":"Ask a question to the community here","approving":false,"name_form":"Your name","no_answer":"No answer","email_form":"Your E-Mail Adress","input_text":"Have a question? Search for answers","title_form":"No answer found?","answer_form":"Your answers","answer_text":"Answer","newest_text":"Newest","no_question":"No question","question_error_content":"Question is a required field!","question_error_author":"Name is a required field!","question_error_email":"Please enter a valid email address","notice_form":"Complete before submitting","submit_form":"Send a question","helpful_text":"Most helpful","showing_text":"Show","question_form":"Your question","question_text":"question","titleCustomer":"Questions & Answers","community_text":"Ask the community here","questions_text":"questions","backgroundButton":"#5D865A","title_answer_form":"Answer question","ask_community_text":"Ask the community","questions_per_page":6,"submit_answer_form":"Send a reply","write_question_text":"Ask a question","question_answer_form":"Question","placeholder_answer_form":"Answer is a required field!","placeholder_question_form":"Question is a required field!","question_not_found":"No question found","loading_text":"Loading questions...","shop_owner_text":"Shop owner"},"design_settings":{"approving":true,"no_lazy_show":false,"sort":"images","reviews_per_page":6,"paging":"load_more","collection":false,"no_review":true,"featureSidebar":false,"offsetSidebar":"right","boostPopup":true,"positionNoty":"bottom-left","client_theme":"default","noPaddingMasonry":false,"oneColMobile":false,"autoplay":false,"timeDelay":5000,"m_auto_height_carousel":false,"client_header":"HeaderV1","answerApproving":false,"questionsSort":"most_helpful","questionsPerPage":10,"questionApproving":false,"reviewCardAnimation":"fadeInUp","disableReviewCardAnimation":false,"swiperEffect":"cube","swiperSlidesPerView":4,"reviewsCardLayout":"masonry","show_translate":false,"webFont":""}};
+  
+  try {
+    if (typeof ryviu_global_settings === 'string') {
+      ryviu_global_settings = JSON.parse(ryviu_global_settings);
+    }
+  } catch (e) {
+    console.error("Error parsing ryviu_global_settings", e);
+  }
+  var ryviu_version = '3';
+  if (typeof Shopify !== 'undefined' && Shopify.designMode && document.documentElement) {
+    document.documentElement.classList.add('ryviu-shopify-mode');
+  }
+
+  // Locale-aware widget text: merge the shopper's page-locale translation blob
+  // (saved by the admin Translate / Widget Translation page as a per-language
+  // metafield) onto ryviu_global_settings. Applies to every widget architecture
+  // version — v1/v2 load ryviu.min.js via a legacy ScriptTag rather than the
+  // script tag below, but they read window.ryviu_global_settings the same way.
+  if(ryviu_global_settings && ryviu_global_settings.design_settings && ryviu_global_settings.design_settings.show_widget_reviews_by_market){window.__ryviu_locale_key__ = 'en';}
+</script>
+
+
+  <!-- RYVIU APP :: Version 3 -->
+  <script>
+    window.__RYVIU_EMBED_ENABLED__ = true;
+    const boostPopup = ryviu_global_settings?.review_settings?.boostPopup || false;
+    const ryviuShop = 'vgcbjh-iq.myshopify.com';window.ryviu_popup_reviews = [];</script>
+
+  <meta name="r--ryviu-notice" shop="vgcbjh-iq.myshopify.com" >
+  <meta name="r--ryviu-badge" shop="vgcbjh-iq.myshopify.com" >
+  <link rel="stylesheet" href="https://cdn.shopify.com/extensions/01a11993-a344-7fa2-924d-208004f650cb/ryviu-178/assets/ryviu.css">
+  <script defer src="https://cdn.shopify.com/extensions/01a11993-a344-7fa2-924d-208004f650cb/ryviu-178/assets/ryviu.min.js"></script>
+
+
+<!-- END app block --><!-- BEGIN app block: shopify://apps/eg-auto-add-to-cart/blocks/app-embed/0f7d4f74-1e89-4820-aec4-6564d7e535d2 -->
+
+
+
+
+
+
+
+
+
+
+
+  
+    <script
+      async
+      type="text/javascript"
+      src="https://cdn.506.io/eg/script.js?shop=vgcbjh-iq.myshopify.com&v=12"
+    ></script>
+  
+
+
+
+  <meta id="easygift-shop" itemid="c2hvcF8kXzE3OTE0NTUwOTY=" content="{&quot;isInstalled&quot;:true,&quot;installedOn&quot;:&quot;2026-06-11T06:49:30.730Z&quot;,&quot;appVersion&quot;:&quot;3.0&quot;,&quot;subscriptionName&quot;:&quot;Standard&quot;,&quot;cartAnalytics&quot;:true,&quot;freeTrialEndsOn&quot;:null,&quot;settings&quot;:{&quot;reminderBannerStyle&quot;:{&quot;position&quot;:{&quot;horizontal&quot;:&quot;right&quot;,&quot;vertical&quot;:&quot;bottom&quot;},&quot;backgroundColor&quot;:&quot;#FFFFFF&quot;,&quot;borderRadius&quot;:null,&quot;closingMode&quot;:&quot;doNotAutoClose&quot;,&quot;cssStyles&quot;:&quot;&quot;,&quot;displayAfter&quot;:5,&quot;fontFamily&quot;:null,&quot;headerFontSize&quot;:null,&quot;headerText&quot;:&quot;&quot;,&quot;imageUrl&quot;:null,&quot;padding&quot;:null,&quot;primaryColor&quot;:&quot;#000000&quot;,&quot;reshowBannerAfter&quot;:&quot;everyNewSession&quot;,&quot;selfcloseAfter&quot;:5,&quot;showImage&quot;:false,&quot;subHeaderFontSize&quot;:null,&quot;subHeaderText&quot;:&quot;&quot;},&quot;addedItemIdentifier&quot;:&quot;_Gifted&quot;,&quot;ignoreOtherAppLineItems&quot;:null,&quot;customVariantsInfoLifetimeMins&quot;:1440,&quot;redirectPath&quot;:null,&quot;ignoreNonStandardCartRequests&quot;:false,&quot;bannerStyle&quot;:{&quot;position&quot;:{&quot;horizontal&quot;:&quot;right&quot;,&quot;vertical&quot;:&quot;bottom&quot;},&quot;backgroundColor&quot;:&quot;#FFFFFF&quot;,&quot;borderRadius&quot;:null,&quot;cssStyles&quot;:null,&quot;fontFamily&quot;:null,&quot;headerFontSize&quot;:null,&quot;padding&quot;:null,&quot;primaryColor&quot;:&quot;#000000&quot;,&quot;subHeaderFontSize&quot;:null},&quot;themePresetId&quot;:null,&quot;notificationStyle&quot;:{&quot;position&quot;:{&quot;horizontal&quot;:null,&quot;vertical&quot;:null},&quot;backgroundColor&quot;:&quot;#FFFFFF&quot;,&quot;borderRadius&quot;:null,&quot;cssStyles&quot;:null,&quot;duration&quot;:null,&quot;fontFamily&quot;:null,&quot;hasCustomizations&quot;:false,&quot;headerFontSize&quot;:null,&quot;padding&quot;:null,&quot;primaryColor&quot;:null,&quot;subHeaderFontSize&quot;:null},&quot;fetchCartData&quot;:false,&quot;useLocalStorage&quot;:{&quot;enabled&quot;:false,&quot;expiryMinutes&quot;:null},&quot;popupStyle&quot;:{&quot;buttonTextColor&quot;:null,&quot;addButtonText&quot;:null,&quot;backgroundColor&quot;:&quot;#FFFFFF&quot;,&quot;bodyColor&quot;:null,&quot;bodyFontFamily&quot;:null,&quot;bodyFontSize&quot;:null,&quot;borderRadius&quot;:null,&quot;closeModalOutsideClick&quot;:true,&quot;cssStyles&quot;:null,&quot;dismissButtonText&quot;:null,&quot;hasCustomizations&quot;:false,&quot;headerFontFamily&quot;:null,&quot;headerFontSize&quot;:null,&quot;imageUrl&quot;:null,&quot;outOfStockButtonText&quot;:null,&quot;padding&quot;:null,&quot;priceShowZeroDecimals&quot;:true,&quot;primaryColor&quot;:null,&quot;secondaryColor&quot;:null,&quot;showProductLink&quot;:false,&quot;subHeaderFontSize&quot;:null,&quot;subscriptionLabel&quot;:null},&quot;refreshAfterBannerClick&quot;:false,&quot;disableReapplyRules&quot;:false,&quot;disableReloadOnFailedAddition&quot;:false,&quot;autoReloadCartPage&quot;:false,&quot;ajaxRedirectPath&quot;:null,&quot;allowSimultaneousRequests&quot;:false,&quot;applyRulesOnCheckout&quot;:false,&quot;enableCartCtrlOverrides&quot;:true,&quot;customRedirectFromCart&quot;:null,&quot;scriptSettings&quot;:{&quot;branding&quot;:{&quot;removalRequestSent&quot;:null,&quot;show&quot;:false},&quot;productPageRedirection&quot;:{&quot;enabled&quot;:false,&quot;products&quot;:[],&quot;redirectionURL&quot;:&quot;\/&quot;},&quot;debugging&quot;:{&quot;enabled&quot;:false,&quot;enabledOn&quot;:null,&quot;stringifyObj&quot;:false},&quot;reApplyValueBasedRulesInCart&quot;:false,&quot;customCSS&quot;:null,&quot;decodePayload&quot;:false,&quot;delayUpdates&quot;:2000,&quot;disableRedirectAfterFormSubmit&quot;:false,&quot;enableBuyNowInterceptions&quot;:true,&quot;fetchCartDataBeforeRequest&quot;:false,&quot;fetchProductInfoFromSavedDomain&quot;:false,&quot;hideAlertsOnFrontend&quot;:false,&quot;hideGiftedPropertyText&quot;:false,&quot;removeEGPropertyFromSplitActionLineItems&quot;:false,&quot;removeProductsAddedFromExpiredRules&quot;:true,&quot;useFinalPrice&quot;:false,&quot;useFinalPriceGetEntireCart&quot;:false},&quot;promoCodeMessageStyle&quot;:{&quot;message&quot;:&quot;Free gift added!&quot;},&quot;egDiscount&quot;:{&quot;cartValueStopCollectionCheck&quot;:false},&quot;accessToEnterprise&quot;:true},&quot;translations&quot;:null,&quot;defaultLocale&quot;:&quot;en&quot;,&quot;shopDomain&quot;:&quot;shopamua.com&quot;}">
+
+
+<script defer>
+  (async function() {
+    try {
+
+      const blockVersion = "v3"
+      if (blockVersion != "v3") {
+        return
+      }
+
+      let metaErrorFlag = false;
+      if (metaErrorFlag) {
+        return
+      }
+
+      // Parse metafields as JSON
+      const metafields = {"easygift-rule-6a2a64f57be715cde8029cf9":{"schedule":{"enabled":false,"starts":null,"ends":null},"trigger":{"productTags":{"targets":[],"sellingPlan":null},"hybrid":null,"type":"productsInclude","minCartValue":null,"upperCartValue":null,"products":[{"variantId":59630571978833,"sellingPlans":[{"id":"2054717521","name":"Deliver every month"}]}],"cartValueExcludedVariants":[],"collections":[],"condition":"quantity","conditionMin":1,"conditionMax":null,"collectionSellingPlanType":null,"promoCode":null,"promoCodeDiscount":null},"action":{"notification":{"enabled":false,"headerText":null,"subHeaderText":null,"showImage":false,"imageUrl":""},"discount":{"issue":null,"type":"app","id":"gid:\/\/shopify\/DiscountAutomaticNode\/2271154733137","title":"VIPGIFTS","createdByEasyGift":true,"easygiftAppDiscount":true,"discountType":"percentage","value":100},"popupOptions":{"headline":null,"subHeadline":null,"showItemsPrice":false,"showVariantsSeparately":false,"popupDismissable":false,"imageUrl":null,"persistPopup":false,"rewardQuantity":1,"showDiscountedPrice":false,"hideOOSItems":false},"banner":{"enabled":false,"headerText":null,"subHeaderText":null,"showImage":false,"imageUrl":null,"displayAfter":"5","closingMode":"doNotAutoClose","selfcloseAfter":"5","reshowBannerAfter":"everyNewSession","redirectLink":null},"type":"addAutomatically","products":[{"variantId":"59630573355089","quantity":1}],"limit":1,"preventProductRemoval":false,"addAvailableProducts":false,"showPromoCodeMessage":false},"targeting":{"link":{"destination":null,"data":null,"cookieLifetime":14},"additionalCriteria":{"geo":{"include":[],"exclude":[]},"type":null,"customerTags":[],"customerTagsExcluded":[],"customerId":[],"orderCount":null,"hasOrderCountMax":false,"orderCountMax":null,"totalSpent":null,"hasTotalSpentMax":false,"totalSpentMax":null},"type":"all"},"settings":{"worksInReverse":true,"runsOncePerSession":false,"preventAddedItemPurchase":false,"showReminderBanner":false},"_id":"6a2a64f57be715cde8029cf9","name":"SUBSGIFT","active":true,"translations":null,"testMode":false}};
+
+      // Process metafields in JavaScript
+      let savedRulesArray = [];
+      for (const [key, value] of Object.entries(metafields)) {
+        if (value) {
+          for (const prop in value) {
+            // avoiding Object.Keys for performance gain -- no need to make an array of keys.
+            savedRulesArray.push(value);
+            break;
+          }
+        }
+      }
+
+      const metaTag = document.createElement('meta');
+      metaTag.id = 'easygift-rules';
+      metaTag.content = JSON.stringify(savedRulesArray);
+      metaTag.setAttribute('itemid', 'cnVsZXNfJF8xNzkxNDU1MDk2');
+
+      document.head.appendChild(metaTag);
+      } catch (err) {
+        
+      }
+  })();
+</script>
+
+
+  <script
+    type="text/javascript"
+    defer
+  >
+
+    (function () {
+      try {
+        window.EG_INFO = window.EG_INFO || {};
+        var shopInfo = {"isInstalled":true,"installedOn":"2026-06-11T06:49:30.730Z","appVersion":"3.0","subscriptionName":"Standard","cartAnalytics":true,"freeTrialEndsOn":null,"settings":{"reminderBannerStyle":{"position":{"horizontal":"right","vertical":"bottom"},"backgroundColor":"#FFFFFF","borderRadius":null,"closingMode":"doNotAutoClose","cssStyles":"","displayAfter":5,"fontFamily":null,"headerFontSize":null,"headerText":"","imageUrl":null,"padding":null,"primaryColor":"#000000","reshowBannerAfter":"everyNewSession","selfcloseAfter":5,"showImage":false,"subHeaderFontSize":null,"subHeaderText":""},"addedItemIdentifier":"_Gifted","ignoreOtherAppLineItems":null,"customVariantsInfoLifetimeMins":1440,"redirectPath":null,"ignoreNonStandardCartRequests":false,"bannerStyle":{"position":{"horizontal":"right","vertical":"bottom"},"backgroundColor":"#FFFFFF","borderRadius":null,"cssStyles":null,"fontFamily":null,"headerFontSize":null,"padding":null,"primaryColor":"#000000","subHeaderFontSize":null},"themePresetId":null,"notificationStyle":{"position":{"horizontal":null,"vertical":null},"backgroundColor":"#FFFFFF","borderRadius":null,"cssStyles":null,"duration":null,"fontFamily":null,"hasCustomizations":false,"headerFontSize":null,"padding":null,"primaryColor":null,"subHeaderFontSize":null},"fetchCartData":false,"useLocalStorage":{"enabled":false,"expiryMinutes":null},"popupStyle":{"buttonTextColor":null,"addButtonText":null,"backgroundColor":"#FFFFFF","bodyColor":null,"bodyFontFamily":null,"bodyFontSize":null,"borderRadius":null,"closeModalOutsideClick":true,"cssStyles":null,"dismissButtonText":null,"hasCustomizations":false,"headerFontFamily":null,"headerFontSize":null,"imageUrl":null,"outOfStockButtonText":null,"padding":null,"priceShowZeroDecimals":true,"primaryColor":null,"secondaryColor":null,"showProductLink":false,"subHeaderFontSize":null,"subscriptionLabel":null},"refreshAfterBannerClick":false,"disableReapplyRules":false,"disableReloadOnFailedAddition":false,"autoReloadCartPage":false,"ajaxRedirectPath":null,"allowSimultaneousRequests":false,"applyRulesOnCheckout":false,"enableCartCtrlOverrides":true,"customRedirectFromCart":null,"scriptSettings":{"branding":{"removalRequestSent":null,"show":false},"productPageRedirection":{"enabled":false,"products":[],"redirectionURL":"\/"},"debugging":{"enabled":false,"enabledOn":null,"stringifyObj":false},"reApplyValueBasedRulesInCart":false,"customCSS":null,"decodePayload":false,"delayUpdates":2000,"disableRedirectAfterFormSubmit":false,"enableBuyNowInterceptions":true,"fetchCartDataBeforeRequest":false,"fetchProductInfoFromSavedDomain":false,"hideAlertsOnFrontend":false,"hideGiftedPropertyText":false,"removeEGPropertyFromSplitActionLineItems":false,"removeProductsAddedFromExpiredRules":true,"useFinalPrice":false,"useFinalPriceGetEntireCart":false},"promoCodeMessageStyle":{"message":"Free gift added!"},"egDiscount":{"cartValueStopCollectionCheck":false},"accessToEnterprise":true},"translations":null,"defaultLocale":"en","shopDomain":"shopamua.com"};
+        var productRedirectionEnabled = shopInfo.settings.scriptSettings.productPageRedirection.enabled;
+        if (["Unlimited", "Enterprise"].includes(shopInfo.subscriptionName) && productRedirectionEnabled) {
+          var products = shopInfo.settings.scriptSettings.productPageRedirection.products;
+          if (products.length > 0) {
+            var productIds = products.map(function(prod) {
+              var productGid = prod.id;
+              var productIdNumber = parseInt(productGid.split('/').pop());
+              return productIdNumber;
+            });
+            var productInfo = null;
+            var isProductInList = productIds.includes(productInfo.id);
+            if (isProductInList) {
+              var redirectionURL = shopInfo.settings.scriptSettings.productPageRedirection.redirectionURL;
+              if (redirectionURL) {
+                window.location = redirectionURL;
+              }
+            }
+          }
+        }
+
+        
+      } catch(err) {
+      return
+    }})()
+  </script>
+
+
+
+<!-- END app block --><!-- BEGIN app block: shopify://apps/ryviu-product-reviews/blocks/loyalty/807ad6ed-1a6a-4559-abea-ed062858d9da --><!-- reward.liquid -->
+
+
+
+  <link rel="stylesheet" href="https://cdn.shopify.com/extensions/01a11993-a344-7fa2-924d-208004f650cb/ryviu-178/assets/reward-button.css">
+  <link rel="stylesheet" href="https://cdn.shopify.com/extensions/01a11993-a344-7fa2-924d-208004f650cb/ryviu-178/assets/mobile.css">
+
+  
+  
+  
+  
+  
+  
+    
+    
+        
+      
+
+    
+  
+  <div id="ryviu-popover" class="bottom-right">
+    <div id="ryviu-loader-wrapper">
+      <div class="ryviu-loader"></div>
+    </div>
+  </div>
+  <script defer src="https://cdn.shopify.com/extensions/01a11993-a344-7fa2-924d-208004f650cb/ryviu-178/assets/reward-button.js"></script>
+  
+
+
+<!-- END app block --><script src="https://cdn.shopify.com/extensions/01a117fb-3f60-790e-b00a-a6ecd068b00c/aftersell-1140/assets/aftersell-utm-triggers.js" type="text/javascript" defer="defer"></script>
+<link rel="canonical" href="https://shopamua.com/pages/curve-quiz">
+<meta name="shopify-y" content="a98e1304-1a71-444d-90bc-a4471c0f98e4" data-expiration="1823012696000"><meta name="shopify-s" content="568c82e6-e59e-42d8-811c-5642e4803d1f" data-expiration="1791456896000"><meta name="new-cookie-storage-activated" content="t">
+</head>
+<body>
+
+
+<div class="top">
+  <button class="back" id="backBtn" aria-label="Go back">‹</button>
+  <div class="logo">amua</div>
+</div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<div class="wrap" id="stage"></div>
+
+<script>
+/* ================= CONFIG ================= */
+const PDP_URL = "https://shopamua.com/products/amua-vitaldrops";
+const PIXEL_ID = "644801108147451";
+/* Supabase database */
+const SUPABASE_URL = "https://wznhzafvbfdrnhpoqgwj.supabase.co";
+const SUPABASE_KEY = "sb_publishable_5ZL3JQ1wbeGBi7HJc404Ug_31QOeskL";
+const answers = {};
+let multiSel = new Set();
+
+/* ---- Meta pixel: PageView only (attribution safety, no custom events) ---- */
+const IS_LIVE = location.protocol.indexOf("http")===0 && !/claude\.ai$/.test(location.hostname) && location.hostname!=="localhost";
+if (IS_LIVE && PIXEL_ID) {
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+  document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', PIXEL_ID);
+  fbq('track', 'PageView');
+}
+
+/* ---- Database: one row per screen view / answer / completion ---- */
+const SID = (()=>{ try{
+  let v=sessionStorage.getItem("amua_sid");
+  if(!v){ v=(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(36).slice(2)); sessionStorage.setItem("amua_sid",v); }
+  return v; }catch(e){ return "anon-"+Date.now(); } })();
+
+function track(event, screen, answer){
+  if(!SUPABASE_URL || !SUPABASE_KEY || !IS_LIVE) return;
+  try{
+    fetch(SUPABASE_URL + "/rest/v1/quiz_events", {
+      method:"POST", keepalive:true,
+      headers:{ "apikey":SUPABASE_KEY, "Authorization":"Bearer "+SUPABASE_KEY,
+                "Content-Type":"application/json", "Prefer":"return=minimal" },
+      body: JSON.stringify({ session_id:SID, event:event, screen:screen||null, answer:answer||null })
+    }).catch(()=>{});
+  }catch(e){}
+}
+
+/* ---- Attribution: carry fbclid + UTMs from the ad click through to the PDP ---- */
+function pdpLink(){
+  try{
+    const url = new URL(PDP_URL);
+    new URLSearchParams(location.search).forEach((v,k)=>url.searchParams.set(k,v));
+    return url.toString();
+  }catch(e){ return PDP_URL; }
+}
+
+const QUESTION_SCREENS = 11; // for progress bar (question screens only)
+
+const screens = [
+ /* 0 */ {id:"age", label:"AGE", q:"What's your age?",
+   opts:[{t:"18–24"},{t:"25–34"},{t:"35–44"},{t:"45+"}]},
+
+ /* 1 */ {id:"shape", label:"SHAPE", q:"How would you describe your body right now?",
+   opts:[{t:"Naturally skinny"},{t:"I lost weight recently"},{t:"Fit, but still flat"},{t:"Mid-sized, small butt"}]},
+
+ /* 2 */ {id:"wish", q:"If your body could finally build curves, where would you want them first?",
+   opts:[{t:"My booty"},{t:"My hips"},{t:"My thighs"},{t:"All three",em:"🙏🏾"}]},
+
+ /* 3 */ {id:"checkpoint", type:"checkpoint"},
+
+ /* 4 */ {id:"gaining", label:"GAINING", q:"Do you struggle to gain curves no matter how much you eat?",
+   opts:[{t:"Yes, no matter what I eat"},{t:"Not really",quiet:true}]},
+
+ /* 5 */ {id:"appetite", label:"APPETITE", q:"Do you get full fast, or barely feel hungry at all?",
+   opts:[{t:"Yes, that's me"},{t:"No, my appetite is fine",quiet:true}]},
+
+ /* 6 */ {id:"metabolism", label:"METABOLISM", q:"Does it feel like your metabolism burns everything off before it can stick?",
+   opts:[{t:"Yes, way too fast"},{t:"Not sure",quiet:true}]},
+
+ /* 7 */ {id:"attempts", label:"THE ATTEMPTS", q:"What have you tried so far?", sub:"Select all that apply.", type:"multi",
+   opts:[{t:"Squats or gym workouts"},{t:"Eating more"},{t:"Protein shakes or weight gainers"},{t:"Looked into surgery"},{t:"Nothing yet"}]},
+
+ /* 8 */ {id:"results", label:"THE RESULTS", q:"Did any of it get you the results you wanted?",
+   opts:[{t:"Not even close"},{t:"A little, but not what I wanted"}]},
+
+ /* 9 */ {id:"education", type:"education"},
+
+ /*10 */ {id:"comparison", q:"Have you ever felt like people in your community don't treat you the same way they treat curvier women?",
+   opts:[{t:"Yes, all the time",em:"😩"},{t:"Sometimes",em:"🙄"}]},
+
+ /*11 */ {id:"clothes", q:"What would it feel like to finally fill out your jeans, your dresses.. every outfit you own?",
+   opts:[{t:"A surge of confidence",em:"👑"},{t:"I'd feel sexier",em:"😍"},{t:"I'd finally dress how I want",em:"🛍️"},{t:"All of the above",em:"💯"}]},
+
+ /*12 */ {id:"event", q:"Do you have a special event coming up?",
+   sub:"Having a date to look forward to makes it much easier to stay consistent.",
+   opts:[{t:"Birthday",em:"🎂"},{t:"Summer body",em:"👙"},{t:"Girls' night out",em:"💃"},{t:"Wedding",em:"💍"},{t:"Nothing planned yet",em:"❌",quiet:true}]},
+
+ /*13 */ {id:"loader", type:"loader"},
+ /*14 */ {id:"summary", type:"summary"},
+];
+
+const reviews = [
+ {name:"Keisha M.", img:"https://cdn.shopify.com/s/files/1/1048/0943/1121/files/keisha.jpg?v=1784650273", weeks:"After 10 weeks", text:"I been skinny my whole life. Ate everything, stayed the same, friends said be grateful lol. I took these drops every morning not expecting nothing.. week 6 my leggings started fitting different in the back. Week 10 I had to size up in jeans because they would NOT button over my butt. I cried a little not gonna lie."},
+ {name:"Jasmine T.", img:"https://cdn.shopify.com/s/files/1/1048/0943/1121/files/jasmine.jpg?v=1784650273", weeks:"After 9 weeks", text:"My boyfriend used to joke that I had the flattest butt he'd ever seen.. I laughed it off, but deep down it bothered me. After about 2 months on the drops, he literally couldn't keep his hands off me. He kept saying, Damn babe... what changed? Now every time we go out he's grabbing my ass, hyping me up, and making me feel so confident. I finally feel like the body matches how I've always felt inside."},
+ {name:"Maya J.", img:"https://cdn.shopify.com/s/files/1/1048/0943/1121/files/maya.jpg?v=1784650272", weeks:"After 11 weeks", text:"My cousin pulled me aside at a cookout and straight up asked if I got work done.. I'm like girl no, it's drops I take under my tongue. She didn't believe me til I showed her the bottle. I been petite my whole life so everybody noticed. That's the part nobody tells you, people NOTICE."},
+ {name:"Renee W.", img:"https://cdn.shopify.com/s/files/1/1048/0943/1121/files/renee.jpg?v=1784650273", weeks:"After 3 months", text:"I was always the friend nobody noticed when we went out. Sweet, funny, invisible. About 2 months on the drops and my homegirl goes, ok so what are we doing different?? Men hold doors now. My dress fits like it was made for me. I feel like I finally showed up in my own life, if that makes sense."},
+ {name:"Tiana R.", img:"https://cdn.shopify.com/s/files/1/1048/0943/1121/files/tiana.jpg", weeks:"After 12 weeks", text:"A whole year of squats and all I got was toned. Firm yes, but flat as ever. My trainer kept saying eat more, I was eating more. Started the drops in March and kept training the same.. and there is finally something THERE. Like the muscle was always under it, my body just never put anything on top. Now it does."},
+];
+
+/* ================= ENGINE ================= */
+let idx = 0;
+const stage = document.getElementById("stage");
+const backBtn = document.getElementById("backBtn");
+const progress = document.getElementById("progress");
+for(let i=0;i<QUESTION_SCREENS;i++){progress.appendChild(document.createElement("span"));}
+
+backBtn.addEventListener("click",()=>{ if(idx>0){ idx--; render(); } });
+
+function qIndex(i){
+  let n=0; for(let k=0;k<=i;k++){ const t=screens[k].type; if(!t||t==="multi") n++; }
+  return n;
+}
+function updateChrome(){
+  const cur = screens[idx];
+  backBtn.style.visibility = (idx>0 && cur.type!=="loader" && cur.type!=="summary") ? "visible":"hidden";
+  const done = qIndex(idx);
+  [...progress.children].forEach((s,i)=>s.classList.toggle("on", i<done));
+  progress.style.display = (cur.type==="loader"||cur.type==="summary") ? "none":"flex";
+}
+function next(){ if(idx<screens.length-1){ idx++; render(); } }
+
+function render(){
+  updateChrome();
+  const s = screens[idx];
+  track("screen_view", s.id);
+  stage.innerHTML = "";
+  const box = document.createElement("div");
+  box.className = "fade";
+  if(!s.type) renderSingle(s,box);
+  else if(s.type==="multi") renderMulti(s,box);
+  else if(s.type==="checkpoint") renderCheckpoint(box);
+  else if(s.type==="education") renderEducation(box);
+  else if(s.type==="loader") renderLoader(box);
+  else if(s.type==="summary") renderSummary(box);
+  stage.appendChild(box);
+  window.scrollTo({top:0});
+}
+
+function optBtn(o, onPick){
+  const b=document.createElement("button");
+  b.className="opt"+(o.quiet?" quiet":"");
+  b.innerHTML=(o.em?`<span class="em">${o.em}</span>`:"")+`<span>${o.t}</span>`;
+  b.addEventListener("click",()=>onPick(b,o));
+  return b;
+}
+
+function renderSingle(s,box){
+  box.innerHTML = (s.label?`<span class="eyebrow">${s.label}</span>`:"")+`<h1>${s.q}</h1>`+(s.sub?`<p class="sub">${s.sub}</p>`:"");
+  const wrap=document.createElement("div");wrap.className="opts";
+  s.opts.forEach(o=>{
+    wrap.appendChild(optBtn(o,(b)=>{
+      [...wrap.children].forEach(c=>c.classList.remove("sel"));
+      b.classList.add("sel");
+      answers[s.id]=o.t;
+      track("answer", s.id, o.t);
+      setTimeout(next,260);
+    }));
+  });
+  box.appendChild(wrap);
+}
+
+function renderMulti(s,box){
+  multiSel = new Set(answers[s.id]||[]);
+  box.innerHTML = (s.label?`<span class="eyebrow">${s.label}</span>`:"")+`<h1>${s.q}</h1><p class="sub">${s.sub}</p>`;
+  const wrap=document.createElement("div");wrap.className="opts";
+  const cont=document.createElement("button");
+  cont.className="btn";cont.textContent="Continue →";cont.disabled=multiSel.size===0;
+  s.opts.forEach(o=>{
+    const b=document.createElement("button");
+    b.className="opt"+(multiSel.has(o.t)?" sel":"");
+    b.innerHTML=`<span>${o.t}</span><span class="tick">✓</span>`;
+    b.addEventListener("click",()=>{
+      if(multiSel.has(o.t)){multiSel.delete(o.t);b.classList.remove("sel");}
+      else{multiSel.add(o.t);b.classList.add("sel");}
+      cont.disabled=multiSel.size===0;
+    });
+    wrap.appendChild(b);
+  });
+  cont.addEventListener("click",()=>{answers[s.id]=[...multiSel];track("answer",s.id,[...multiSel].join(" | "));next();});
+  box.appendChild(wrap);box.appendChild(cont);
+}
+
+function renderCheckpoint(box){
+  box.innerHTML = `
+    <h1 style="text-align:center">You're in the right place! 🍑</h1>
+    <p class="sub" style="text-align:center">Thousands of naturally skinny women have finally built
+    <b>rounder booty, wider hips, and thicker thighs</b> thanks to <b>VitalDrops</b>!</p>`;
+  const car=document.createElement("div");car.className="carousel";
+  reviews.forEach(r=>{
+    const d=document.createElement("div");d.className="rev";
+    d.innerHTML=`
+      <div class="imgwrap"><img class="baimg" src="${r.img}" alt="${r.name} before and after" loading="lazy"><span class="weekchip">${r.weeks}</span></div>
+      <div class="who">${r.name} <span class="badge">✓ Verified Customer</span></div>
+      <div class="stars">★★★★★</div>
+      <p>${r.text}</p>`;
+    car.appendChild(d);
+  });
+  const cont=document.createElement("button");cont.className="btn";cont.textContent="Continue →";
+  cont.addEventListener("click",next);
+  box.appendChild(car);box.appendChild(cont);
+  const micro=document.createElement("p");micro.className="microcopy";micro.textContent="Swipe to see more results →";
+  box.appendChild(micro);
+}
+
+function renderEducation(box){
+  box.innerHTML = `
+    <h1>Why didn't the eating, squats, and shakes work?</h1>
+    <div class="edu-card">
+      <p>If you said yes to even one of those struggles and nothing you tried ever seemed to help…</p>
+      <h2 style="margin-top:10px">It's not your fault. It never was.</h2>
+      <p>Those aren't personality flaws. They're symptoms of <b>hormones out of balance</b>.</p>
+      <p>And nobody ever told you that.</p>
+    </div>
+    <p class="listhead">When your hormones are out of balance, your body:</p>
+    <ul class="xlist">
+      <li><span class="x">✗</span>Burns off what you eat before it can stick</li>
+      <li><span class="x">✗</span>Keeps your appetite low, so there's never enough to build with</li>
+      <li><span class="x">✗</span>Sends what little you store to your belly — not your booty</li>
+      <li><span class="x">✗</span>Ignores extra food, shakes, and squats completely</li>
+      <li><span class="x">✗</span>Keeps you skinny no matter how hard you try</li>
+    </ul>
+    <div class="flip">
+      But when those hormones are <b>in balance</b>, your body stores fat in your hips, thighs, and booty
+      on its own. That's the entire secret behind "naturally curvy" women. They're not luckier than you —
+      their balance just works.
+      <span class="big">And balance can be restored. ✨</span>
+    </div>`;
+  const cont=document.createElement("button");cont.className="btn";cont.textContent="Continue →";
+  cont.addEventListener("click",next);
+  box.appendChild(cont);
+}
+
+function renderLoader(box){
+  box.innerHTML = `
+    <div class="loaderbox">
+      <div class="ring" role="status" aria-label="Loading"></div>
+      <h1>Creating your Curve-Building Protocol...</h1>
+      <p class="sub">Based on your answers, we're putting together the steps to restore your balance
+      and start sending curves exactly where you want them.</p>
+      <div class="checks" id="checks"></div>
+    </div>`;
+  const items=[
+    "Reviewing your answers",
+    "Pinpointing what's been blocking your curves",
+    "Matching the right balance-restoring approach",
+    "Estimating your curve-growth timeline",
+    "Finalizing your protocol"
+  ];
+  const holder=box.querySelector("#checks");
+  items.forEach(t=>{
+    const d=document.createElement("div");d.className="chk";
+    d.innerHTML=`<span class="c">✓</span><span>${t}</span>`;
+    holder.appendChild(d);
+  });
+  const nodes=[...holder.children];
+  nodes.forEach((n,i)=>setTimeout(()=>n.classList.add("done"), 700+i*1150));
+  setTimeout(next, 700+items.length*1150+900);
+}
+
+function renderSummary(box){
+  const d=new Date(); d.setDate(d.getDate()+42);
+  const dateStr=d.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});
+  const ev=answers.event;
+  const evMap={
+    "Birthday":"your Birthday","Summer body":"the end of summer",
+    "Girls' night out":"your next girls' night out","Wedding":"the wedding"
+  };
+  const first = ev && evMap[ev]
+    ? `First visible changes by <b>${evMap[ev]}</b>`
+    : `Steadier appetite and weight that finally starts to stick — within the first few weeks`;
+
+  const shapeMap={
+    "Naturally skinny":"Straight up & down",
+    "I lost weight recently":"Lost my curves",
+    "Fit, but still flat":"Toned, but flat",
+    "Mid-sized, small butt":"Skips the right places"
+  };
+  const storageNow = shapeMap[answers.shape] || "Straight up & down";
+  const sticksNow = answers.metabolism==="Yes, way too fast" ? "Burns right off"
+                  : answers.gaining==="Yes, no matter what I eat" ? "Never sticks" : "Up and down";
+
+  box.innerHTML = `
+    <p class="microcopy" style="margin:0 0 8px">Based on your answers:</p>
+    <h1 style="text-align:center">You're Just A Few Weeks Away From Real, Visible Curves!</h1>
+    <p class="sub" style="text-align:center;margin-bottom:6px">Here's what you can expect:</p>
+    <div class="expect">
+      <div>✅&nbsp;<span>${first}</span></div>
+      <div>✅&nbsp;<span>Fuller hips, thighs, and booty by <b>${dateStr}</b></span></div>
+    </div>
+    <div class="cards">
+      <div class="pcard now">
+        <span class="tag">Now</span>
+        <div class="fig">🥀</div>
+        <div class="metric"><div class="k">Hormone Balance</div><div class="v">Running low</div>
+          <div class="bars"><i class="f"></i><i></i><i></i></div></div>
+        <div class="metric"><div class="k">Weight That Sticks</div><div class="v">${sticksNow}</div>
+          <div class="bars"><i class="f"></i><i></i><i></i></div></div>
+        <div class="metric"><div class="k">Curve Storage</div><div class="v">${storageNow}</div>
+          <div class="bars"><i class="f"></i><i></i><i></i></div></div>
+      </div>
+      <div class="pcard goal">
+        <span class="tag">Your Goal</span>
+        <div class="fig">🌹</div>
+        <div class="metric"><div class="k">Hormone Balance</div><div class="v">Restored</div>
+          <div class="bars"><i class="f"></i><i class="f"></i><i class="f"></i></div></div>
+        <div class="metric"><div class="k">Weight That Sticks</div><div class="v">Stays where you want it</div>
+          <div class="bars"><i class="f"></i><i class="f"></i><i class="f"></i></div></div>
+        <div class="metric"><div class="k">Curve Storage</div><div class="v">Hips, thighs &amp; booty</div>
+          <div class="bars"><i class="f"></i><i class="f"></i><i class="f"></i></div></div>
+      </div>
+    </div>`;
+  const cta=document.createElement("button");cta.className="btn";
+  cta.textContent="CLAIM YOUR DISCOUNT →";
+  cta.addEventListener("click",()=>{ track("quiz_complete","summary"); window.top.location.href = pdpLink(); });
+  box.appendChild(cta);
+  const fp=document.createElement("p");fp.className="fineprint";
+  fp.textContent="Results typically become visible over 8–12 weeks of consistent daily use. Individual results may vary.";
+  box.appendChild(fp);
+}
+
+render();
+</script>
+
+<div id="shopify-block-ATzdJWHhyNmRuTEpFd__10312807297210203588" class="shopify-block shopify-app-block">
+
+
+</div><script src="https://cdn.shopify.com/storefront/standard-actions.js" type="module" data-source-attribution="shopify.standard_actions"></script>
+</body>
+</html>

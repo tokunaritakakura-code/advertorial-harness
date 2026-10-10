@@ -1,0 +1,1419 @@
+{
+ "nodes": [
+  {
+   "id": "6784a9394a73b9af",
+   "type": "group",
+   "x": -720,
+   "y": 2780,
+   "width": 5280,
+   "height": 2050,
+   "label": "認知の段階ごとの「買わない理由」と、それを消す記事の段"
+  },
+  {
+   "id": "ebbf50c7924a419c",
+   "type": "text",
+   "text": "## VSL が渡ってくる\n本番: 前の工程（工程4 VSL を作る）で出来た VSL が自動で入ってくる（完全自動）\nテスト中: 本人が代わりに mp4 を手で渡す\n最初に: 記事の色を商品のテーマの色に決める",
+   "x": 0,
+   "y": 0,
+   "width": 280,
+   "height": 170,
+   "color": "1"
+  },
+  {
+   "id": "549acf006146fd5f",
+   "type": "text",
+   "text": "## 段1 文字起こし\n動画が正本。台本があれば比べて違いを伝える",
+   "x": 320,
+   "y": 0,
+   "width": 280,
+   "height": 200,
+   "color": "1"
+  },
+  {
+   "id": "6f1baac3df6b7027",
+   "type": "text",
+   "text": "## 段2 参考を選ぶ\n動画の段の並びに一番近い参考を下の木から1本",
+   "x": 640,
+   "y": 0,
+   "width": 280,
+   "height": 200,
+   "color": "1"
+  },
+  {
+   "id": "f00d0ea743ef2b61",
+   "type": "text",
+   "text": "## 段3 移植表\n参考の段の仕事・心理の効果・受け渡し・日本語",
+   "x": 960,
+   "y": 0,
+   "width": 280,
+   "height": 200
+  },
+  {
+   "id": "9c4d0542d291f0c6",
+   "type": "text",
+   "text": "## 段5 数字・権威・声\nテスト中は Claude が決める（評価2000以上・専門医の名前と顔・レビューの顔）",
+   "x": 1600,
+   "y": 0,
+   "width": 280,
+   "height": 200
+  },
+  {
+   "id": "6830888210f986ac",
+   "type": "text",
+   "text": "## 段6 ページを組む\n段の並び=参考／字・文・欄=ここちドライの質（色は商品のテーマ）／値段=ここちドライの言い方と画像で1日あたりを本文で／1〜2文字だけ次の行に落とさない／流れる帯がある時は、同じ文を2組つなげて切れ目なく繰り返す",
+   "x": 1920,
+   "y": 0,
+   "width": 280,
+   "height": 290
+  },
+  {
+   "id": "83249de8731712f9",
+   "type": "text",
+   "text": "## 段7 画像\n参考の画像を元に人物=日本人・商品・背景を替える。横長だけ",
+   "x": 2240,
+   "y": 0,
+   "width": 280,
+   "height": 200
+  },
+  {
+   "id": "6a3845da20d99d37",
+   "type": "text",
+   "text": "## 段9 審査\n別の AI。PASS まで止まらない（同じ × が2回なら原因を割って手順か道具を直す）",
+   "x": 2880,
+   "y": 0,
+   "width": 280,
+   "height": 200
+  },
+  {
+   "id": "573d9f89cfe7e222",
+   "type": "text",
+   "text": "## 段10 機械の検査と最終確認\n記事の仕上がり検査.py が「通った」→ 1280と390で2文字以下の行0 → 流れる帯がある時は1秒おきに3回測って切れ目0 → 最終確認の表 → 本人に5行で出す",
+   "x": 3200,
+   "y": 0,
+   "width": 280,
+   "height": 260
+  },
+  {
+   "id": "3fd75be4b8ad78ed",
+   "type": "text",
+   "text": "## 購入\n",
+   "x": 3520,
+   "y": 0,
+   "width": 280,
+   "height": 170,
+   "color": "4"
+  },
+  {
+   "id": "a037d9a44223d0e4",
+   "type": "text",
+   "text": "## 段2 の木\n送り先（記事の型）で分かれる",
+   "x": 480,
+   "y": 260,
+   "width": 300,
+   "height": 120,
+   "color": "1"
+  },
+  {
+   "id": "34dd00c66bc1eb44",
+   "type": "text",
+   "text": "### 商品ページへ直行（記事なし）\nVSL が全部言い切る",
+   "x": 0,
+   "y": 460,
+   "width": 320,
+   "height": 140,
+   "color": "5"
+  },
+  {
+   "id": "5402b631827ddf47",
+   "type": "text",
+   "text": "[[33 MLab（現場の人）|現場の人｜MLab 1047日]]",
+   "x": 420,
+   "y": 460,
+   "width": 360,
+   "height": 50
+  },
+  {
+   "id": "64851cec3da3ab4e",
+   "type": "text",
+   "text": "[[34 Pure Rhythm（ポッドキャスト）|ポッドキャスト｜Pure Rhythm 326日]]",
+   "x": 420,
+   "y": 520,
+   "width": 360,
+   "height": 50
+  },
+  {
+   "id": "b477062e11fb013d",
+   "type": "text",
+   "text": "[[35 Resilia（体の中の3D）|体の中の3D｜Resilia 94日]]",
+   "x": 420,
+   "y": 580,
+   "width": 360,
+   "height": 50
+  },
+  {
+   "id": "fec00921f573e4ef",
+   "type": "text",
+   "text": "[[36 Holistic Health（時間で歩く）|時間で歩く｜Holistic Health 82日]]",
+   "x": 420,
+   "y": 640,
+   "width": 360,
+   "height": 50
+  },
+  {
+   "id": "083464f0bcb8ba0f",
+   "type": "text",
+   "text": "[[37 Lactomedi（しゃべるキャラ）|しゃべるキャラ｜Lactomedi 68日]]",
+   "x": 420,
+   "y": 700,
+   "width": 360,
+   "height": 50
+  },
+  {
+   "id": "4ab56bb2169072b6",
+   "type": "text",
+   "text": "[[38 SuperBonsai（Pixar風（記事なし））|Pixar風（記事なし）｜SuperBonsai 82日]]",
+   "x": 420,
+   "y": 760,
+   "width": 360,
+   "height": 50
+  },
+  {
+   "id": "4a0702eaacb85de0",
+   "type": "text",
+   "text": "[[39 Moshe Goldberg（昔の権威（記事なし））|昔の権威（記事なし）｜Moshe Goldberg 109日]]",
+   "x": 420,
+   "y": 820,
+   "width": 360,
+   "height": 50
+  },
+  {
+   "id": "b9b315352d1862d0",
+   "type": "text",
+   "text": "[[40 Only Human（歌）|歌｜Only Human 65日]]",
+   "x": 420,
+   "y": 880,
+   "width": 360,
+   "height": 50
+  },
+  {
+   "id": "c62f4a413a88e4a1",
+   "type": "text",
+   "text": "[[41 Firmoo（街頭インタビュー）|街頭インタビュー｜Firmoo 134日]]",
+   "x": 420,
+   "y": 940,
+   "width": 360,
+   "height": 50
+  },
+  {
+   "id": "2bc4e17d9465fd22",
+   "type": "text",
+   "text": "**記事の段**（[[型_商品ページ直行|ブロックの詳細]]）\n成分 → 客の声 → FAQ → 保証 → 使い方",
+   "x": 880,
+   "y": 460,
+   "width": 520,
+   "height": 140,
+   "color": "6"
+  },
+  {
+   "id": "7377c2d6051c9739",
+   "type": "text",
+   "text": "### リスティクルへ\n理由1で VSL を繰り返す",
+   "x": 0,
+   "y": 1060,
+   "width": 320,
+   "height": 140,
+   "color": "5"
+  },
+  {
+   "id": "0a0854f234c7078d",
+   "type": "text",
+   "text": "[[42 Mason Genie（UGCの体験談）|UGCの体験談｜Mason Genie 609日]]",
+   "x": 420,
+   "y": 1060,
+   "width": 360,
+   "height": 50
+  },
+  {
+   "id": "b8d365f79e91e6ef",
+   "type": "text",
+   "text": "[[43 Jade & Lotus（タブーの物語）|タブーの物語｜Jade & Lotus 245日]]",
+   "x": 420,
+   "y": 1120,
+   "width": 360,
+   "height": 50
+  },
+  {
+   "id": "5474d03d9ebe3863",
+   "type": "text",
+   "text": "[[44 Novelia（創業者）|創業者｜Novelia 208日]]",
+   "x": 420,
+   "y": 1180,
+   "width": 360,
+   "height": 50
+  },
+  {
+   "id": "0442460532342874",
+   "type": "text",
+   "text": "[[45 Polar Haircare（Pixar風（記事あり））|Pixar風（記事あり）｜Polar Haircare 83日]]",
+   "x": 420,
+   "y": 1240,
+   "width": 360,
+   "height": 50
+  },
+  {
+   "id": "7a1a80d01fbae2e2",
+   "type": "text",
+   "text": "**記事の段**（[[型_リスティクル|ブロックの詳細]]）\n見出し → 理由1 → 理由2〜N（研究・人数）→ 客の声 → 保証",
+   "x": 880,
+   "y": 1060,
+   "width": 520,
+   "height": 140,
+   "color": "6"
+  },
+  {
+   "id": "46f81e1f0ffd7a9c",
+   "type": "text",
+   "text": "### 権威の暴露記事へ\n専門家が見落とされた原因を言う",
+   "x": 0,
+   "y": 1360,
+   "width": 320,
+   "height": 140,
+   "color": "1"
+  },
+  {
+   "id": "0886a9a0ad16ac2d",
+   "type": "text",
+   "text": "[[46 Inno Glam（権威の1人しゃべり）|権威の1人しゃべり｜Inno Glam 545日]]",
+   "x": 420,
+   "y": 1360,
+   "width": 360,
+   "height": 50
+  },
+  {
+   "id": "56d35edf8921c66b",
+   "type": "text",
+   "text": "[[47 Chicken Health Advice（クレイ）|クレイ｜Chicken Health Advice 103日]] ★今回",
+   "x": 420,
+   "y": 1420,
+   "width": 360,
+   "height": 50,
+   "color": "1"
+  },
+  {
+   "id": "4c50d6c5e766a0d9",
+   "type": "text",
+   "text": "**記事の段**（[[型_権威の暴露記事|ブロックの詳細]]）\n専門家の名乗り → 見落とされた原因 → 今の物の失敗 → 商品の働き → 時間で歩く → サイン7つ → 保証",
+   "x": 880,
+   "y": 1360,
+   "width": 520,
+   "height": 140,
+   "color": "1"
+  },
+  {
+   "id": "0ca761c72f7e6b3b",
+   "type": "text",
+   "text": "### 物語の記事へ\n別の人の物語でもう一度",
+   "x": 0,
+   "y": 1580,
+   "width": 320,
+   "height": 140,
+   "color": "5"
+  },
+  {
+   "id": "8cc2ea72963360ec",
+   "type": "text",
+   "text": "[[48 Calmwise Journal（昔の権威（記事あり））|昔の権威（記事あり）｜Calmwise Journal 207日]]",
+   "x": 420,
+   "y": 1580,
+   "width": 360,
+   "height": 50
+  },
+  {
+   "id": "e21c114b026be054",
+   "type": "text",
+   "text": "**記事の段**（[[型_物語の記事|ブロックの詳細]]）\n見出し → 物語 → 失敗 → 原因 → 成分 → 時間 → 客の声 → 保証",
+   "x": 880,
+   "y": 1580,
+   "width": 520,
+   "height": 140,
+   "color": "6"
+  },
+  {
+   "id": "37eb6f1414df9f33",
+   "type": "text",
+   "text": "### 事前販売ページへ\n理由入りの商品ページ",
+   "x": 0,
+   "y": 1800,
+   "width": 320,
+   "height": 140,
+   "color": "5"
+  },
+  {
+   "id": "accc86f8ab6ae620",
+   "type": "text",
+   "text": "[[49 Mars（第三者の証言（記事あり））|第三者の証言（記事あり）｜Mars Men]]",
+   "x": 420,
+   "y": 1800,
+   "width": 360,
+   "height": 50
+  },
+  {
+   "id": "d482ac53a53b65b9",
+   "type": "text",
+   "text": "**記事の段**（[[型_事前販売ページ|ブロックの詳細]]）\n値引きの帯 → 調査と声 → 成分 → 比較表 → 専門家 → FAQ",
+   "x": 880,
+   "y": 1800,
+   "width": 520,
+   "height": 140,
+   "color": "6"
+  },
+  {
+   "id": "08392d30191c0f60",
+   "type": "text",
+   "text": "### 医者の VSL ページへ\nVSL は予告だけ",
+   "x": 0,
+   "y": 2020,
+   "width": 320,
+   "height": 140,
+   "color": "5"
+  },
+  {
+   "id": "a50f73d973db8b92",
+   "type": "text",
+   "text": "[[50 Miami MD（予告編）|予告編｜Miami MD 153日]]",
+   "x": 420,
+   "y": 2020,
+   "width": 360,
+   "height": 50
+  },
+  {
+   "id": "1930fbb8846d80eb",
+   "type": "text",
+   "text": "**記事の段**（[[型_医者のVSLページ|ブロックの詳細]]）\n長い動画（原因 → 研究 → 成分 → 商品）→ まとめ買い → 返金",
+   "x": 880,
+   "y": 2020,
+   "width": 520,
+   "height": 140,
+   "color": "6"
+  },
+  {
+   "id": "b9d3a0bbe3485c96",
+   "type": "text",
+   "text": "### オファーページへ\n値引きと保証を前に",
+   "x": 0,
+   "y": 2240,
+   "width": 320,
+   "height": 140,
+   "color": "5"
+  },
+  {
+   "id": "e0332fc975f8be39",
+   "type": "text",
+   "text": "[[51 Ageless Beauty（ドラマ・寸劇）|ドラマ・寸劇｜Ageless Beauty 83日]]",
+   "x": 420,
+   "y": 2240,
+   "width": 360,
+   "height": 50
+  },
+  {
+   "id": "45472cb0b0f89698",
+   "type": "text",
+   "text": "**記事の段**（[[型_オファーページ|ブロックの詳細]]）\n1本で全部 → 成分と研究 → 保証 → 人数",
+   "x": 880,
+   "y": 2240,
+   "width": 520,
+   "height": 140,
+   "color": "6"
+  },
+  {
+   "id": "7a825dd4992812ae",
+   "type": "text",
+   "text": "### トップページへ\n説明はサイトに任せる",
+   "x": 0,
+   "y": 2460,
+   "width": 320,
+   "height": 140,
+   "color": "5"
+  },
+  {
+   "id": "164e0a6f405d9822",
+   "type": "text",
+   "text": "[[52 Tempdrop（第三者の証言（記事なし））|第三者の証言（記事なし）｜Tempdrop 36日]]",
+   "x": 420,
+   "y": 2460,
+   "width": 360,
+   "height": 50
+  },
+  {
+   "id": "cd84814f56f484ed",
+   "type": "text",
+   "text": "**記事の段**（[[型_トップページ|ブロックの詳細]]）\n体を知る → 向いている人 → 使い方 → FAQ",
+   "x": 880,
+   "y": 2460,
+   "width": 520,
+   "height": 140,
+   "color": "6"
+  },
+  {
+   "id": "4559f060014ae6c1",
+   "type": "text",
+   "text": "## 見方\n- 赤 = 今回の針マット（ストレッチ）の道\n- 上の段 = 毎回通る10段\n- 下の木 = 段2で、動画の段の並びに一番近い参考を選ぶための20本\n- 正本: 05 記事を作る.md の最後の節\n- 元のデータ: 形式別/_形式と記事の構造.md\n\n| 言葉の定義 | 意味 |\n|---|---|\n| 記事の段 | 飛び先の記事の、見出しの順に並べた中身の流れ |\n\n### 言葉の定義\n| 言葉 | 意味 |\n|---|---|\n| ブロックの詳細 | 記事の型ごとのノート。その型のブロック1つずつに、仕事・作り方・確かめ方・実物を書く。「記事の段」のカードから飛べる |",
+   "x": 1500,
+   "y": 330,
+   "width": 460,
+   "height": 500
+  },
+  {
+   "id": "d16bbbb4b23216c1",
+   "type": "text",
+   "text": "## 【仮・データを取る前の図】買わない理由を段階ごとに消していくと、最後に「信用」と「値段」が残る\n194本の実物の数は [[買わない理由を消す順番.canvas]] にある（2026-10-09）。そちらが正本",
+   "x": 0,
+   "y": 2840,
+   "width": 1400,
+   "height": 110,
+   "color": "1"
+  },
+  {
+   "id": "95bc65c931746029",
+   "type": "text",
+   "text": "## 最後に残る2つ目: 値段（Price）＝どれだけ価値を見せるか\n- 1日あたりに割る（例: セット ÷ 365日 ＝ 約90円。ここちドライ「1日あたり約76円」）\n- 今使っている物・やめる物と並べる（例: 整体1回 5,000円 × 月4回／湿布を毎月／Mason「年$1,500 → $49」・Novelia「ボトックスより安い」・Zapply「別々に買うと月£150」）\n- 何年使えるか（消耗しない・電気も充電もいらない）\n- おすすめのセットに「いちばんお得」の札、その下に保証",
+   "x": 1700,
+   "y": 3900,
+   "width": 1700,
+   "height": 330,
+   "color": "2"
+  },
+  {
+   "id": "1477865a362c8082",
+   "type": "text",
+   "text": "### ① 気づいていない（Unaware）\n主な飛び先: 物語の記事・商品ページ",
+   "x": -460,
+   "y": 3020,
+   "width": 620,
+   "height": 110,
+   "color": "5"
+  },
+  {
+   "id": "d2fed4c93d00ccc2",
+   "type": "text",
+   "text": "**買わない理由**\n「自分の話じゃない」\n「痛いのは年のせい」",
+   "x": -460,
+   "y": 3180,
+   "width": 620,
+   "height": 170,
+   "color": "1"
+  },
+  {
+   "id": "fb628c9d36d1e421",
+   "type": "text",
+   "text": "消す段: 場面の名指し・症状の自己チェック（物語の記事 7/11 が VSL で言い切る）",
+   "x": -460,
+   "y": 3430,
+   "width": 620,
+   "height": 90,
+   "color": "4"
+  },
+  {
+   "id": "03e2cb24af593660",
+   "type": "text",
+   "text": "消す段: 別の人の物語（物語の記事が足す 9/11）",
+   "x": -460,
+   "y": 3610,
+   "width": 620,
+   "height": 90,
+   "color": "4"
+  },
+  {
+   "id": "10a2d03186060f61",
+   "type": "text",
+   "text": "### ⑤ 買う直前（Most aware）\n主な飛び先: オファーページ・商品ページ",
+   "x": 3760,
+   "y": 3020,
+   "width": 620,
+   "height": 110,
+   "color": "5"
+  },
+  {
+   "id": "5b6f92a2e6fbbc1a",
+   "type": "text",
+   "text": "**買わない理由**\n「54,980円は払えない（値段の壁）」\n「今じゃなくていい」\n「合わなかったら損」",
+   "x": 3760,
+   "y": 3180,
+   "width": 620,
+   "height": 170,
+   "color": "1"
+  },
+  {
+   "id": "ea6047e67b5b736f",
+   "type": "text",
+   "text": "消す段: 値段の分解・今使っている物と比べる（リスティクル 価格比較 7/25）",
+   "x": 3760,
+   "y": 3400,
+   "width": 620,
+   "height": 90,
+   "color": "4"
+  },
+  {
+   "id": "3c8ebaf884195d91",
+   "type": "text",
+   "text": "消す段: 保証（商品ページ 23/61・リスティクル 10/25）",
+   "x": 3760,
+   "y": 3520,
+   "width": 620,
+   "height": 90,
+   "color": "4"
+  },
+  {
+   "id": "d411943078a77f3f",
+   "type": "text",
+   "text": "消す段: 在庫・期限（VSL で品切れ 13/72）",
+   "x": 3760,
+   "y": 3685,
+   "width": 620,
+   "height": 90,
+   "color": "4"
+  },
+  {
+   "id": "83b906dd0df27bf2",
+   "type": "text",
+   "text": "消す段: 偽物・安物の注意（VSL で 7/72）",
+   "x": 2780,
+   "y": 3655,
+   "width": 620,
+   "height": 90,
+   "color": "4"
+  },
+  {
+   "id": "c1b11ebd4b40d22c",
+   "type": "text",
+   "text": "### ④ 商品を知っている（Product aware）\n主な飛び先: 商品ページ・事前販売ページ",
+   "x": 2780,
+   "y": 3035,
+   "width": 620,
+   "height": 110,
+   "color": "5"
+  },
+  {
+   "id": "68702da0928d484d",
+   "type": "text",
+   "text": "**買わない理由**\n「本当に効く？」\n「痛くない？自分に使える？」\n「偽物・安物では？」",
+   "x": 2780,
+   "y": 3195,
+   "width": 620,
+   "height": 170,
+   "color": "1"
+  },
+  {
+   "id": "fd2f1ff4a8de5994",
+   "type": "text",
+   "text": "消す段: 研究（リスティクルが足す 11/25・商品ページ 24/61）",
+   "x": 2780,
+   "y": 3415,
+   "width": 620,
+   "height": 90,
+   "color": "4"
+  },
+  {
+   "id": "27c1944ef77e58db",
+   "type": "text",
+   "text": "消す段: 使い方・FAQ（商品ページが足す FAQ 26/61）",
+   "x": 2780,
+   "y": 3535,
+   "width": 620,
+   "height": 90,
+   "color": "4"
+  },
+  {
+   "id": "a2c235a1107ee178",
+   "type": "text",
+   "text": "消す段: 仕組み（なぜこれは届くか）",
+   "x": 1800,
+   "y": 3655,
+   "width": 620,
+   "height": 90,
+   "color": "4"
+  },
+  {
+   "id": "1302d0dfcb6035ba",
+   "type": "text",
+   "text": "### ③ 解決策を知っている（Solution aware）\n主な飛び先: リスティクル",
+   "x": 1800,
+   "y": 3035,
+   "width": 620,
+   "height": 110,
+   "color": "5"
+  },
+  {
+   "id": "657fb401e27a6b98",
+   "type": "text",
+   "text": "**買わない理由**\n「ストレッチも湿布も試した」\n「これも同じでは？」",
+   "x": 1800,
+   "y": 3195,
+   "width": 620,
+   "height": 170,
+   "color": "1"
+  },
+  {
+   "id": "dd88109c98678e5f",
+   "type": "text",
+   "text": "消す段: 今の物の失敗を1つずつ（リスティクル VSL で言い切る 16/26）",
+   "x": 1800,
+   "y": 3415,
+   "width": 620,
+   "height": 90,
+   "color": "4"
+  },
+  {
+   "id": "bc41941d7cb83a68",
+   "type": "text",
+   "text": "消す段: 理由1〜N・比較表（商品ページが足す 比較 19/61）",
+   "x": 1800,
+   "y": 3535,
+   "width": 620,
+   "height": 90,
+   "color": "4"
+  },
+  {
+   "id": "26cc73f48b881481",
+   "type": "text",
+   "text": "消す段: 本当の原因とたとえ（暴露記事 VSL で原因を言い切る 8/11）",
+   "x": 850,
+   "y": 3415,
+   "width": 620,
+   "height": 90,
+   "color": "4"
+  },
+  {
+   "id": "5e48722ba43a3b9e",
+   "type": "text",
+   "text": "消す段: 権威（専門医）の名乗り（暴露記事が足す 6/11）",
+   "x": 850,
+   "y": 3535,
+   "width": 620,
+   "height": 90,
+   "color": "4"
+  },
+  {
+   "id": "2640fef3e60fe0ea",
+   "type": "text",
+   "text": "### ② 問題に気づいている（Problem aware）\n主な飛び先: 権威の暴露記事・物語の記事",
+   "x": 850,
+   "y": 3035,
+   "width": 620,
+   "height": 110,
+   "color": "5"
+  },
+  {
+   "id": "1924119c3d01e9de",
+   "type": "text",
+   "text": "**買わない理由**\n「原因が分からない」\n「どうせ治らない」\n「医者に任せるしかない」",
+   "x": 850,
+   "y": 3195,
+   "width": 620,
+   "height": 170,
+   "color": "1"
+  },
+  {
+   "id": "0086b914fbea6c54",
+   "type": "text",
+   "text": "消す段: 別の原因の説明（暴露記事が足す 6/11）",
+   "x": 850,
+   "y": 3655,
+   "width": 620,
+   "height": 90,
+   "color": "4"
+  },
+  {
+   "id": "061de41e01c99315",
+   "type": "text",
+   "text": "## 最後に残る1つ目: 信用（Trust）\n- 取材協力の専門医（名前・丸い顔写真・経歴）と、その医者の言葉「」を2回（ここちドライの型）\n- 研究（何人・何日・結果）を1つずつ\n- 客の声（年代・名前・顔写真）と評価の数（例 ★4.7・2,000件以上）\n- 作った側が「中立ではありません」と自分で言う\n- 保証で「合わなかったら損」を消す",
+   "x": -150,
+   "y": 3900,
+   "width": 1300,
+   "height": 330,
+   "color": "6"
+  },
+  {
+   "id": "35965b927ac88e63",
+   "type": "text",
+   "text": "## 値段の段の言い回しのひな形（テンプレート）\n1. 今の出費を名指しする: 「〇〇（今やっている物）に、毎月いくら使っていますか。」\n2. 足し算で見せる: 「〇〇が月△円、□□が月△円。1年で約◎円です。」\n3. 1日あたりに割る: 「ハリネルは、1日あたり約〇円。缶コーヒー1本より安い値段です。」\n4. 使える年数を言う: 「電気も充電もいらず、布と突起だけ。何年も使えます。」\n5. 損を消す: 「〇日間、合わなければ全額お返しします。」\n6. 今の理由（季節・在庫）で締める: 「腰が固まりきる前の今なら、まだ間に合います。」\n（元: ここちドライ advertorial-08・05、リスティクルの価格比較 7/25 本、商品ページの比較 19/61 本）",
+   "x": -150,
+   "y": 4360,
+   "width": 3200,
+   "height": 420,
+   "color": "3"
+  },
+  {
+   "id": "a1b2c3d4e5f60001",
+   "type": "text",
+   "x": 1280,
+   "y": 0,
+   "width": 280,
+   "height": 200,
+   "color": "1",
+   "text": "## 段4 入りを作る\n最初の画面で「読まないとまずい」。やり方は記事の型の「ブロックの詳細」ノートの頭のブロックどおり（型ごとに違う）"
+  },
+  {
+   "id": "a1b2c3d4e5f60002",
+   "type": "text",
+   "x": 2560,
+   "y": 0,
+   "width": 280,
+   "height": 200,
+   "text": "## 段8 画像の置き方\n画像の置き方.py が終了コード0（ずれは理由つき）"
+  }
+ ],
+ "edges": [
+  {
+   "id": "99345bce98328670",
+   "fromNode": "6f1baac3df6b7027",
+   "fromSide": "bottom",
+   "toNode": "a037d9a44223d0e4",
+   "toSide": "top",
+   "color": "1"
+  },
+  {
+   "id": "b849880d258ef691",
+   "fromNode": "a037d9a44223d0e4",
+   "fromSide": "left",
+   "toNode": "34dd00c66bc1eb44",
+   "toSide": "top"
+  },
+  {
+   "id": "dd8340f809bc6213",
+   "fromNode": "34dd00c66bc1eb44",
+   "fromSide": "right",
+   "toNode": "5402b631827ddf47",
+   "toSide": "left"
+  },
+  {
+   "id": "35d1d7cd13d3a63a",
+   "fromNode": "34dd00c66bc1eb44",
+   "fromSide": "right",
+   "toNode": "64851cec3da3ab4e",
+   "toSide": "left"
+  },
+  {
+   "id": "dd3b3e2240a8f406",
+   "fromNode": "34dd00c66bc1eb44",
+   "fromSide": "right",
+   "toNode": "b477062e11fb013d",
+   "toSide": "left"
+  },
+  {
+   "id": "3551b5ac3c954da7",
+   "fromNode": "34dd00c66bc1eb44",
+   "fromSide": "right",
+   "toNode": "fec00921f573e4ef",
+   "toSide": "left"
+  },
+  {
+   "id": "cf51b4cb13339c8a",
+   "fromNode": "34dd00c66bc1eb44",
+   "fromSide": "right",
+   "toNode": "083464f0bcb8ba0f",
+   "toSide": "left"
+  },
+  {
+   "id": "ee5e7ff45624f32c",
+   "fromNode": "34dd00c66bc1eb44",
+   "fromSide": "right",
+   "toNode": "4ab56bb2169072b6",
+   "toSide": "left"
+  },
+  {
+   "id": "449ef1b5c8b83e1d",
+   "fromNode": "34dd00c66bc1eb44",
+   "fromSide": "right",
+   "toNode": "4a0702eaacb85de0",
+   "toSide": "left"
+  },
+  {
+   "id": "ee3d429695780787",
+   "fromNode": "34dd00c66bc1eb44",
+   "fromSide": "right",
+   "toNode": "b9b315352d1862d0",
+   "toSide": "left"
+  },
+  {
+   "id": "1332385f1af9e9d0",
+   "fromNode": "34dd00c66bc1eb44",
+   "fromSide": "right",
+   "toNode": "c62f4a413a88e4a1",
+   "toSide": "left"
+  },
+  {
+   "id": "d81a896a4f2bb63a",
+   "fromNode": "5402b631827ddf47",
+   "fromSide": "right",
+   "toNode": "2bc4e17d9465fd22",
+   "toSide": "left"
+  },
+  {
+   "id": "5e021aab03b3644d",
+   "fromNode": "64851cec3da3ab4e",
+   "fromSide": "right",
+   "toNode": "2bc4e17d9465fd22",
+   "toSide": "left"
+  },
+  {
+   "id": "71d01e3932679304",
+   "fromNode": "b477062e11fb013d",
+   "fromSide": "right",
+   "toNode": "2bc4e17d9465fd22",
+   "toSide": "left"
+  },
+  {
+   "id": "377c948efae49135",
+   "fromNode": "fec00921f573e4ef",
+   "fromSide": "right",
+   "toNode": "2bc4e17d9465fd22",
+   "toSide": "left"
+  },
+  {
+   "id": "203ec31617eb3cc1",
+   "fromNode": "083464f0bcb8ba0f",
+   "fromSide": "right",
+   "toNode": "2bc4e17d9465fd22",
+   "toSide": "left"
+  },
+  {
+   "id": "c9673b292a929e0c",
+   "fromNode": "4ab56bb2169072b6",
+   "fromSide": "right",
+   "toNode": "2bc4e17d9465fd22",
+   "toSide": "left"
+  },
+  {
+   "id": "a6ea310f07cf7d24",
+   "fromNode": "4a0702eaacb85de0",
+   "fromSide": "right",
+   "toNode": "2bc4e17d9465fd22",
+   "toSide": "left"
+  },
+  {
+   "id": "f8392335dd2201a4",
+   "fromNode": "b9b315352d1862d0",
+   "fromSide": "right",
+   "toNode": "2bc4e17d9465fd22",
+   "toSide": "left"
+  },
+  {
+   "id": "47b8296fee56d8b9",
+   "fromNode": "c62f4a413a88e4a1",
+   "fromSide": "right",
+   "toNode": "2bc4e17d9465fd22",
+   "toSide": "left"
+  },
+  {
+   "id": "0d3008131741ccf2",
+   "fromNode": "a037d9a44223d0e4",
+   "fromSide": "left",
+   "toNode": "7377c2d6051c9739",
+   "toSide": "top"
+  },
+  {
+   "id": "81f7d869418a9de8",
+   "fromNode": "7377c2d6051c9739",
+   "fromSide": "right",
+   "toNode": "0a0854f234c7078d",
+   "toSide": "left"
+  },
+  {
+   "id": "051ae0e5752441a2",
+   "fromNode": "7377c2d6051c9739",
+   "fromSide": "right",
+   "toNode": "b8d365f79e91e6ef",
+   "toSide": "left"
+  },
+  {
+   "id": "4d8be732971e2387",
+   "fromNode": "7377c2d6051c9739",
+   "fromSide": "right",
+   "toNode": "5474d03d9ebe3863",
+   "toSide": "left"
+  },
+  {
+   "id": "633705e7d9c68842",
+   "fromNode": "7377c2d6051c9739",
+   "fromSide": "right",
+   "toNode": "0442460532342874",
+   "toSide": "left"
+  },
+  {
+   "id": "8e011134afb74e81",
+   "fromNode": "0a0854f234c7078d",
+   "fromSide": "right",
+   "toNode": "7a1a80d01fbae2e2",
+   "toSide": "left"
+  },
+  {
+   "id": "1f49c8861292ff38",
+   "fromNode": "b8d365f79e91e6ef",
+   "fromSide": "right",
+   "toNode": "7a1a80d01fbae2e2",
+   "toSide": "left"
+  },
+  {
+   "id": "5ece11f6d0095528",
+   "fromNode": "5474d03d9ebe3863",
+   "fromSide": "right",
+   "toNode": "7a1a80d01fbae2e2",
+   "toSide": "left"
+  },
+  {
+   "id": "464c0d81103ac439",
+   "fromNode": "0442460532342874",
+   "fromSide": "right",
+   "toNode": "7a1a80d01fbae2e2",
+   "toSide": "left"
+  },
+  {
+   "id": "d2df93f9cee640db",
+   "fromNode": "a037d9a44223d0e4",
+   "fromSide": "left",
+   "toNode": "46f81e1f0ffd7a9c",
+   "toSide": "top",
+   "color": "1"
+  },
+  {
+   "id": "b991d677fdb70a25",
+   "fromNode": "46f81e1f0ffd7a9c",
+   "fromSide": "right",
+   "toNode": "0886a9a0ad16ac2d",
+   "toSide": "left"
+  },
+  {
+   "id": "d89ed14d290cf4f9",
+   "fromNode": "46f81e1f0ffd7a9c",
+   "fromSide": "right",
+   "toNode": "56d35edf8921c66b",
+   "toSide": "left",
+   "color": "1"
+  },
+  {
+   "id": "211f6469359f2cc9",
+   "fromNode": "0886a9a0ad16ac2d",
+   "fromSide": "right",
+   "toNode": "4c50d6c5e766a0d9",
+   "toSide": "left"
+  },
+  {
+   "id": "a357a96a75732f8c",
+   "fromNode": "56d35edf8921c66b",
+   "fromSide": "right",
+   "toNode": "4c50d6c5e766a0d9",
+   "toSide": "left",
+   "color": "1"
+  },
+  {
+   "id": "1abc79371a547217",
+   "fromNode": "4c50d6c5e766a0d9",
+   "fromSide": "right",
+   "toNode": "f00d0ea743ef2b61",
+   "toSide": "bottom",
+   "color": "1"
+  },
+  {
+   "id": "e3ca6fabf7701153",
+   "fromNode": "a037d9a44223d0e4",
+   "fromSide": "left",
+   "toNode": "0ca761c72f7e6b3b",
+   "toSide": "top"
+  },
+  {
+   "id": "8ef4bc5980c38868",
+   "fromNode": "0ca761c72f7e6b3b",
+   "fromSide": "right",
+   "toNode": "8cc2ea72963360ec",
+   "toSide": "left"
+  },
+  {
+   "id": "cbd1c9a9716698b1",
+   "fromNode": "8cc2ea72963360ec",
+   "fromSide": "right",
+   "toNode": "e21c114b026be054",
+   "toSide": "left"
+  },
+  {
+   "id": "f7d08932cd8a8558",
+   "fromNode": "a037d9a44223d0e4",
+   "fromSide": "left",
+   "toNode": "37eb6f1414df9f33",
+   "toSide": "top"
+  },
+  {
+   "id": "111dab71f2678e91",
+   "fromNode": "37eb6f1414df9f33",
+   "fromSide": "right",
+   "toNode": "accc86f8ab6ae620",
+   "toSide": "left"
+  },
+  {
+   "id": "75b55361f1e1be42",
+   "fromNode": "accc86f8ab6ae620",
+   "fromSide": "right",
+   "toNode": "d482ac53a53b65b9",
+   "toSide": "left"
+  },
+  {
+   "id": "5d5200285f610d5a",
+   "fromNode": "a037d9a44223d0e4",
+   "fromSide": "left",
+   "toNode": "08392d30191c0f60",
+   "toSide": "top"
+  },
+  {
+   "id": "37215d07422f5f84",
+   "fromNode": "08392d30191c0f60",
+   "fromSide": "right",
+   "toNode": "a50f73d973db8b92",
+   "toSide": "left"
+  },
+  {
+   "id": "7361f32b299aa1c0",
+   "fromNode": "a50f73d973db8b92",
+   "fromSide": "right",
+   "toNode": "1930fbb8846d80eb",
+   "toSide": "left"
+  },
+  {
+   "id": "4a1e21140029b439",
+   "fromNode": "a037d9a44223d0e4",
+   "fromSide": "left",
+   "toNode": "b9d3a0bbe3485c96",
+   "toSide": "top"
+  },
+  {
+   "id": "fb7b319da2612c2d",
+   "fromNode": "b9d3a0bbe3485c96",
+   "fromSide": "right",
+   "toNode": "e0332fc975f8be39",
+   "toSide": "left"
+  },
+  {
+   "id": "c796f44fa405ad14",
+   "fromNode": "e0332fc975f8be39",
+   "fromSide": "right",
+   "toNode": "45472cb0b0f89698",
+   "toSide": "left"
+  },
+  {
+   "id": "285de05df3b3c027",
+   "fromNode": "a037d9a44223d0e4",
+   "fromSide": "left",
+   "toNode": "7a825dd4992812ae",
+   "toSide": "top"
+  },
+  {
+   "id": "f10c46e7c74661ca",
+   "fromNode": "7a825dd4992812ae",
+   "fromSide": "right",
+   "toNode": "164e0a6f405d9822",
+   "toSide": "left"
+  },
+  {
+   "id": "cb40feee8d601c6c",
+   "fromNode": "164e0a6f405d9822",
+   "fromSide": "right",
+   "toNode": "cd84814f56f484ed",
+   "toSide": "left"
+  },
+  {
+   "id": "c3bd0487e656b10a",
+   "fromNode": "1477865a362c8082",
+   "fromSide": "bottom",
+   "toNode": "d2fed4c93d00ccc2",
+   "toSide": "top"
+  },
+  {
+   "id": "7800b1909407b059",
+   "fromNode": "d2fed4c93d00ccc2",
+   "fromSide": "bottom",
+   "toNode": "fb628c9d36d1e421",
+   "toSide": "top"
+  },
+  {
+   "id": "aaae1eae156470e8",
+   "fromNode": "fb628c9d36d1e421",
+   "fromSide": "bottom",
+   "toNode": "03e2cb24af593660",
+   "toSide": "top"
+  },
+  {
+   "id": "581e836006d4fff8",
+   "fromNode": "2640fef3e60fe0ea",
+   "fromSide": "bottom",
+   "toNode": "1924119c3d01e9de",
+   "toSide": "top"
+  },
+  {
+   "id": "dc24929511360e79",
+   "fromNode": "1924119c3d01e9de",
+   "fromSide": "bottom",
+   "toNode": "26cc73f48b881481",
+   "toSide": "top"
+  },
+  {
+   "id": "f5bb383d9860a86f",
+   "fromNode": "26cc73f48b881481",
+   "fromSide": "bottom",
+   "toNode": "5e48722ba43a3b9e",
+   "toSide": "top"
+  },
+  {
+   "id": "b8d334e12aad30dd",
+   "fromNode": "5e48722ba43a3b9e",
+   "fromSide": "bottom",
+   "toNode": "0086b914fbea6c54",
+   "toSide": "top"
+  },
+  {
+   "id": "b6a2d50e47a64998",
+   "fromNode": "1477865a362c8082",
+   "fromSide": "right",
+   "toNode": "2640fef3e60fe0ea",
+   "toSide": "left",
+   "label": "1段上がる"
+  },
+  {
+   "id": "1e8943eef10fc88b",
+   "fromNode": "1302d0dfcb6035ba",
+   "fromSide": "bottom",
+   "toNode": "657fb401e27a6b98",
+   "toSide": "top"
+  },
+  {
+   "id": "d4cffa264f427108",
+   "fromNode": "657fb401e27a6b98",
+   "fromSide": "bottom",
+   "toNode": "dd88109c98678e5f",
+   "toSide": "top"
+  },
+  {
+   "id": "9762400c94783d17",
+   "fromNode": "dd88109c98678e5f",
+   "fromSide": "bottom",
+   "toNode": "bc41941d7cb83a68",
+   "toSide": "top"
+  },
+  {
+   "id": "f333e9f41605fc62",
+   "fromNode": "bc41941d7cb83a68",
+   "fromSide": "bottom",
+   "toNode": "a2c235a1107ee178",
+   "toSide": "top"
+  },
+  {
+   "id": "58bc6b5dea8cf623",
+   "fromNode": "2640fef3e60fe0ea",
+   "fromSide": "right",
+   "toNode": "1302d0dfcb6035ba",
+   "toSide": "left",
+   "label": "1段上がる"
+  },
+  {
+   "id": "0437234e55a2e590",
+   "fromNode": "c1b11ebd4b40d22c",
+   "fromSide": "bottom",
+   "toNode": "68702da0928d484d",
+   "toSide": "top"
+  },
+  {
+   "id": "3d3b1e4c49371b36",
+   "fromNode": "68702da0928d484d",
+   "fromSide": "bottom",
+   "toNode": "fd2f1ff4a8de5994",
+   "toSide": "top"
+  },
+  {
+   "id": "8b1911a2a984d901",
+   "fromNode": "fd2f1ff4a8de5994",
+   "fromSide": "bottom",
+   "toNode": "27c1944ef77e58db",
+   "toSide": "top"
+  },
+  {
+   "id": "80532a27457f10eb",
+   "fromNode": "27c1944ef77e58db",
+   "fromSide": "bottom",
+   "toNode": "83b906dd0df27bf2",
+   "toSide": "top"
+  },
+  {
+   "id": "8495edb7970909ee",
+   "fromNode": "1302d0dfcb6035ba",
+   "fromSide": "right",
+   "toNode": "c1b11ebd4b40d22c",
+   "toSide": "left",
+   "label": "1段上がる"
+  },
+  {
+   "id": "ba8fb92191cc23e0",
+   "fromNode": "10a2d03186060f61",
+   "fromSide": "bottom",
+   "toNode": "5b6f92a2e6fbbc1a",
+   "toSide": "top"
+  },
+  {
+   "id": "b3f234460f3945b7",
+   "fromNode": "5b6f92a2e6fbbc1a",
+   "fromSide": "bottom",
+   "toNode": "ea6047e67b5b736f",
+   "toSide": "top"
+  },
+  {
+   "id": "1956ce3a5fd10e15",
+   "fromNode": "ea6047e67b5b736f",
+   "fromSide": "bottom",
+   "toNode": "3c8ebaf884195d91",
+   "toSide": "top"
+  },
+  {
+   "id": "49660fafca71416c",
+   "fromNode": "3c8ebaf884195d91",
+   "fromSide": "bottom",
+   "toNode": "d411943078a77f3f",
+   "toSide": "top"
+  },
+  {
+   "id": "ac5c60b2c1bb714f",
+   "fromNode": "c1b11ebd4b40d22c",
+   "fromSide": "right",
+   "toNode": "10a2d03186060f61",
+   "toSide": "left",
+   "label": "1段上がる"
+  },
+  {
+   "id": "ed6bd1f5a0886dd5",
+   "fromNode": "03e2cb24af593660",
+   "fromSide": "bottom",
+   "toNode": "061de41e01c99315",
+   "toSide": "top",
+   "color": "6"
+  },
+  {
+   "id": "688a985592fd4d3f",
+   "fromNode": "0086b914fbea6c54",
+   "fromSide": "bottom",
+   "toNode": "061de41e01c99315",
+   "toSide": "top",
+   "color": "6"
+  },
+  {
+   "id": "93cb7c3dec071fe9",
+   "fromNode": "a2c235a1107ee178",
+   "fromSide": "bottom",
+   "toNode": "95bc65c931746029",
+   "toSide": "top",
+   "color": "6"
+  },
+  {
+   "id": "18b746576cfdb81f",
+   "fromNode": "83b906dd0df27bf2",
+   "fromSide": "bottom",
+   "toNode": "95bc65c931746029",
+   "toSide": "top",
+   "color": "6"
+  },
+  {
+   "id": "12c10d57dc347a75",
+   "fromNode": "d411943078a77f3f",
+   "fromSide": "bottom",
+   "toNode": "95bc65c931746029",
+   "toSide": "top",
+   "color": "6"
+  },
+  {
+   "id": "22ae77a0ef86927e",
+   "fromNode": "95bc65c931746029",
+   "fromSide": "bottom",
+   "toNode": "35965b927ac88e63",
+   "toSide": "top"
+  },
+  {
+   "id": "4f8dbaf3bdddddf5",
+   "fromNode": "061de41e01c99315",
+   "fromSide": "bottom",
+   "toNode": "35965b927ac88e63",
+   "toSide": "top"
+  },
+  {
+   "id": "chain01000000000",
+   "fromNode": "ebbf50c7924a419c",
+   "fromSide": "right",
+   "toNode": "549acf006146fd5f",
+   "toSide": "left"
+  },
+  {
+   "id": "chain02000000000",
+   "fromNode": "549acf006146fd5f",
+   "fromSide": "right",
+   "toNode": "6f1baac3df6b7027",
+   "toSide": "left"
+  },
+  {
+   "id": "chain03000000000",
+   "fromNode": "6f1baac3df6b7027",
+   "fromSide": "right",
+   "toNode": "f00d0ea743ef2b61",
+   "toSide": "left"
+  },
+  {
+   "id": "chain04000000000",
+   "fromNode": "f00d0ea743ef2b61",
+   "fromSide": "right",
+   "toNode": "a1b2c3d4e5f60001",
+   "toSide": "left"
+  },
+  {
+   "id": "chain05000000000",
+   "fromNode": "a1b2c3d4e5f60001",
+   "fromSide": "right",
+   "toNode": "9c4d0542d291f0c6",
+   "toSide": "left"
+  },
+  {
+   "id": "chain06000000000",
+   "fromNode": "9c4d0542d291f0c6",
+   "fromSide": "right",
+   "toNode": "6830888210f986ac",
+   "toSide": "left"
+  },
+  {
+   "id": "chain07000000000",
+   "fromNode": "6830888210f986ac",
+   "fromSide": "right",
+   "toNode": "83249de8731712f9",
+   "toSide": "left"
+  },
+  {
+   "id": "chain08000000000",
+   "fromNode": "83249de8731712f9",
+   "fromSide": "right",
+   "toNode": "a1b2c3d4e5f60002",
+   "toSide": "left"
+  },
+  {
+   "id": "chain09000000000",
+   "fromNode": "a1b2c3d4e5f60002",
+   "fromSide": "right",
+   "toNode": "6a3845da20d99d37",
+   "toSide": "left"
+  },
+  {
+   "id": "chain10000000000",
+   "fromNode": "6a3845da20d99d37",
+   "fromSide": "right",
+   "toNode": "573d9f89cfe7e222",
+   "toSide": "left"
+  },
+  {
+   "id": "chain11000000000",
+   "fromNode": "573d9f89cfe7e222",
+   "fromSide": "right",
+   "toNode": "3fd75be4b8ad78ed",
+   "toSide": "left"
+  }
+ ]
+}

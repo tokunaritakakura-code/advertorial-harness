@@ -1,0 +1,145 @@
+load_backend: loaded BLAS backend from /opt/homebrew/Cellar/ggml/0.17.0/libexec/libggml-blas.so
+ggml_metal_device_init: testing tensor API for f16 support
+ggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'
+ggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x104f5b3a0 | th_max = 1024 | th_width =   32
+ggml_metal_device_init: testing tensor API for bfloat support
+ggml_metal_library_compile_pipeline: compiling pipeline: base = 'dummy_kernel', name = 'dummy_kernel'
+ggml_metal_library_compile_pipeline: loaded dummy_kernel                                  0x104f5b0a0 | th_max = 1024 | th_width =   32
+ggml_metal_library_init: using embedded metal library
+ggml_metal_library_init: loaded in 0.015 sec
+ggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)
+ggml_metal_device_init: GPU name:   MTL0 (Apple M5)
+ggml_metal_device_init: GPU family: MTLGPUFamilyApple10  (1010)
+ggml_metal_device_init: GPU family: MTLGPUFamilyCommon3 (3003)
+ggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)
+ggml_metal_device_init: simdgroup reduction   = true
+ggml_metal_device_init: simdgroup matrix mul. = true
+ggml_metal_device_init: has unified memory    = true
+ggml_metal_device_init: has bfloat            = true
+ggml_metal_device_init: has tensor            = true
+ggml_metal_device_init: use residency sets    = true
+ggml_metal_device_init: use shared buffers    = true
+ggml_metal_device_init: recommendedMaxWorkingSetSize  = 12713.12 MB
+load_backend: loaded MTL backend from /opt/homebrew/Cellar/ggml/0.17.0/libexec/libggml-metal.so
+load_backend: loaded CPU backend from /opt/homebrew/Cellar/ggml/0.17.0/libexec/libggml-cpu-apple_m4.so
+whisper_init_from_file_with_params_no_state: loading model from '/Users/tokunaritakakura/.cache/whisper/ggml-large-v3-turbo.bin'
+whisper_init_with_params_no_state: use gpu    = 1
+whisper_init_with_params_no_state: flash attn = 1
+whisper_init_with_params_no_state: gpu_device = 0
+whisper_init_with_params_no_state: dtw        = 0
+whisper_init_with_params_no_state: devices    = 3
+whisper_init_with_params_no_state: backends   = 3
+whisper_model_load: loading model
+whisper_model_load: n_vocab       = 51866
+whisper_model_load: n_audio_ctx   = 1500
+whisper_model_load: n_audio_state = 1280
+whisper_model_load: n_audio_head  = 20
+whisper_model_load: n_audio_layer = 32
+whisper_model_load: n_text_ctx    = 448
+whisper_model_load: n_text_state  = 1280
+whisper_model_load: n_text_head   = 20
+whisper_model_load: n_text_layer  = 4
+whisper_model_load: n_mels        = 128
+whisper_model_load: ftype         = 1
+whisper_model_load: qntvr         = 0
+whisper_model_load: type          = 5 (large v3)
+whisper_model_load: adding 1609 extra tokens
+whisper_model_load: n_langs       = 100
+whisper_model_load:         MTL0 total size =  1623.92 MB
+whisper_model_load: model size    = 1623.92 MB
+whisper_backend_init_gpu: device 0: BLAS (type: 3)
+whisper_backend_init_gpu: device 1: MTL0 (type: 1)
+whisper_backend_init_gpu: found GPU device 1: MTL0 (type: 1, cnt: 0)
+whisper_backend_init_gpu: using MTL0 backend
+ggml_metal_init: allocating
+ggml_metal_init: found device: Apple M5
+ggml_metal_init: picking default device: Apple M5
+ggml_metal_init: use fusion         = true
+ggml_metal_init: use concurrency    = true
+ggml_metal_init: use graph optimize = true
+whisper_backend_init: using BLAS backend
+whisper_init_state: kv self size  =   10.49 MB
+whisper_init_state: kv cross size =   31.46 MB
+whisper_init_state: kv pad  size  =    7.86 MB
+whisper_init_state: compute buffer (conv)   =   37.69 MB
+whisper_init_state: compute buffer (encode) =   67.31 MB
+whisper_init_state: compute buffer (cross)  =   63.03 MB
+whisper_init_state: compute buffer (decode) =  100.04 MB
+read_audio_data: reading audio data from 'audio.wav' ...
+read_audio_data: trying to decode with miniaudio
+
+system_info: n_threads = 4 / 10 | WHISPER : COREML = 0 | OPENVINO = 0 | MTL : EMBED_LIBRARY = 1 | CPU : NEON = 1 | ARM_FMA = 1 | FP16_VA = 1 | MATMUL_INT8 = 1 | DOTPROD = 1 | SME = 1 | ACCELERATE = 1 | OPENMP = 1 | REPACK = 1 | 
+
+main: processing 'audio.wav' (2416299 samples, 151.0 sec), 4 threads, 1 processors, 5 beams + best of 5, lang = ja, task = transcribe, timestamps = 1 ...
+
+
+[00:00:00.000 --> 00:00:06.120]  朝から晩まで続くその腰の激痛は、死にかけた腰の筋肉からの最後の電話です。
+[00:00:06.500 --> 00:00:08.480]  何年も前からかかり続けています。
+[00:00:08.900 --> 00:00:10.120]  でもあなたは出ません。
+[00:00:10.540 --> 00:00:13.480]  腰痛持ちだからと我慢して一日を続けます。
+[00:00:13.880 --> 00:00:17.260]  切った電話の向こうで腰の筋肉は死にかけています。
+[00:00:17.700 --> 00:00:20.160]  留守番電話にメッセージが3件あります。
+[00:00:20.680 --> 00:00:23.480]  その激痛は腰痛持ちだからではありません。
+[00:00:23.620 --> 00:00:29.220]  朝から晩まで続くその腰の激痛の原因は腰の筋肉の酸欠です。
+[00:00:29.500 --> 00:00:32.120]  腰の筋肉が酸素を欲しがっています
+[00:00:32.120 --> 00:00:33.040]  1件目
+[00:00:33.040 --> 00:00:36.000]  腰にたまに激痛が走った頃です
+[00:00:36.000 --> 00:00:37.380]  腰の筋肉です
+[00:00:37.380 --> 00:00:39.200]  同じ形のままで固まり
+[00:00:39.200 --> 00:00:41.220]  中の血管を潰しています
+[00:00:41.220 --> 00:00:44.200]  血が止まって血の運ぶ酸素が来ません
+[00:00:44.200 --> 00:00:46.720]  だから激痛を出して知らせています
+[00:00:46.720 --> 00:00:48.260]  あなたは出ませんでした
+[00:00:48.260 --> 00:00:49.220]  2件目
+[00:00:49.220 --> 00:00:52.640]  激痛が朝から晩まで続き始めた頃です
+[00:00:52.640 --> 00:00:53.960]  腰の筋肉です
+[00:00:53.960 --> 00:00:55.440]  まだ酸素が来ません
+[00:00:55.440 --> 00:00:56.880]  外から押してください
+[00:00:56.960 --> 00:00:59.320]  押されたところに血が流れ込みます
+[00:00:59.320 --> 00:01:02.160]  我慢して待たれても一人では緩めません
+[00:01:02.160 --> 00:01:05.000]  あなたは我慢してこの電話も切りました
+[00:01:05.000 --> 00:01:09.480]  血は今日も止まったまま朝から晩まで激痛が続きます
+[00:01:09.480 --> 00:01:10.440]  3件目
+[00:01:10.440 --> 00:01:12.200]  今日届いたばかりです
+[00:01:12.200 --> 00:01:13.520]  腰の筋肉です
+[00:01:13.520 --> 00:01:15.280]  これが最後の電話です
+[00:01:15.280 --> 00:01:17.700]  酸素のないままもう限界です
+[00:01:17.700 --> 00:01:19.220]  このままでは死にます
+[00:01:19.220 --> 00:01:22.360]  筋肉の死んだ腰は背骨を支えられません
+[00:01:22.360 --> 00:01:25.320]  腰は壊れて二度と元に戻りません
+[00:01:25.320 --> 00:01:26.820]  メッセージは以上です
+[00:01:26.820 --> 00:01:28.900]  でも今ならまだ間に合います
+[00:01:28.900 --> 00:01:30.800]  返事の方法は一つだけ
+[00:01:30.800 --> 00:01:33.600]  頼まれた通り腰を外から押す
+[00:01:33.600 --> 00:01:37.880]  ただ激痛の続く1日に腰を外から押すものはありません
+[00:01:37.880 --> 00:01:40.200]  返事は床に寝転んでします
+[00:01:40.200 --> 00:01:41.940]  背中にチクチクがきます
+[00:01:41.940 --> 00:01:44.520]  背中の下にあるのは針マットです
+[00:01:44.520 --> 00:01:47.620]  針のような突起が数え切れないほど立っています
+[00:01:47.620 --> 00:01:50.920]  その先が腰から背中に一斉に当たります
+[00:01:50.920 --> 00:01:53.460]  押しているのはあなたの体重です
+[00:01:53.460 --> 00:01:57.260]  数分でチクチクがじんわりした温かさに変わります
+[00:01:57.260 --> 00:02:00.020]  その時腰から4件目が届きます
+[00:02:00.020 --> 00:02:01.440]  腰の筋肉です
+[00:02:01.440 --> 00:02:03.580]  止まっていた血が流れ込んできました
+[00:02:03.580 --> 00:02:06.160]  酸素が届いてもう固まっていません
+[00:02:06.160 --> 00:02:08.340]  寝転ぶのは1日10分
+[00:02:08.340 --> 00:02:10.500]  あの激痛はもう来ません
+[00:02:10.500 --> 00:02:12.500]  新しいメッセージはありません
+[00:02:12.500 --> 00:02:16.680]  夕方レジの長い列に腰をまっすぐ伸ばして並ぶ
+[00:02:16.680 --> 00:02:20.340]  夜歯を磨きながら激痛のなかった1日に気づく
+[00:02:20.340 --> 00:02:23.920]  日ごとに寒くなる秋は腰の激痛が増える季節です
+[00:02:23.920 --> 00:02:26.320]  ありがたいことに売り切れが続いています
+[00:02:26.320 --> 00:02:30.600]  気になる方は早めに下のリンクから商品ページを確かめてください
+output_txt: saving output to '文字起こし.txt'
+
+whisper_print_timings:     load time =  1097.57 ms
+whisper_print_timings:     fallbacks =   0 p /   0 h
+whisper_print_timings:      mel time =   211.93 ms
+whisper_print_timings:   sample time =   916.20 ms /  4437 runs (     0.21 ms per run)
+whisper_print_timings:   encode time =  3517.36 ms /     6 runs (   586.23 ms per run)
+whisper_print_timings:   decode time =     7.69 ms /     2 runs (     3.84 ms per run)
+whisper_print_timings:   batchd time =  4427.44 ms /  4423 runs (     1.00 ms per run)
+whisper_print_timings:   prompt time =     0.00 ms /     1 runs (     0.00 ms per run)
+whisper_print_timings:    total time = 10285.52 ms
+ggml_metal_free: deallocating
