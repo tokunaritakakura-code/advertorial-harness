@@ -56,7 +56,7 @@ def main(a):
     ig = os.path.join(d, ".vercelignore")
     if not os.path.exists(ig):
         with open(ig, "w") as f:
-            f.write("作業/\n参考/\n参考の画像/\n生成/\n*.bak*\n*.md\n*.py\n*.json\n!vercel.json\n*.mp4\n*.mov\n")
+            f.write("作業/\n参考/\n参考の画像/\n参考の動画/\n動く素材/\n実写の素材/\n生成/\n*.bak*\n*.md\n*.py\n*.json\n!vercel.json\n*.mp4\n*.mov\n!img/**/*.mp4\n!申込/**/*.mp4\n")  # ページの動画（img/・申込/）は上げる。素材の動画は上げない（2026-10-11 ここちドライ暴露型で動画が全部404）
     code, out = run(["vercel", "whoami"], timeout=30)
     if code != 0:
         print(f"Vercel にログインしていない: {out.strip()[:120]}", file=sys.stderr); return 2

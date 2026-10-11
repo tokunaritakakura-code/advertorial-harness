@@ -18,18 +18,18 @@ RUNS = os.path.join(HOME, "Claude Code", "kata-tsukuru", "runs")
 SKILLS = os.path.join(HOME, ".claude", "skills")
 CREATOR = os.path.join(SKILLS, "skill-creator", "references")
 MAX_ROUNDS = 8          # 周回の上限。超えたら本人に1行
-MIN_REFS = 5            # 割る参考の最低本数
+MIN_REFS = 3            # 割る参考の最低本数（2026-10-11 本人「同じ構造の記事が3本以上あればいい」）
 MIN_SHARE = 3           # 「固定」と呼ぶには何本の参考に出ているか
 MIN_VARS = 3            # 参考1本あたり、自分で足す変数のカードの最低枚数
 
 BOXES = [
-    ("G1", "参考を5本以上集めて段に割った（refs/*.md に URL と、段ごとにビジュアルとコピーを分けた表）"),
+    ("G1", "同じ認知の段階・同じ構造の参考を3本以上集めて段に割った（refs/*.md に URL と、段ごとにビジュアルとコピーを分けた表）"),
     ("G2", "参考ごとの段を小さな変数の木に割った（木.canvas に参考ごとのまとまり）"),
     ("G3", "共通項を出した（型.md に 固定・分岐・誤差 の3節、固定の行は3本以上の参考を名指し）"),
     ("G4", "子スキルを書いた（SKILL.md 500行以内・掘り残し0・書式0・最終確認の箱あり）"),
     ("G5", "子スキルを本物の入力で、別の参考か別の商品で2本、端まで通し、2本とも子の最終確認が全部○（e2e/結果_1.json・結果_2.json）"),
     ("G6", "別の AI の審査が2本とも PASS（審査は基準ごとに理由→○×・受け取った物の一覧つき）と、参考を見せない読み手の目が2本とも PASS"),
-    ("G8", "飛び先へ飛ばしている広告を割り、「この広告の組み立て → この型」の線を出した（広告と型のつながり.md に5本以上の広告と、その組み立て・飛び先）"),
+    ("G8", "飛び先へ飛ばしている広告を割り、「この広告の組み立て → この型」の線を出した（広告と型のつながり.md に3本以上の広告と、その組み立て・飛び先・認知の段階）"),
     ("G7", "直しは手順の中に入れ、止める検査か見本を名指しした（直しの記録.md の各行に『手順N』と『止める検査:』・しない一覧の節が無い）"),
 ]
 
@@ -280,8 +280,8 @@ def g8(d, st):
         return False, "広告と型のつながり.md が無い（飛び先へ飛ばしている広告を割っていない）"
     rows = [l for l in t.splitlines() if re.match(r"^\|\s*\d+\s*\|", l)]
     with_ad = [l for l in rows if re.search(r"ads/library/\?id=\d+|広告ライブラリ|https?://", l)]
-    if len(with_ad) < 5:
-        return False, f"広告の行が{len(with_ad)}本（出どころの URL つきで5本以上要る）"
+    if len(with_ad) < 3:
+        return False, f"広告の行が{len(with_ad)}本（出どころの URL つきで3本以上要る）"
     for need in ("組み立て", "飛び先"):
         if need not in t:
             return False, f"「{need}」の列が無い"

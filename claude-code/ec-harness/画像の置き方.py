@@ -4,7 +4,8 @@
 
 使い方: python3 画像の置き方.py <参考のURL> <うちの記事（index.html のパスかURL）> [--移植表 <01 移植表.md>] [--測った <参考.json> <うち.json>]
   --測った: 裏用 Dia が立てられない時、内蔵ブラウザで LOAD_ALL と JS を同じ幅で当てた結果（JSON）を渡して判定だけする
-裏用 Dia（9333）の同じ窓で両方を開き（同じ幅になる）、本文の画像（幅80px以上）を上から順に測る。
+裏用 Dia（9333）の同じ窓で両方を開き（同じ幅になる）、本文の画像（幅80px以上）を上から順に測る。裏用が立たない時は dia-agent（9223）に切り替える。
+参考は本番の URL を渡す（保存した 焼き込み.html は Next.js 等の JS が file:// で失敗して本文が空になり、参考0枚と出る。2026-10-11）。
 見る物: 枚数 / 何番目の章（h2）にあるか / 本文の中の位置（前にある段の割合） / 本文幅に対する横幅 / 縦横比。
 段の並び（2026-10-07 本人「記事も同じことを」）: 章の数 / 章ごとの段・箇条・引用・小見出し・ボタンの数 / 型ごとの字の大きさ・太さ・色・後ろの箱・寄せ。言葉の中身は見ない。
 ビジュアルの種類（2026-10-07 本人「ほとんどの場合は GIF」）: 1枚ずつ 動く（GIF・動くWebP）／止まり／動画 が参考と同じか。
@@ -18,12 +19,13 @@ JS = r"""
 const root = document.querySelector('article, main, .article, #content') || document.body;
 const cw = root.getBoundingClientRect().width || innerWidth;
 const all = [...root.querySelectorAll('h1,h2,h3,p,li,blockquote,img,video,iframe')];
-const blocks = all.filter(e => !/IMG|VIDEO/.test(e.tagName) && e.innerText && e.innerText.trim().length > 1);
+const blocks = all.filter(e => !/IMG|VIDEO/.test(e.tagName) && !e.closest('[data-tasu]') && e.innerText && e.innerText.trim().length > 1);  // 足す段の中の文は位置の割合にも数えない
 const out = [];
 let h2 = 0, seen = 0;
 for (const e of all) {
-  if (e.tagName === 'H2') h2++;
+  if (e.tagName === 'H2' && !e.closest('[data-tasu]')) h2++;
   if (blocks.includes(e)) { seen++; continue; }
+  if (e.closest('[data-tasu]')) continue;  // 参考に無くても足す物（_必ず入れる物.md の値段の画像など）は数えない（2026-10-11 睡眠イヤホン）
   const r = e.getBoundingClientRect();
   if (r.width < 80 || r.height < 40) continue;
   out.push({ 型: e.tagName, src: e.currentSrc || e.src || e.querySelector?.("source")?.src || "", 章: h2, 位置: +(seen / Math.max(blocks.length, 1)).toFixed(3), 幅: +(r.width / cw).toFixed(3), 縦横: +(r.height / r.width).toFixed(3), px: [Math.round(r.width), Math.round(r.height)] });
@@ -35,6 +37,7 @@ const isBtn = e => e.tagName === 'BUTTON' || (e.tagName === 'A' && (/btn|button|
 const seq = []; let 章 = 0;
 for (const e of root.querySelectorAll('h1,h2,h3,p,li,blockquote,a,button')) {
   const r = e.getBoundingClientRect(); if (r.width < 20 || r.height < 8) continue;
+  if (e.closest('[data-tasu]')) continue;  // 足す段（値段の段など）の中の文・ボタンも段の並びに数えない（画像と同じ。2026-10-11 睡眠イヤホン）
   if (e.tagName === 'H2') 章++;
   const t = e.tagName === 'A' || e.tagName === 'BUTTON' ? (isBtn(e) ? 'ボタン' : null) : e.tagName.toLowerCase();
   if (!t || (t !== 'ボタン' && !(e.innerText || '').trim())) continue;
@@ -42,8 +45,10 @@ for (const e of root.querySelectorAll('h1,h2,h3,p,li,blockquote,a,button')) {
   const s = css(e);
   seq.push({ 型: t, 章, 字: +parseFloat(s.fontSize).toFixed(1), 太: +s.fontWeight >= 600, 色: s.color, 箱: bg(e), 寄せ: s.textAlign });
 }
-const 文 = []; { let k = 0; for (const e of root.querySelectorAll('h1,h2,h3,p,li,blockquote')) { if (e.tagName === 'H2') k++; if (e.tagName === 'P' && e.closest('li,blockquote')) continue; const t = (e.innerText || '').trim(); if (t) 文.push({ 章: k, 型: e.tagName.toLowerCase(), 文: t }); } }
-return JSON.stringify({ 画像: out, 段: seq, 文 });
+const 文 = []; { let k = 0; for (const e of root.querySelectorAll('h1,h2,h3,p,li,blockquote')) { if (e.closest('[data-tasu]')) continue; if (e.tagName === 'H2') k++; if (e.tagName === 'P' && e.closest('li,blockquote')) continue; const t = (e.innerText || '').trim(); if (t) 文.push({ 章: k, 型: e.tagName.toLowerCase(), 文: t }); } }
+// 日本語は \uXXXX にし、ページに置いて 30,000字ずつ取る（dia の出力は約65,000字で切れ、長い記事で JSON が壊れて KeyError「章」・Expecting delimiter になった。2026-10-11 睡眠イヤホン）
+window.__m = JSON.stringify({ 画像: out, 段: seq, 文 }).replace(/[\u0080-\uffff]/g, c => "\\u" + c.charCodeAt(0).toString(16).padStart(4, "0"));
+return "LEN:" + window.__m.length;
 """
 
 LOAD_ALL = r"""
@@ -54,20 +59,36 @@ await Promise.all([...document.images].filter(i => !i.complete).map(i => new Pro
 scrollTo(0, 0); return 1;
 """
 
+BIN = ["dia"]   # 裏用 Dia（9333）。立たない時は measure() が Claude 用の dia-agent（9223）に切り替える
+
 def dia(*args, timeout=90):
-    r = subprocess.run(["dia", *args], env=ENV, capture_output=True, text=True, timeout=timeout)
+    r = subprocess.run([*BIN, *args], env=ENV if BIN == ["dia"] else os.environ, capture_output=True, text=True, timeout=timeout)
     return r.stdout.strip()
 
 def measure(target):
+    global BIN
     url = target if target.startswith("http") or target.startswith("file:") else "file://" + os.path.abspath(target)
-    tab = dia("open", url).splitlines()[0].strip()
+    out = dia("open", url)
+    if not out.strip():
+        # 裏用 Dia は本人の Dia がポート無しで開いていると立たない（2026-10-11 ranking-static で list index out of range）。dia-agent は別に立つ
+        BIN = ["dia-agent"]
+        out = dia("open", url)
+    if not out.strip():
+        raise RuntimeError("ブラウザが開けない（裏用 Dia 9333 も dia-agent 9223 も返事が無い）")
+    tab = out.splitlines()[0].strip()
     try:
         time.sleep(6)
         # 遅延読み込みの画像を出す。一番下へ飛ぶだけだと途中の絵が読み込まれない（2026-10-07 Everdries の理由5・6の絵が数えられず終了コード1）
         dia("do", LOAD_ALL, "--tab", tab, timeout=120)
         time.sleep(3)
         raw = dia("do", JS, "--tab", tab)
-        return json.loads(raw[raw.index("{"): raw.rindex("}") + 1])
+        import re as _re
+        n = int(_re.search(r"LEN:(\d+)", raw).group(1))
+        buf = ""
+        for i in range(0, n, 30000):
+            part = dia("do", f"return 'B<' + window.__m.slice({i}, {i + 30000}) + '>B'", "--tab", tab)
+            buf += part[part.index("B<") + 2: part.rindex(">B")]
+        return json.loads(buf)
     finally:
         dia("close", "--tab", tab)
 
