@@ -34,6 +34,7 @@ VSL 動画が出来たあと、その飛び先の記事を作る工程を丸ご�
 | `claude-code/team-room/引き継ぎ/VSL記事リサーチ_資料/針マット/` | 試しで作った記事3本・ここちドライの手本（字・値段の段・CSS）・作業の記録 |
 | `claude-code/team-room/引き継ぎ/VSL記事リサーチ_資料/記事の最終確認_ひな形.md` | 出す前の最終確認の表 |
 | `claude-code/ec-harness/` | 検査の道具（画像の置き方・記事の検査・仕上がり検査・割り付け検査） |
+| `claude-skills/kata-tsukuru/scripts/値段の段/`・`値段の段を組む.py` | 値段の段の部品（ここちドライ advertorial-08 の見せ方とエフェクト。色と字はブランド）。1枚の JSON から記事に貼る断片を出す。例は `値段の段/例_*.json` |
 | `claude-code/adv-kata/` | 参考を数える `measure.py`、記事の殻を作る `新規.sh` |
 
 ## 動かすのに要る物

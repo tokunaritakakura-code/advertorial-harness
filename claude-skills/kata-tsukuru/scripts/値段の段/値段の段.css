@@ -1,0 +1,45 @@
+/* 値段の段（ここちドライ型）。見せ方と効果は ここちドライ advertorial-08 の値段の段の実測（2026-10-11 本番を幅390・1280で測った値）。
+   色は全部 --nd-* の変数で、組む道具（値段の段を組む.py）がブランドの色を入れる。ここに色の値を書き足さない。
+   h2・p の字の大きさは記事の周りに合わせるため、この部品では決めない（_必ず入れる物.md 足し方の決まり 2）。 */
+.nd{font-family:var(--nd-font,inherit);word-break:keep-all;overflow-wrap:anywhere}
+.nd .nd-nw{white-space:nowrap}
+.nd h2{font-weight:var(--nd-h-weight,900)}
+/* 比べる物: 線で区切った行。行の頭は太字 */
+.nd .nd-cost{margin:18px 0;padding:0;list-style:none}
+.nd .nd-cost li{padding:9px 0;border-bottom:1px solid var(--nd-line)}
+/* 価格の箱: 3pxの枠・角丸10px・中央寄せ。札 → 通常の値段に打ち消し線 → 今の値段を28pxで大きく → 小さい注 */
+.nd .nd-box{border:3px solid var(--nd-frame);background:var(--nd-bg,#fff);border-radius:10px;text-align:center;padding:16px;margin:22px 0}
+.nd .nd-tag{display:inline-block;background:var(--nd-main);color:var(--nd-on-main,#fff);font-weight:900;padding:2px 12px;border-radius:4px;font-size:15px}
+.nd .nd-p{font-size:17px;margin:8px 0 2px}
+.nd .nd-p s{color:#888}
+.nd .nd-p b{font-size:28px;color:var(--nd-price)}
+.nd .nd-box small{display:block;font-size:13px;color:#555}
+/* 縦長の値段画像: 816×1200（手本 800×1200）を最大420pxで中央 */
+.nd .nd-fig{margin:22px 0}
+.nd .nd-fig img{display:block;width:100%;height:auto;max-width:420px;margin:0 auto;border-radius:6px}
+/* セットのカード: 横に並べる。いちばん大きいセットは濃い枠＋淡い地で、上に丸い札（最初から選ばれた状態） */
+.nd .nd-sets{display:grid;grid-template-columns:repeat(var(--nd-n,3),1fr);gap:10px;margin:22px 0 10px}
+.nd .nd-set{display:block;text-decoration:none;color:inherit;border:2px solid var(--nd-line);border-radius:10px;padding:14px 8px 12px;text-align:center;position:relative;background:var(--nd-bg,#fff)}
+.nd .nd-set.is-sel{border-color:var(--nd-main);background:var(--nd-soft)}
+.nd .nd-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--nd-main);color:var(--nd-on-main,#fff);font-size:11px;font-weight:900;padding:2px 8px;border-radius:10px;white-space:nowrap}
+.nd .nd-n{font-weight:900;font-size:17px}
+.nd .nd-y{font-weight:900;font-size:20px;color:var(--nd-price);margin:4px 0}
+.nd .nd-u{font-size:12px;color:#555;line-height:1.5}
+.nd .nd-go{margin-top:8px;font-size:13px;font-weight:900;color:var(--nd-dark)}
+/* ボタン: 角丸6px・下に4pxの濃い影（押せる板に見せる）・19px/900。押すと少し明るく。下に14pxの一文 */
+.nd .nd-cta{display:block;background:var(--nd-main);color:var(--nd-on-main,#fff);text-align:center;text-decoration:none;font-weight:900;font-size:19px;padding:17px 14px;border-radius:6px;box-shadow:0 4px 0 var(--nd-dark);margin:28px 0 8px}
+.nd .nd-cta:hover{filter:brightness(1.05)}
+.nd .nd-note{text-align:center;font-size:14px;color:#444;margin:0 0 28px;line-height:1.6}
+/* お知らせ帯: 淡い地・細い枠・頭の「●」だけ値段の色 */
+.nd .nd-flash{margin:16px 0 14px;background:var(--nd-soft);border:1px solid var(--nd-line);border-radius:8px;padding:10px 12px;font-size:14px;line-height:1.6}
+.nd .nd-flash b{color:var(--nd-price)}
+.nd .nd-flash a{font-weight:700;text-decoration:none;color:inherit}
+/* 下の固定帯: 本文のボタンが画面に見えている間は消え、見えていない間だけ 0.2秒でふわっと出る */
+.nd-stick{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(255,255,255,.96);border-top:1px solid var(--nd-line);padding:8px 16px;transition:opacity .2s}
+.nd-stick.off{opacity:0;pointer-events:none}
+.nd-stick a{display:block;max-width:688px;margin:0 auto;background:var(--nd-main);color:var(--nd-on-main,#fff);text-align:center;text-decoration:none;font-weight:900;padding:12px;border-radius:6px;font-family:var(--nd-font,inherit)}
+@media (max-width:480px){
+  .nd .nd-sets{gap:6px}
+  .nd .nd-set{padding:14px 4px 10px}
+  .nd .nd-y{font-size:17px}
+}
