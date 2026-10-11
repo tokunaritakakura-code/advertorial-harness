@@ -41,6 +41,12 @@ VSL 動画が出来たあと、その飛び先の記事を作る工程を丸ご�
 - python3
 - `whisper-cli`（文字起こし。モデルは `ggml-large-v3-turbo.bin`）と ffmpeg
 - 画像は ChatGPT の画像生成（MCP `chatgpt-image`）
+- 新しい参考の保存（下の「新しいリンクから参考を作る」）と動きの検査に要る物:
+  - Playwright の Chromium: `pip install playwright && playwright install chromium`
+  - node（website-copy の焼き込み `transform.mjs`・`bake.mjs`）
+  - ffmpeg・ffprobe、yt-dlp（VSL が動画のページの URL の時）: `brew install ffmpeg yt-dlp`
+  - whisper-cli とモデル: `brew install whisper-cpp` のあと `mkdir -p ~/.cache/whisper && curl -L -o ~/.cache/whisper/ggml-large-v3-turbo.bin https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-turbo.bin`（約1.6GB。別の場所に置いた時は `WHISPER_MODEL=<パス>`）
+  - opencv-python と numpy（`動きの検査.py`）: `pip install opencv-python numpy`。Pillow（動く WebP を割る時）: `pip install pillow`
 - `画像の置き方.py` は裏で動かすブラウザ `dia` を使う。無い時は、ブラウザで測った JSON を `--測った <参考.json> <うち.json>` で渡せば同じ判定になる（やり方は手順書の8）
 
 ## 入れていない物
@@ -86,3 +92,28 @@ VSL 動画が出来たあと、その飛び先の記事を作る工程を丸ご�
 - Playwright と Chromium（`python3 -m playwright install chromium`）: 幅の検査・画面を撮る
 - `dia`（本人のログイン済みのブラウザを裏で動かす道具）: 広告ライブラリをたどる `リンクから辿る.py`
 - Vercel の CLI（ログイン済み）: 公開する.py
+
+---
+
+# 新しいリンクから参考を作る（2026-10-11 追加）
+
+保存済みの参考（`形式別/lp/`）に無い記事のリンク1本から、誰の手元でも同じ形で参考を作る。本人の Dia は使わず、Playwright の Chromium（headless）で動く。
+
+```bash
+# 1 その記事へ飛ばしている広告を Meta の広告ライブラリでたどる（Dia が無ければ headless に切り替わる）
+python3 claude-skills/kata-tsukuru/scripts/リンクから辿る.py <記事のURL> <作業>/辿る/ --国 US
+# 2 記事を保存し、段に割り、同じ飛び先の一番長く出ている VSL を文字起こしする
+python3 claude-skills/kata-tsukuru/scripts/参考を保存する.py <記事のURL> <作業>/参考/ --辿る <作業>/辿る/
+#   VSL の動画が手元にある時は --辿る の代わりに --vsl <mp4かURL>
+```
+
+出る物: `生.html`・`焼き込み.html`・`画面_390.png`・`画面_1280.png`・`段.md`（段ごとに画像と文を切らずに全部。動く物はカットの時刻・カットごとのコマの一覧・画面の割り）・`画像/`・`文字起こし.txt`（時刻つき）・`記録.json`。
+
+| 部品 | このリポの中 | 置く場所 |
+|---|---|---|
+| 焼き込み | `claude-skills/website-copy/scripts/`（transform・bake・lib-clone・fetch） | `~/.claude/skills/website-copy/scripts/` |
+| 文字起こし | `claude-skills/fukikae/scripts/01_transcribe.sh` | `~/.claude/skills/fukikae/scripts/` |
+
+部品は `claude-skills/` の並びのまま置けば見つかる（別の場所なら `WEBSITE_COPY_SCRIPTS`・`TRANSCRIBE_SH` で指定）。
+
+取れない物: ログインやボット除けがあるページ（Alibaba・1688 は headless だと CAPTCHA で止まる。道具は「ボット除けで止まった」と言って終了コード2で止まり、空の参考は作らない）。
