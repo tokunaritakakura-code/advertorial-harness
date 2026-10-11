@@ -17,7 +17,9 @@
   8. 商品の写真（img に data-shohin の印）で、白い背景の商品が画像の端で切れていない（2026-10-11 ranking-static の審査で×）（2026-10-11 本人「押しつけにせず、書き手が寄り添う。最後まで読んでほしいは自然に1回」。正本は Vault ec/構造/型/_必ず入れる物.md の「1 の言い方」）
   9. 値段の段（data-tasu="2"）が ここちドライの値段の段の部品を全部持つ: ① 本文に「1日あたり」か「1日○円」 ② 比べる物（今の対策の値段。「比べ」「より安」と、円の値が3つ以上）
      ③ 価格の箱（打ち消し線の通常の値段 → 今の値段・送料無料） ④ 縦長の値段画像（幅÷高さ 0.67〜0.75。img の width/height か画像ファイルの実寸。手本は 800×1200）。
-     「期間限定」「ご案内」を含む段（section か data-dan の枠）があれば、その中にも ③④ があるか。申込のページには当てない
+     「期間限定」「ご案内」を含む段（section か data-dan の枠）があれば、その中にも ③④ と 値段の段を組む.py の出力（data-nedan="ここちドライ型"）があるか。申込のページには当てない
+     あわせて、ボタン（class に btn・cta・atc・button か data-cta を持つ a と、button）の文が動作の語（試す・見る・手に入れる・確かめる・購入手続き・申し込む）で終わる物が0か。
+     ボタンの文は読み手の望む結果にする（手本 ここちドライ「もう、干す時に隠さない毎日へ ›」）。記事と申込のページの両方に当てる。閉じる・断るボタン（×・いいえ）は見ない（2026-10-11 本人）
      （2026-10-11 本人「期間限定のご案内と値段の見せ方は、ここちドライの値段の段を手本にデザインまで合わせる」。正本は Vault ec/構造/型/_必ず入れる物.md の 2）
   10. 値段の段（data-tasu="2"）が ここちドライ型の部品で組まれている: 同じ外枠に data-nedan="ここちドライ型"、中に価格の箱（nd-box）と最初から選ばれたセット（nd-set is-sel）。
      組むのは ~/.claude/skills/kata-tsukuru/scripts/値段の段を組む.py。漫画（data-format="漫画"）にも当てる（漫画は段16が必ず入れる物2の HTML の値段の段で、絵で語るのは物語の段だけ。型_物語の記事.md の日本版の枝）。申込のページには当てない
@@ -232,7 +234,9 @@ def 値段の段(f, s):
         無い.append("②比べる物（今の対策の値段）")
     if not 価格の箱(seg):
         無い.append("③価格の箱（打ち消し線の通常の値段 → 今の値段・送料無料）")
-    if not 縦長の値段画像(f, seg):
+    # アンケート型・漫画は値段が「問いの前の札」（部品の --出す 札だけ）と「答えた後の段」に分かれるので、④はどれかの data-tasu=2 の段にあればよい（2026-10-11）
+    他の段 = [s[x:y] for x, y in (枠(s, o.start()) for o in re.finditer(r'data-tasu="2"', s)) if x != a]
+    if not 縦長の値段画像(f, seg) and not any(縦長の値段画像(f, g) for g in 他の段):
         無い.append("④縦長の値段画像（幅÷高さ 0.67〜0.75）")
     if 無い:
         bad.append(f"値段の段（data-tasu=2）に無い: {'・'.join(無い)}（ここちドライの値段の段に合わせる。手本 共通点.md 5-2・欄のCSS.html。data-tasu=2 は前振りから値段画像までを囲む枠に付ける）")
@@ -267,9 +271,27 @@ def 値段の段(f, s):
             無い2.append("③価格の箱")
         if not 縦長の値段画像(f, seg2):
             無い2.append("④縦長の値段画像")
+        if 'data-nedan="ここちドライ型"' not in seg2:
+            無い2.append("値段の段を組む.py の出力（data-nedan）")
         if 無い2:
             名 = re.search(r'data-dan="([^"]*)"', s[a2:a2 + 300])
             bad.append(f"「{w.group(0)}」の段{'（data-dan=' + 名.group(1) + '）' if 名 else ''}に無い: {'・'.join(無い2)}（値段の段と同じ部品で作る）")
+    return bad
+
+def ボタンの文(s):
+    """9 の続き: ボタンの文が動作の語で終わっていないか（記事と申込の両方）"""
+    s = re.sub(r"<!--.*?-->", "", s, flags=re.S)
+    s = re.sub(r"<(script|style)[^>]*>.*?</\1>", "", s, flags=re.S | re.I)
+    bad = []
+    for m in re.finditer(r'<(a|button)\b([^>]*)>(.*?)</\1>', s, flags=re.S | re.I):
+        if m.group(1).lower() == "a" and not re.search(r'class="[^"]*\b(btn|cta|nd-cta|atc|button)\b|\bdata-cta\b', m.group(2)):
+            continue
+        t = re.sub(r"\s|[›→>▶＞]", "", html.unescape(re.sub(r"<[^>]+>", "", m.group(3))))
+        if not t or t in ("×",) or t.startswith("いいえ"):
+            continue
+        核 = re.split(r"[｜|]", t)[0]
+        if re.search(r"(試す|試してみる|見る|見てみる|手に入れる|確かめる|申し込む|申込む)$", 核) or re.search(r"購入手続き|申し込", 核):
+            bad.append(f"ボタンの文が動作の語: 「{t}」（読み手の望む結果にする。手本「もう、干す時に隠さない毎日へ ›」）")
     return bad
 
 def ここちドライ型(s):
@@ -313,7 +335,7 @@ def main(argv):
     if n:
         bad.append(f"画面に「未定」が {n}か所")
     申込 = os.path.basename(os.path.dirname(os.path.abspath(f))) == "申込"
-    bad += 画像の縦横(f, s) + 数字の食い違い(t) + 文の書き方(s, t) + テストの印(s) + 寄り添い(s, t, 申込) + 一番人気(f) + 商品の切れ(f, s) + ([] if 申込 else 値段の段(f, s) + ここちドライ型(s))
+    bad += 画像の縦横(f, s) + 数字の食い違い(t) + 文の書き方(s, t) + テストの印(s) + 寄り添い(s, t, 申込) + 一番人気(f) + 商品の切れ(f, s) + ([] if 申込 else 値段の段(f, s) + ここちドライ型(s)) + ボタンの文(s)
     if bad:
         print("\n".join("- " + x for x in bad)); return 1
     print("通った"); return 0

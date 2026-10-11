@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """値段の段（ここちドライ型）を組む。1枚の JSON から、記事にそのまま貼る HTML の断片を出す。
 
-使い方: python3 値段の段を組む.py <入力.json> [-o <出力.html>] [--見本 <見本.html>]
+使い方: python3 値段の段を組む.py <入力.json> [-o <出力.html>] [--見本 <見本.html>] [--出す 全部|札だけ]
+  --出す  全部（既定）か 札だけ。札だけ＝縦長の値段画像（と画像の後の文）を出さない。アンケート型・漫画で値段が
+          「問いの前の札」と「答えた後の段」に分かれる時、前は 札だけ・後は 全部（同じ入力で2回組む。外枠の印は両方に付く）
   -o      断片の書き出し先（無ければ標準出力）
   --見本  断片だけを入れた確かめ用のページも書く（幅の検査・見比べ用。記事には使わない）
 終了コード: 0 書けた / 2 入力の誤り（何が足りないかを出す）
@@ -31,7 +33,7 @@
   "画像の後": [文]（無ければ1つあたりの値段の比べを出す）  "セットの後": [文]
   "お知らせ帯": {"頭": "● お知らせ：", "文": "…", "リンク": "▶ 在庫を見る", "行き先": URL}
   "固定帯": {"文": "…", "出す所": "CSSの選び方"} か false（無ければボタンの文で出す）
-  "段の印": "9"（data-dan に入れる）
+  "段の印": "9"（data-dan に入れる）   "外枠の属性": {"id": "thanks", "hidden": true}（記事の側の出し入れの印を外枠に残す）
 文の中の <b> と <wbr> はそのまま通す。それ以外の字は HTML として逃がす。
 """
 import base64, html, json, os, re, sys
@@ -215,7 +217,7 @@ def 値段画像(o, 色):
 
 
 # ---------- 組む ----------
-def 組む(d):
+def 組む(d, 出す="全部"):
     for k in ("色", "セット", "比べる物", "保証の日数", "ボタン"):
         if not d.get(k):
             err(f"「{k}」が無い")
@@ -344,12 +346,19 @@ def 組む(d):
         固定 = f'<div class="nd-stick off"{frm}><a data-cta href="{行き先(fx.get("行き先") or href0)}">{文(fx.get("文") or d["ボタン"]["文"])}</a></div>'
     ボタン下 = d.get("ボタンの下") or f"{セット名(大)}が一番人気・{割引}・{保証}日間の返金保証つき"
 
+    外枠 = ""
+    for k, v in (d.get("外枠の属性") or {}).items():  # 例 {"id": "thanks", "hidden": true}。記事の側で段を出し入れする印をそのまま残す
+        if not re.fullmatch(r"[a-z][a-z0-9-]*", k) or k.startswith("on") or k in ("class", "style", "data-tasu", "data-nedan", "data-dan"):
+            err(f"外枠の属性に使えない名前: {k}")
+        外枠 += f" {k}" if v is True else f' {k}="{html.escape(str(v), quote=True)}"'
     t = open(os.path.join(HERE, "値段の段.html"), encoding="utf-8").read()
+    if 出す == "札だけ":  # 問いの前の札: 縦長の値段画像と画像の後の文を出さない（後の段で「全部」を出す）
+        t = re.sub(r"<figure class=\"nd-fig\">.*?</figure>\n\{\{画像の後\}\}\n", "", t, flags=re.S)
     t = re.sub(r"^<!--.*?-->\n", "", t, flags=re.S)
     css = re.sub(r"/\*.*?\*/", "", open(os.path.join(HERE, "値段の段.css"), encoding="utf-8").read(), flags=re.S)
     js = re.sub(r"/\*.*?\*/", "", open(os.path.join(HERE, "値段の段.js"), encoding="utf-8").read(), flags=re.S)
     sub = {
-        "段の印": f' data-dan="{html.escape(str(d["段の印"]))}"' if d.get("段の印") else "",
+        "段の印": (f' data-dan="{html.escape(str(d["段の印"]))}"' if d.get("段の印") else "") + 外枠 + (' data-nedan-part="札だけ"' if 出す == "札だけ" else ""),
         "色": html.escape(style, quote=True), "CSS": re.sub(r"\n\s*", "", css), "JS": js.strip(),
         "お知らせ帯": 帯, "見出し": 文(見出し), "前振り": 前振り,
         "比べる前の一文": 文(d.get("比べる前の一文") or "まず、今使っている物の値段と比べてみてください。"),
@@ -371,7 +380,10 @@ def main(a):
     if not a or a[0] in ("-h", "--help"):
         print(__doc__); return 0 if a else 2
     d = json.load(open(a[0], encoding="utf-8"))
-    out = 組む(d)
+    出す = a[a.index("--出す") + 1] if "--出す" in a else "全部"
+    if 出す not in ("全部", "札だけ"):
+        err("--出す は 全部 か 札だけ")
+    out = 組む(d, 出す)
     o = a[a.index("-o") + 1] if "-o" in a else None
     if o:
         open(o, "w", encoding="utf-8").write(out)
