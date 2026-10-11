@@ -69,6 +69,8 @@ VSL 動画が出来たあと、その飛び先の記事を作る工程を丸ご�
 | 型を見つけて子スキルまで作るスキル（リンク1本から） | `claude-skills/kata-tsukuru/SKILL.md`（ゴールの判定 `scripts/goal.py`） |
 | 日本のアンケート型の型（固定16段・分かれ道・決められない所） | `claude-code/kata-tsukuru/runs/quiz-jp/型.md`・参考6本 `refs/`・変数の木 `木.canvas` |
 | どの型にも足す物（最初の画面の最悪の結末・値段の見せ方） | `vault/ec/構造/型/_必ず入れる物.md` |
+| 物語の記事の日本版（漫画）で作る | 型のノート `vault/ec/構造/Funnel/ファネルの種類/アドバトリアルファネル/コンポーネント/02-記事（アドバトリアル）/型_物語の記事.md` の「日本版（漫画）」の枝。道具は `claude-skills/quiz-jp-copy/scripts/` の `漫画の部品.py`（組む・`<body data-format="漫画">` を付ける）・`漫画の指示.py`（画像の指示）・`漫画の画像を置く.py`（参考の縦横に切って置く）・`動く物を作る.py`（参考で動画の所を Kling で中身が動く動画に。要 higgsfield の CLI）。見本 `examples/日本版_漫画_ここちドライ_同窓会の恋/`（https://kokochi-manga.vercel.app 。動画はリポに入れていない） |
+| 記事の素材庫（動く素材・写真を入れる・探す・使った記事を書く） | `claude-skills/kata-tsukuru/scripts/素材を貯める.py`（`入れる <ファイル> --悩み <悩み> --種類 商品が写る|人の反応|体の中|写真 --中身 <中身>`・`探す <語>`・`使った <番号> --悩み <悩み> --記事 <フォルダ>`。置き場は `--根` か環境変数 `KIJI_SOZAI`、無ければ `~/Desktop/ec/共通/記事の素材庫`） |
 | 作った見本 | `examples/` の3つ: ここちドライのアンケート型（https://kokochi-quiz-padteki.vercel.app ）・ハリネルのアンケート型（https://harinel-quiz-koshi.vercel.app ）・ここちドライの7問の診断（https://kokochi-shindan-anshin.vercel.app ）。どれも申込のページ（`申込/`）まで |
 | 調べた物 | 日本の実物23本 `vault/ec/構造/Funnel/ファネルの種類/クイズファネル/_日本の実物_2026-10-10.md`、X の調べ2本（`vault/ec/構造/Funnel/_Xリサーチ_VSLの飛び先_2026-10-10.md`・`vault/ec/構造/ハーネス/_Xリサーチ_指示とループの作り方_2026-10-10.md`） |
 

@@ -11,6 +11,8 @@
   4. 文の書き方がここちドライの記事の幅に入っている（1文の平均 18〜30字・数字の無い60字超えの文が3本以下・強調は 100〜260字に1回）
      基準の元: 針マット/ここちドライの手本/共通点.md（平均22〜27字・約165字に1回）
   5. テスト用の印がある（noindex と「テスト用の値」のコメント）。公開前に本物の値へ替えるため
+  6. 最悪の結末の箱（data-tasu="1"）が読み手への警告の言い方になっていない（「こうなります」「放っておくと」「放置すると」「読まずに」「⚠」が0）。
+     「最後まで読」がページに1回だけある（2026-10-11 本人「押しつけにせず、書き手が寄り添う。最後まで読んでほしいは自然に1回」。正本は Vault ec/構造/型/_必ず入れる物.md の「1 の言い方」）
 """
 import html, os, re, sys
 
@@ -89,6 +91,22 @@ def テストの印(s):
         bad.append("「テスト用の値」のコメントが無い（決めた値の一覧の場所を書く）")
     return bad
 
+def 寄り添い(s, t):
+    bad = []
+    m = re.search(r'data-tasu="1"', s)
+    if m:
+        seg = s[m.start():m.start() + 2500]
+        nxt = re.search(r'data-tasu="[02-9]', seg)
+        box = 画面の字(seg[:nxt.start()] if nxt else seg)
+        hit = [w for w in ("こうなります", "放っておくと", "放置すると", "読まずに", "⚠") if w in box]
+        if hit:
+            bad.append(f"最悪の結末の箱が読み手への警告の言い方: {'・'.join(hit)}（書き手の立場で、知っている理由と気持ちで言う。_必ず入れる物.md の「1 の言い方」）")
+    n = len(re.findall(r"最後まで読", t))
+    漫画 = re.search(r'data-format="漫画"|class="[^"]*manga', s)  # 漫画は物語で読ませるので入れない（2026-10-11 本人）
+    if n != 1 and not (漫画 and n == 0):
+        bad.append(f"「最後まで読んでほしい」がページに {n}回（書き手の気持ちとして自然に1回）")
+    return bad
+
 def main(argv):
     if len(argv) < 2:
         print(__doc__); return 2
@@ -101,7 +119,7 @@ def main(argv):
     n = t.count("未定")
     if n:
         bad.append(f"画面に「未定」が {n}か所")
-    bad += 画像の縦横(f, s) + 数字の食い違い(t) + 文の書き方(s, t) + テストの印(s)
+    bad += 画像の縦横(f, s) + 数字の食い違い(t) + 文の書き方(s, t) + テストの印(s) + 寄り添い(s, t)
     if bad:
         print("\n".join("- " + x for x in bad)); return 1
     print("通った"); return 0

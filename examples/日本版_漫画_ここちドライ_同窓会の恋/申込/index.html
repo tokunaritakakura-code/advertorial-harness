@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><title>ここちドライ お申込み</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#ffeeef;color:#222;font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;font-size:16px;line-height:1.6;word-break:keep-all;overflow-wrap:anywhere}
+img{display:block;width:100%;height:auto}
+.hd{position:fixed;top:0;left:0;right:0;z-index:20;height:60px;background:#d0453f;display:flex;align-items:center;color:#fff;padding:0 max(0px,calc(50% - 195px))}
+.hd .sub{flex:none;width:35%;height:50px;margin:0 4px;background:#ffff00;color:#e60000;font-weight:700;font-size:13px;line-height:1.3;display:flex;align-items:center;justify-content:center;text-align:center}
+.hd .main{flex:1;text-align:center;line-height:1.1}
+.hd .tm{font-size:15px;white-space:nowrap}.hd .tm b{font-size:28px;font-weight:700;margin:0 1px}
+.hd .main p{margin:3px 0 0;font-size:10.5px}
+.hd .cl{flex:none;width:28px;height:60px;border:0;background:none;color:#fff;font-size:20px;cursor:pointer;padding:0}
+.view{max-width:390px;margin:0 auto;padding:70px 8px 90px}
+.row{display:flex;gap:8px;margin:0 0 14px;align-items:flex-start;opacity:0;transform:translateY(8px);transition:opacity .35s,transform .35s}
+.row.on{opacity:1;transform:none}
+.av{flex:none;width:44px;height:44px;border-radius:50%;object-fit:cover;margin-top:auto}
+.bl{background:#dcf5e3;border-radius:14px;padding:10px 12px;font-size:15.5px;box-shadow:2px 3px 0 rgba(0,0,0,.12)}
+.bl.pk{color:#e8007a}
+.bl.img{padding:0;background:none;box-shadow:none}
+.me{margin-left:52px;background:#fff;border-radius:16px;padding:14px 14px 16px}
+.ttl{font-weight:700;font-size:15px;margin:0 0 10px}.must{color:#e60000;font-size:13px;margin-left:8px;white-space:nowrap}
+.colors{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.colors label{display:block;border:3px solid transparent;border-radius:10px;overflow:hidden;cursor:pointer;background:#faf4f5;text-align:center;font-size:13px;font-weight:700}
+.colors label span{display:block;padding:3px 0;color:#fff}
+.colors input,.plan input{position:absolute;opacity:0;pointer-events:none}
+.colors input:checked+label{border-color:#ff1493}
+.colors .top{grid-column:1 / span 3;position:relative}
+.colors .top .gen{position:absolute;left:-4px;top:-6px;background:#e60000;color:#fff;border-radius:50%;width:48px;height:48px;font-size:12px;line-height:1.15;text-align:center;font-style:normal;display:flex;align-items:center;justify-content:center;transform:rotate(-12deg)}
+select,.inp{width:100%;font-size:17px;padding:10px 12px;border:1px solid #f0a0b0;background:#fff5f6;border-radius:2px;font-family:inherit}
+.inp.ok{background:#fff}
+.lbl2{font-size:13px;font-weight:700;margin:12px 0 4px}
+.hint{font-size:12.5px;color:#555;margin:4px 0 0}
+.link{font-size:13px;color:#2a6fd6;text-decoration:underline;margin-left:10px;cursor:pointer}
+.nx{display:block;margin:12px 0 0 auto;min-width:140px;border:0;border-radius:30px;background:#ff9500;color:#fff;font-weight:700;font-size:16px;padding:10px 24px;cursor:pointer;font-family:inherit}
+.nx.done{background:#ddd;color:#fff}
+.plan{background:#f0d6dc;border-radius:4px;padding:10px 8px 12px}
+.plan .must{display:block;margin:0 0 6px}
+.plan label{display:flex;align-items:center;gap:8px;margin:8px 0;cursor:pointer}
+.plan .rd{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid #555;background:#fff}
+.plan input:checked+label .rd{border:7px solid #2a6fd6}
+.pbtn{flex:1;word-break:keep-all;border-radius:10px;padding:10px 12px;font-weight:700;color:#fff;text-align:center;line-height:1.3}
+.pbtn.up{background:linear-gradient(135deg,#ff8ec2,#e75aa8);display:flex;align-items:center;gap:6px;font-size:14px;padding:8px 8px}
+.pbtn.up .badge{flex:none;background:#fff;color:#e8007a;border-radius:50%;width:46px;height:46px;font-size:11px;display:flex;align-items:center;justify-content:center;line-height:1.1}
+.pbtn.up img{width:44px;flex:none;border-radius:6px}
+.pbtn.sm{background:#8d8d8d;font-size:15px}
+.offer{display:grid;grid-template-columns:1fr 1.25fr;gap:6px}
+.offer .c{background:#fff;border:2px solid #333;border-radius:4px;padding:6px;text-align:center;font-size:12px;line-height:1.35}
+.offer .c.up{border-color:#c9a2e6;background:#fbf0ff}
+.offer .c h4{margin:0 0 4px;background:#e8f7ff;font-size:13px;padding:3px 0}.offer .c.up h4{background:#d8a8ec;color:#fff}
+.offer .p{font-size:24px;font-weight:700;color:#d0469a}.offer .c.up .p{color:#ff9500;background:#f8d3ec;border-radius:4px}
+.offer s{color:#666}
+.note{font-size:10.5px;color:#555;line-height:1.45;margin:6px 0 0}
+.pays{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.pays label{display:block;cursor:pointer;text-align:center}
+.pays .tag{display:inline-block;font-size:10.5px;color:#fff;background:#e60000;border-radius:10px;padding:0 8px;margin-bottom:3px}
+.pays .tag.gr{background:#fff;color:#2a8ad6;border:1px solid #2a8ad6}
+.pays .box{border-radius:6px;height:70px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;line-height:1.3;border:3px solid transparent}
+.pays input{position:absolute;opacity:0}.pays input:checked+label .box{border-color:#222}
+.payinfo{background:linear-gradient(#3f3f3f,#666 30%,#f6ead6 31%);border-radius:6px;padding:14px 10px;text-align:center;color:#fff}
+.payinfo .q{display:flex;justify-content:space-around;font-size:12px}.payinfo .q span{background:#fff;color:#333;border-radius:50%;width:96px;height:62px;display:flex;align-items:center;justify-content:center;line-height:1.3}
+.payinfo .r{display:inline-block;background:#e60000;color:#fff;font-weight:700;border-radius:8px;padding:4px 16px;margin:10px 0 8px}
+.payinfo .z{color:#e60000;font-weight:700;font-size:15px}.payinfo .z b{font-size:64px;line-height:1}
+.payinfo .k{color:#e60000;font-weight:700;font-size:20px}
+.foot{position:fixed;left:0;right:0;bottom:0;z-index:15;background:#ffeeef;padding:8px 8px 12px}
+.prog{max-width:374px;margin:0 auto;height:30px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);position:relative;opacity:0;transition:opacity .3s}
+.prog.on{opacity:1}
+.prog .bar{position:absolute;left:0;top:0;bottom:0;width:0;background:#ffd9a8;transition:width .4s}
+.prog .lb{position:relative;font-weight:700;font-size:14px;line-height:30px;padding-left:10px}
+.err{color:#e8007a;font-size:13.5px;margin:6px 0 0}
+.modal{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:10px}
+.modal.on{display:flex}
+.mbox{position:relative;background:#fff;width:100%;max-width:370px;max-height:86vh;overflow:auto;padding:14px 12px 16px}
+.mx{position:absolute;right:6px;top:6px;width:34px;height:34px;border-radius:50%;border:0;background:#1d3fa8;color:#fff;font-size:18px;cursor:pointer}
+.lim{border:2px solid #4a6bd6;padding:8px;font-weight:700;font-size:15.5px;margin:22px 0 8px}
+.lim u{text-decoration-color:#4a6bd6}
+.scr{border:1px solid #bbb;height:220px;overflow:auto;padding:8px;font-size:13.5px;line-height:1.6;margin:8px 0}
+.agree{display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:700;margin:10px 0}
+.agree input{width:24px;height:24px}
+.fin{display:block;width:100%;border:0;border-radius:40px;background:linear-gradient(#b8ef8f,#5fc35f);color:#fff;font-weight:700;font-size:21px;padding:16px 10px;cursor:pointer;font-family:inherit;text-shadow:0 1px 2px rgba(0,0,0,.25)}
+.fin small{display:block;font-size:12px}
+.stop{display:none;margin:12px 0 0;border:3px dashed #e60000;color:#e60000;font-weight:700;text-align:center;padding:12px;font-size:16px}
+.stop.on{display:block}
+.wait h3{margin:0;background:linear-gradient(#ff8fb0,#ff5c8f);color:#fff;text-align:center;font-size:22px;padding:8px}
+.wait .bd{border:3px solid #ff8fb0;padding:12px;text-align:center}
+.wait .big{font-size:26px;font-weight:700;color:#e8007a}.wait .px{font-size:44px;font-weight:700;color:#e60000}
+.wait .g{display:block;margin:10px auto 0;background:#2bb24c;color:#fff;font-weight:700;font-size:20px;border-radius:10px;padding:10px;text-align:center}
+.wait .two{display:flex;gap:10px;margin-top:14px}.wait .two button{flex:1;padding:12px 4px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+.wait .two .no{background:#fff;border:1px solid #888;color:#333}.wait .two .yes{background:#e8263a;border:0;color:#fff}
+</style></head><body><!-- テスト用の値: ../テスト用に決めた値.md -->
+<div class="hd"><div class="sub">本日受付終了まで<br>(最短出荷日で対応)</div><div class="main"><div class="tm">あと<b id="hh">00</b>時間<b id="mm">00</b>分<b id="ss">00</b>秒</div><p>※次回発送に間に合うようお示ししています</p></div><button class="cl" id="cl" aria-label="閉じる">⌄</button></div>
+<div class="view" id="view"></div>
+<div class="foot"><div class="prog" id="prog"><div class="bar" id="bar"></div><div class="lb" id="plb">あと4問</div></div></div>
+<div class="modal" id="wait"><div class="mbox wait"><h3>ちょっと待ってください！</h3><div class="bd"><div class="big">3問に答えた方だけの</div><div class="big">特別価格を見逃さないで！</div><div>通常価格 <s>9,150円</s>（税込）</div><div class="px">5,490円</div><div>（税込・40%OFF）</div><span class="g">特別価格でお得にGET！</span></div><div class="two"><button class="no" id="wno">特別価格をやめる</button><button class="yes" id="wyes">特別価格で続ける</button></div></div></div>
+<div class="modal" id="conf"><div class="mbox"><button class="mx" id="cx" aria-label="閉じる">✕</button>
+<div class="lim">■お1人様1回限りのお知らせ<br><u>3問に答えた方だけの特別価格のため、<br>お1人様1回限りとさせて<span style="white-space:nowrap">いただいております。</span></u></div>
+<div style="font-size:13px">内容確認(ボックス内をスクロールして最後までご確認下さい) 注文情報の訂正は✕ボタンを押して行ってください。</div>
+<div class="scr" id="scr"></div>
+<label class="agree"><input type="checkbox" id="ag">上記の注文内容と個人情報の取り扱いに同意する</label>
+<div class="err" id="agerr">❗ 同意してください。</div>
+<button class="fin" id="fin" data-stop="1"><small>公式サイト限定 お得にお申込み</small>ご注文を確定する</button>
+<div class="stop" id="stop" data-koko="送信">ここで送信（テストのページのため、ここで止めます。注文は送られません）</div>
+</div></div>
+<script>
+(function(){
+// 残り時間: 今日の24時まで数え下げる
+function tick(){var n=new Date(),e=new Date(n);e.setHours(24,0,0,0);var s=Math.max(0,Math.floor((e-n)/1000));
+ document.getElementById("hh").textContent=String(Math.floor(s/3600)).padStart(2,"0");document.getElementById("mm").textContent=String(Math.floor(s%3600/60)).padStart(2,"0");document.getElementById("ss").textContent=String(s%60).padStart(2,"0")}
+tick();setInterval(tick,1000);
+var V=document.getElementById("view"),AV="../img/m902.jpg",st={plan:"set5",color:"クラシック",size:"M",name:"",tel:"",zip:"",pref:"",city:"",addr:"",ship:"",time:"",pay:""};
+function row(html,me){var r=document.createElement("div");r.className="row";r.innerHTML=me?'<div class="me" style="flex:1">'+html+'</div>':'<img class="av" src="'+AV+'" alt=""><div class="bl'+(html.indexOf("<img")==0?' img':'')+'">'+html+'</div>';V.appendChild(r);requestAnimationFrame(function(){r.classList.add("on")});setTimeout(function(){r.scrollIntoView({behavior:"smooth",block:"end"})},60);return r}
+function seq(list,done){var i=0;(function n(){if(i>=list.length){done&&done();return}var it=list[i++];setTimeout(function(){row(it);n()},650)})()}
+var prog=document.getElementById("prog"),bar=document.getElementById("bar"),plb=document.getElementById("plb");
+function left(k){prog.classList.add("on");plb.textContent="あと"+k+"問";bar.style.width=((4-k)/4*100)+"%"}
+// 申2 最初の3つ（画像）
+seq(['<img src="../img/m119.jpg" alt="セット 洗濯ネット 3,000円→無料 30日間返金保証 30日間サイズ交換">','<img src="../img/m072.jpg" alt="選べる色 クラシック ベージュ ブラック">','<img src="../img/m074.jpg" alt="セットなら洗濯ネット無料 5枚セット">'],function(){
+ // 申3 色とサイズ（必須）
+ var r=row('<p class="ttl">色とサイズ選択<span class="must">※必須</span></p><div class="colors">'+
+  '<div class="top"><input type="radio" name="color" id="c1" value="クラシック"><label for="c1"><span style="background:#e75aa8">人気No.1 クラシック（ブラウン）</span><img src="../img/m048.jpg" alt="クラシック ベージュ ブラック"></label><i class="gen">一番<br>人気</i></div>'+
+  '<div><input type="radio" name="color" id="c2" value="ベージュ"><label for="c2"><span style="background:#d9a77f">ベージュ</span><img src="../img/m110.jpg" alt="ベージュ"></label></div>'+
+  '<div><input type="radio" name="color" id="c3" value="ブラック"><label for="c3"><span style="background:#444">ブラック</span><img src="../img/m111.jpg" alt="ブラック"></label></div>'+
+  '<div><input type="radio" name="color" id="c4" value="クラシック"><label for="c4"><span style="background:#8a4b3c">クラシック</span><img src="../img/m109.jpg" alt="クラシック"></label></div></div>'+
+  '<p class="lbl2">サイズ</p><select id="size"><option>XS</option><option>S</option><option selected>M</option><option>L</option><option>XL</option><option>2XL</option><option>3XL</option><option>4XL</option></select><p class="hint">※合わなければ30日間は交換できます</p>',true);
+ r.querySelectorAll("input[name=color]").forEach(function(c){c.addEventListener("change",function(){st.color=c.value;st.size=document.getElementById("size").value;afterColor()},{once:true})});
+});
+var colorDone=false;
+function afterColor(){if(colorDone)return;colorDone=true;
+ seq([st.color+"にて承りました。<br>続いてセット選択です。",'<img src="../img/m118.jpg" alt="ここちドライ 5枚 洗濯ネット 1個 30日間返金保証 30日間サイズ交換">',
+  '<div class="offer"><div class="c"><h4>1枚お試しプラン</h4><img src="../img/m068.jpg" alt=""><div class="p">5,490円</div><div>（税込）</div><div style="margin-top:4px">吸水ショーツ 1枚</div></div><div class="c up"><h4>一番人気 5枚セット</h4><img src="../img/m074.jpg" alt=""><div style="color:#d0469a;font-weight:700">洗濯ネットも無料！</div><div>通常価格 <s>29,890円</s></div><div class="p">17,890円</div><div>（税込）</div></div></div><p class="note">※3問に答えた方だけの特別価格です（本日受付終了まで）。1枚お試しは通常9,150円→5,490円、5枚セットは通常29,890円→17,890円。セットには洗濯ネット（通常3,000円）が無料で付きます。全国送料無料・30日間返金保証つき。</p>'],function(){
+  var r=row('<div class="plan"><span class="must">※必須</span><input type="radio" name="plan" id="p1" value="set5"><label for="p1"><i class="rd"></i><span class="pbtn up"><span class="badge">一番<br>人気!!</span>5枚セットプランに<br>変更する<img src="../img/m074.jpg" alt=""></span></label>'+
+   '<input type="radio" name="plan" id="p2" value="one"><label for="p2"><i class="rd"></i><span class="pbtn sm">1枚お試しプランに申し込む</span></label></div>',true);
+  r.querySelectorAll("input[name=plan]").forEach(function(p){p.addEventListener("change",function(){st.plan=p.value;afterPlan()},{once:true})});
+ });
+}
+var planDone=false;
+function afterPlan(){if(planDone)return;planDone=true;
+ row((st.plan=="set5"?"5枚セットプラン":"1枚お試しプラン")+'にて承りました。<br><b>入力項目はたった5つだけ！90秒で完了します！</b>メールアドレスの入力も必要ありません。<br>フォームの入力をもって個人情報を取得いたします。');
+ left(4);setTimeout(askName,800);
+}
+function field(title,inner,hint,check,onok){var r=row('<p class="ttl">'+title+'<span class="must">※必須</span></p>'+inner+(hint?'<p class="hint">'+hint+'</p>':'')+'<div class="err"></div><button class="nx">次へ</button>',true),b=r.querySelector(".nx"),er=r.querySelector(".err");
+ b.addEventListener("click",function(){if(b.classList.contains("done"))return;var m=check(r);if(m){er.textContent=m;return}er.textContent="";b.classList.add("done");b.textContent="OK";r.querySelectorAll("input,select").forEach(function(x){x.classList.add("ok")});onok(r)});return r}
+function askName(){field("お名前（フルネームで入力して下さい）",'<input class="inp" id="nm" placeholder="例）山田花子">',"",function(r){var v=r.querySelector("#nm").value.trim();if(v.length<2)return"お名前をフルネームで入力して下さい。";st.name=v},function(){left(3);setTimeout(function(){row("次に「電話番号」を入力して下さい。");setTimeout(askTel,600)},400)})}
+function askTel(){field("電話番号",'<input class="inp" id="tl" type="tel" inputmode="numeric" placeholder="例）09012345678">',"「-」ハイフンを除いて番号のみを入力ください",function(r){var v=r.querySelector("#tl").value.replace(/\D/g,"");if(!/^0\d{9,10}$/.test(v))return"電話番号を正しく入力して下さい。";st.tel=v},function(){left(2);setTimeout(function(){row(st.name+"様の「配送先のご住所」を教えてください。");setTimeout(askAddr,600)},400)})}
+var PREF="北海道,青森県,岩手県,宮城県,秋田県,山形県,福島県,茨城県,栃木県,群馬県,埼玉県,千葉県,東京都,神奈川県,新潟県,富山県,石川県,福井県,山梨県,長野県,岐阜県,静岡県,愛知県,三重県,滋賀県,京都府,大阪府,兵庫県,奈良県,和歌山県,鳥取県,島根県,岡山県,広島県,山口県,徳島県,香川県,愛媛県,高知県,福岡県,佐賀県,長崎県,熊本県,大分県,宮崎県,鹿児島県,沖縄県".split(",");
+function askAddr(){var r=field('郵便番号<a class="link" id="zl">郵便番号が分からない方はこちら</a>','<input class="inp" id="zp" inputmode="numeric" placeholder="例）1040061"><div id="more" style="display:none"><p class="lbl2">都道府県</p><select id="pf"><option value="">都道府県</option>'+PREF.map(function(p){return"<option>"+p+"</option>"}).join("")+'</select><p class="lbl2">市区町村</p><input class="inp" id="ct"><p class="lbl2">番地・建物名</p><input class="inp" id="ad" placeholder="例）1-2-3 ○○マンション101"></div>',"「-」ハイフンを除いて番号のみを入力ください",
+ function(r){var z=r.querySelector("#zp").value.replace(/\D/g,"");if(z.length!=7)return"郵便番号を7桁で入力して下さい。";if(!r.querySelector("#pf").value||!r.querySelector("#ct").value||!r.querySelector("#ad").value){r.querySelector("#more").style.display="block";return"住所を最後まで入力して下さい。"}st.zip=z;st.pref=r.querySelector("#pf").value;st.city=r.querySelector("#ct").value;st.addr=r.querySelector("#ad").value},
+ function(){left(1);setTimeout(function(){row("それでは「配送方法」と「お届け希望時間帯」を選択してください。");setTimeout(askShip,600)},400)});
+ var zp=r.querySelector("#zp");r.querySelector("#zl").onclick=function(){r.querySelector("#more").style.display="block"};
+ zp.addEventListener("input",function(){var z=zp.value.replace(/\D/g,"");if(z.length!=7)return;r.querySelector("#more").style.display="block";
+  fetch("https://zipcloud.ibsnet.co.jp/api/search?zipcode="+z).then(function(x){return x.json()}).then(function(j){if(j.results&&j.results[0]){r.querySelector("#pf").value=j.results[0].address1;r.querySelector("#ct").value=j.results[0].address2+j.results[0].address3}}).catch(function(){})})}
+function askShip(){field("配送方法",'<select id="sp"><option>ヤマト宅急便：置き配を利用しない</option><option>置き配：玄関前</option><option>置き配：宅配ボックス</option></select><p class="err" style="color:#e60000;font-size:12px">※「置き配」をご希望の場合は<br>お届け希望時間帯の指定は出来ません。<br>あらかじめご了承ください。</p><p class="lbl2">お届け希望時間帯</p><select id="tm"><option>指定なし</option><option>午前中</option><option>14～16時</option><option>16～18時</option><option>18～20時</option><option>19～21時</option></select>',"",function(r){st.ship=r.querySelector("#sp").value;st.time=r.querySelector("#tm").value},function(){setTimeout(function(){row("最後に、お支払い方法を選択して下さい。");setTimeout(function(){row('<div class="payinfo"><div style="font-size:15px;font-weight:700;margin-bottom:8px">代金引換だと…</div><div class="q"><span>受け取りに<br>家にいないと…</span><span>手数料330円が<br>もったいない</span></div><div class="r">そんなあなたへ</div><div style="color:#7a4b00;font-weight:700">クレジットカード・PayPayなら…</div><div class="z">ずーっと <b>0</b>円</div><div class="k">ラクして節約、断然オススメ！</div></div>');setTimeout(askPay,700)},600)},400)})}
+function askPay(){var r=row('<div class="pays"><div><input type="radio" name="pay" id="y1" value="代金引換"><label for="y1"><span class="tag gr">手数料330円</span><span class="box" style="background:#f5a623">代金引換</span></label></div><div><input type="radio" name="pay" id="y2" value="クレジットカード"><label for="y2"><span class="tag">手数料無料</span><span class="box" style="background:#e5457a">クレジット<br>カード</span></label></div><div><input type="radio" name="pay" id="y3" value="PayPay"><label for="y3"><span class="tag">手数料無料</span><span class="box" style="background:#e60012">PayPay</span></label></div></div>',true);
+ r.querySelectorAll("input[name=pay]").forEach(function(p){p.addEventListener("change",function(){st.pay=p.value;left(0);row("ご入力ありがとうございました。<br>確認画面に進みます。");setTimeout(openConf,900)},{once:true})})}
+function yen(n){return n.toLocaleString("ja-JP")+"円"}
+function openConf(){var price=st.plan=="set5"?17890:5490,fee=st.pay=="代金引換"?330:0;
+ document.getElementById("scr").innerHTML="◆ご注文内容◆<br>コース名　【ここちドライ】"+(st.plan=="set5"?"5枚セットプラン（洗濯ネット無料）":"1枚お試しプラン")+"<br>3問に答えた方だけの特別価格（40%OFF）。買い切りです（定期ではありません）。<br>商品: ここちドライ 吸水ショーツ（"+st.color+"・"+st.size+"）"+(st.plan=="set5"?"×5枚 / 洗濯ネット×1":"×1枚")+"<br>金額: "+yen(price)+"（税込）<br>配送料: 0円<br>手数料: "+yen(fee)+"<br>合計金額: "+yen(price+fee)+"<br><br>◆お届け先情報◆<br>お名前: "+st.name+"<br>郵便番号: "+st.zip.slice(0,3)+"-"+st.zip.slice(3)+"<br>住所: "+st.pref+st.city+st.addr+"<br>電話番号: "+st.tel+"<br><br>◆お支払い方法◆<br>"+st.pay+"<br><br>◆配送方法◆<br>"+st.ship+"<br>◆お届け希望時間帯◆<br>"+st.time+"<br><br>◆返金について◆<br>到着から30日以内なら、はいて洗った後でも返金保証の対象です（返送料はお客様負担・1注文1回）。<br>◆サイズ交換◆<br>30日間、1注文1回まで交換できます（元の商品の返送は不要）。";
+ document.getElementById("conf").classList.add("on")}
+document.getElementById("cx").onclick=function(){document.getElementById("conf").classList.remove("on")};
+document.getElementById("fin").onclick=function(){if(!document.getElementById("ag").checked){document.getElementById("agerr").style.display="block";return}document.getElementById("stop").classList.add("on")};
+document.getElementById("ag").onchange=function(){document.getElementById("agerr").style.display=this.checked?"none":"block"};
+// 閉じる山形 → 引き止めの箱
+document.getElementById("cl").onclick=function(){document.getElementById("wait").classList.add("on")};
+document.getElementById("wyes").onclick=function(){document.getElementById("wait").classList.remove("on")};
+document.getElementById("wno").onclick=function(){location.href="../index.html"};
+})();
+</script></body></html>

@@ -1,1648 +1,784 @@
 {
- "nodes": [
-  {
-   "id": "title",
-   "type": "text",
-   "text": "# VSL を見た人が次に開くページの型\n2026-10-10 時点。上から読む。\n左から右へ: 型が9つ。各列の上から下へ: その型の段の並び。",
-   "x": 0,
-   "y": -1500,
-   "width": 900,
-   "height": 160,
-   "color": "6"
-  },
-  {
-   "id": "r1",
-   "type": "text",
-   "text": "① 実物を集めた\n広告の棚の勝ち広告 194本・日本の配信中 23本・英語のクイズ 12本・X の投稿 143本",
-   "x": 1000,
-   "y": -1500,
-   "width": 310,
-   "height": 160,
-   "color": "5"
-  },
-  {
-   "id": "r2",
-   "type": "text",
-   "text": "② 1本ずつ、上から段に割った\n段ごとに「ビジュアル（絵）」と「コピー（文）」を分けて書いた",
-   "x": 1340,
-   "y": -1500,
-   "width": 310,
-   "height": 160,
-   "color": "5"
-  },
-  {
-   "id": "r3",
-   "type": "text",
-   "text": "③ 同じ型の実物を横に並べた\n3本以上で同じ所 → 型の決まり\n条件で違う所 → 分かれ道（例: 定期か買い切りか）",
-   "x": 1680,
-   "y": -1500,
-   "width": 310,
-   "height": 160,
-   "color": "5"
-  },
-  {
-   "id": "r4",
-   "type": "text",
-   "text": "④ 型ごとに作り方のノートにした\n各列の見出しのすぐ下のファイルを開くと、段ごとの作り方が読める",
-   "x": 2020,
-   "y": -1500,
-   "width": 310,
-   "height": 160,
-   "color": "5"
-  },
-  {
-   "id": "pick",
-   "type": "text",
-   "text": "## どの型を選ぶか（客が VSL を見た後、どこにいるか）\n- 悩みはあるが理由を知らない → 権威の暴露記事・物語の記事・日本は記事＋アンケート\n- 自分ごとにしていない人 → 記事＋アンケート・診断\n- 解決策を知っていて比べている → リスティクル・比較ランキング\n- 商品が人で答えが違う（髪・肌・サプリ） → 多問クイズ\n- 商品をもう知っている → 事前販売・オファー・商品ページ直行\n出典: 構造/Funnel/_Xリサーチ_VSLの飛び先_2026-10-10.md の1章",
-   "x": 0,
-   "y": -1280,
-   "width": 1300,
-   "height": 230,
-   "color": "3"
-  },
-  {
-   "id": "h_暴露",
-   "type": "text",
-   "text": "## 権威の暴露記事\n専門家が「見落とされた原因」を明かす記事。\n例: 針マットで作った3本",
-   "x": 0,
-   "y": -900,
-   "width": 330,
-   "height": 170,
-   "color": "2"
-  },
-  {
-   "id": "f_暴露",
-   "type": "file",
-   "file": "構造/Funnel/ファネルの種類/アドバトリアルファネル/コンポーネント/02-記事（アドバトリアル）/型_権威の暴露記事.md",
-   "x": 0,
-   "y": -710,
-   "width": 330,
-   "height": 60,
-   "text": ""
-  },
-  {
-   "id": "s_暴露_0",
-   "type": "text",
-   "text": "専門家の名乗り（記事の頭）\n誰が言うかで信じさせる",
-   "x": 0,
-   "y": -630,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_暴露_1",
-   "type": "text",
-   "text": "見落とされた原因\n「あなたのせいではない」",
-   "x": 0,
-   "y": -520,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_暴露_2",
-   "type": "text",
-   "text": "今の物の失敗\n湿布・整体では足りない理由",
-   "x": 0,
-   "y": -410,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_暴露_3",
-   "type": "text",
-   "text": "専門家がすすめる物",
-   "x": 0,
-   "y": -300,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_暴露_4",
-   "type": "text",
-   "text": "商品の働き\n仕組みを図で",
-   "x": 0,
-   "y": -190,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_暴露_5",
-   "type": "text",
-   "text": "時間で歩く\n使うと何日でどう変わる",
-   "x": 0,
-   "y": -80,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_暴露_6",
-   "type": "text",
-   "text": "サイン7つ\n自分ごとにさせる",
-   "x": 0,
-   "y": 30,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_暴露_7",
-   "type": "text",
-   "text": "値段と保証",
-   "x": 0,
-   "y": 140,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "h_物語",
-   "type": "text",
-   "text": "## 物語の記事\n本人や家族の体験談で読ませる。\n例: アルコットの父の記事",
-   "x": 360,
-   "y": -900,
-   "width": 330,
-   "height": 170,
-   "color": "2"
-  },
-  {
-   "id": "f_物語",
-   "type": "file",
-   "file": "構造/Funnel/ファネルの種類/アドバトリアルファネル/コンポーネント/02-記事（アドバトリアル）/型_物語の記事.md",
-   "x": 360,
-   "y": -710,
-   "width": 330,
-   "height": 60,
-   "text": ""
-  },
-  {
-   "id": "s_物語_0",
-   "type": "text",
-   "text": "見出し",
-   "x": 360,
-   "y": -630,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_物語_1",
-   "type": "text",
-   "text": "物語\n困っていた場面",
-   "x": 360,
-   "y": -520,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_物語_2",
-   "type": "text",
-   "text": "失敗\n試して駄目だった物",
-   "x": 360,
-   "y": -410,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_物語_3",
-   "type": "text",
-   "text": "原因\n本当の理由に気づく",
-   "x": 360,
-   "y": -300,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_物語_4",
-   "type": "text",
-   "text": "成分",
-   "x": 360,
-   "y": -190,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_物語_5",
-   "type": "text",
-   "text": "時間\n変わっていった日々",
-   "x": 360,
-   "y": -80,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_物語_6",
-   "type": "text",
-   "text": "客の声",
-   "x": 360,
-   "y": 30,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_物語_7",
-   "type": "text",
-   "text": "値段と保証",
-   "x": 360,
-   "y": 140,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "h_リスト",
-   "type": "text",
-   "text": "## リスティクル\n「〇〇な5つの理由」。比べている人向け",
-   "x": 720,
-   "y": -900,
-   "width": 330,
-   "height": 170,
-   "color": "2"
-  },
-  {
-   "id": "f_リスト",
-   "type": "file",
-   "file": "構造/Funnel/ファネルの種類/アドバトリアルファネル/コンポーネント/02-記事（アドバトリアル）/型_リスティクル.md",
-   "x": 720,
-   "y": -710,
-   "width": 330,
-   "height": 60,
-   "text": ""
-  },
-  {
-   "id": "s_リスト_0",
-   "type": "text",
-   "text": "見出し\n数を言う",
-   "x": 720,
-   "y": -630,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_リスト_1",
-   "type": "text",
-   "text": "理由1\n読む人が自分ごとにする理由を先に",
-   "x": 720,
-   "y": -520,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_リスト_2",
-   "type": "text",
-   "text": "理由2〜N\n研究・人数",
-   "x": 720,
-   "y": -410,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_リスト_3",
-   "type": "text",
-   "text": "客の声",
-   "x": 720,
-   "y": -300,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_リスト_4",
-   "type": "text",
-   "text": "値段と保証",
-   "x": 720,
-   "y": -190,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "h_事前",
-   "type": "text",
-   "text": "## 事前販売ページ\n買う直前の人に、値引きと証拠を並べる",
-   "x": 1080,
-   "y": -900,
-   "width": 330,
-   "height": 170,
-   "color": "2"
-  },
-  {
-   "id": "f_事前",
-   "type": "file",
-   "file": "構造/Funnel/ファネルの種類/アドバトリアルファネル/コンポーネント/02-記事（アドバトリアル）/型_事前販売ページ.md",
-   "x": 1080,
-   "y": -710,
-   "width": 330,
-   "height": 60,
-   "text": ""
-  },
-  {
-   "id": "s_事前_0",
-   "type": "text",
-   "text": "値引きの帯",
-   "x": 1080,
-   "y": -630,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_事前_1",
-   "type": "text",
-   "text": "調査と声",
-   "x": 1080,
-   "y": -520,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_事前_2",
-   "type": "text",
-   "text": "成分",
-   "x": 1080,
-   "y": -410,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_事前_3",
-   "type": "text",
-   "text": "比較表",
-   "x": 1080,
-   "y": -300,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_事前_4",
-   "type": "text",
-   "text": "専門家",
-   "x": 1080,
-   "y": -190,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_事前_5",
-   "type": "text",
-   "text": "FAQ",
-   "x": 1080,
-   "y": -80,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "h_医者VSL",
-   "type": "text",
-   "text": "## 医者のVSLページ\n長い動画1本で教えて、その下で売る",
-   "x": 1440,
-   "y": -900,
-   "width": 330,
-   "height": 170,
-   "color": "2"
-  },
-  {
-   "id": "f_医者VSL",
-   "type": "file",
-   "file": "構造/Funnel/ファネルの種類/アドバトリアルファネル/コンポーネント/02-記事（アドバトリアル）/型_医者のVSLページ.md",
-   "x": 1440,
-   "y": -710,
-   "width": 330,
-   "height": 60,
-   "text": ""
-  },
-  {
-   "id": "s_医者VSL_0",
-   "type": "text",
-   "text": "長い動画\n原因→研究→成分→商品",
-   "x": 1440,
-   "y": -630,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_医者VSL_1",
-   "type": "text",
-   "text": "まとめ買い",
-   "x": 1440,
-   "y": -520,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_医者VSL_2",
-   "type": "text",
-   "text": "返金",
-   "x": 1440,
-   "y": -410,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "h_知ってる",
-   "type": "text",
-   "text": "## 商品を知っている人向け（3つ）\nオファーページ・商品ページ直行・トップページ",
-   "x": 1800,
-   "y": -900,
-   "width": 330,
-   "height": 170,
-   "color": "2"
-  },
-  {
-   "id": "f_知ってる",
-   "type": "file",
-   "file": "構造/Funnel/ファネルの種類/アドバトリアルファネル/コンポーネント/02-記事（アドバトリアル）/型_オファーページ.md",
-   "x": 1800,
-   "y": -710,
-   "width": 330,
-   "height": 60,
-   "text": ""
-  },
-  {
-   "id": "s_知ってる_0",
-   "type": "text",
-   "text": "オファー: 1本で全部→成分と研究→保証→人数",
-   "x": 1800,
-   "y": -630,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_知ってる_1",
-   "type": "text",
-   "text": "商品ページ直行: 成分→声→FAQ→保証→使い方",
-   "x": 1800,
-   "y": -520,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_知ってる_2",
-   "type": "text",
-   "text": "トップページ: 体を知る→向いている人→使い方→FAQ",
-   "x": 1800,
-   "y": -410,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "f_日本アンケ",
-   "type": "file",
-   "file": "構造/Funnel/ファネルの種類/クイズファネル/_日本の実物_2026-10-10.md",
-   "x": 2160,
-   "y": -710,
-   "width": 330,
-   "height": 60,
-   "text": ""
-  },
-  {
-   "id": "s_日本アンケ_0",
-   "type": "text",
-   "text": "1 頭の絵\n絵: 悩みの名前・権威・赤と黄の帯\n文: 「繰り返す〇〇は“菌”が繁殖中!?」",
-   "x": 2160,
-   "y": -630,
-   "width": 330,
-   "height": 130
-  },
-  {
-   "id": "s_日本アンケ_1",
-   "type": "text",
-   "text": "2 共感の場面\n絵: 同じ年代の人の写真\n文: 「うぅ...またこの〇〇💦」",
-   "x": 2160,
-   "y": -480,
-   "width": 330,
-   "height": 130
-  },
-  {
-   "id": "s_日本アンケ_2",
-   "type": "text",
-   "text": "3 敵の名前と仕組み\n絵: 断面図・年で下がるグラフ\n文: 「実はそれ、異常のサイン！？」→✅最悪",
-   "x": 2160,
-   "y": -330,
-   "width": 330,
-   "height": 130
-  },
-  {
-   "id": "s_日本アンケ_3",
-   "type": "text",
-   "text": "4 今の対策を切る\n文: 「〇〇なんてもってのほか」",
-   "x": 2160,
-   "y": -180,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_日本アンケ_4",
-   "type": "text",
-   "text": "5 作った会社\n絵: 矢印3つ→会社・研究者の顔と名前",
-   "x": 2160,
-   "y": -70,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_日本アンケ_5",
-   "type": "text",
-   "text": "6 商品と効く理由\n絵: 手に持つ写真・成分の図",
-   "x": 2160,
-   "y": 40,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_日本アンケ_6",
-   "type": "text",
-   "text": "7 客の声3つ（年齢つき）",
-   "x": 2160,
-   "y": 150,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_日本アンケ_7",
-   "type": "text",
-   "text": "8 完売→このページだけの道",
-   "x": 2160,
-   "y": 260,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_日本アンケ_8",
-   "type": "text",
-   "text": "9 値段の札\n絵: クーポン券「約50%OFF」",
-   "x": 2160,
-   "y": 370,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_日本アンケ_9",
-   "type": "text",
-   "text": "10 不安つぶし\n縛りなし・後払い・返金保証",
-   "x": 2160,
-   "y": 480,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_日本アンケ_10",
-   "type": "text",
-   "text": "11 「タップするだけ！3問で完了！」",
-   "x": 2160,
-   "y": 590,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_日本アンケ_11",
-   "type": "text",
-   "text": "12 Q1 悩みの長さ（ボタン4つ）",
-   "x": 2160,
-   "y": 700,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_日本アンケ_12",
-   "type": "text",
-   "text": "13 Q2 商品のどこが魅力？（自分で選ばせる）",
-   "x": 2160,
-   "y": 810,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_日本アンケ_13",
-   "type": "text",
-   "text": "14 Q3 早く治したい？ はい/いいえ",
-   "x": 2160,
-   "y": 920,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_日本アンケ_14",
-   "type": "text",
-   "text": "15 「ご回答ありがとうございました」→申込ボタン",
-   "x": 2160,
-   "y": 1030,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_日本アンケ_15",
-   "type": "text",
-   "text": "16 「この記事は検索しても出ない」",
-   "x": 2160,
-   "y": 1140,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "f_多問",
-   "type": "file",
-   "file": "構造/Funnel/ファネルの種類/クイズファネル/_foundation.md",
-   "x": 2520,
-   "y": -710,
-   "width": 330,
-   "height": 60,
-   "text": ""
-  },
-  {
-   "id": "s_多問_0",
-   "type": "text",
-   "text": "1画面目\n最初の問い・特典",
-   "x": 2520,
-   "y": -630,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_多問_1",
-   "type": "text",
-   "text": "問い（重さ・期間・試した物）\n1画面1問・進み具合",
-   "x": 2520,
-   "y": -520,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_多問_2",
-   "type": "text",
-   "text": "幕間\n「あなただけじゃない」「なぜ効かなかったか」",
-   "x": 2520,
-   "y": -410,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_多問_3",
-   "type": "text",
-   "text": "待ち\n「計算しています」",
-   "x": 2520,
-   "y": -300,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_多問_4",
-   "type": "text",
-   "text": "レポート・結果\nあなたの状態・目標の日付",
-   "x": 2520,
-   "y": -190,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_多問_5",
-   "type": "text",
-   "text": "値段\n「診断で対象になったので」割引",
-   "x": 2520,
-   "y": -80,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_新しい_0",
-   "type": "text",
-   "text": "比較ランキング\n3〜5商品を並べ、1位がうち",
-   "x": 2880,
-   "y": -710,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "s_新しい_1",
-   "type": "text",
-   "text": "ゲーム型\nカードをめくると割引",
-   "x": 2880,
-   "y": -600,
-   "width": 330,
-   "height": 90
-  },
-  {
-   "id": "must1",
-   "type": "text",
-   "text": "## どの型にも足す物 1\n最初の画面に、読まなかった時の最悪の結末\n→ 開いてすぐ閉じるのを止める\n各列の最初の段に足す",
-   "x": 0,
-   "y": 1282,
-   "width": 600,
-   "height": 150,
-   "color": "1"
-  },
-  {
-   "id": "must2",
-   "type": "text",
-   "text": "## どの型にも足す物 2\n値段の見せ方（ここちドライの値段の段）\n1日あたり→今のパッド代と比べる→価格の箱→縦長の値段画像\n各型の値段の段に足す",
-   "x": 700,
-   "y": 1282,
-   "width": 600,
-   "height": 150,
-   "color": "1"
-  },
-  {
-   "id": "f_must",
-   "type": "file",
-   "file": "構造/型/_必ず入れる物.md",
-   "x": 1400,
-   "y": 1322,
-   "width": 330,
-   "height": 60,
-   "text": ""
-  },
-  {
-   "id": "h_日本アンケ",
-   "type": "text",
-   "text": "## 日本版のフォーマット（型ではない）\n権威の暴露記事・物語の記事と同じ段の並びで、出し方だけ違う:\n① 権威を人でなく会社で出す\n② 短い行・赤字・絵文字\n③ 値段を「アンケート3問に答えたお礼」で出す\n例: BODY-VO・てんらい・防風通聖散（暴露の日本版・説明の語り口）／YURiiRO（物語の日本版・漫画。8段中7段が物語の記事と同じ）",
-   "x": 2160,
-   "y": -1060,
-   "width": 330,
-   "height": 230,
-   "color": "5"
-  },
-  {
-   "id": "h_多問",
-   "type": "text",
-   "text": "## 多問クイズ・診断（英語・Lovy ほか12本）\n1画面1問で9〜13問。答えを「あなたの状態」に言い換えて、結果の後に値段",
-   "x": 2520,
-   "y": -1060,
-   "width": 330,
-   "height": 245,
-   "color": "2"
-  },
-  {
-   "id": "h_新しい",
-   "type": "text",
-   "text": "## X で見つけた新しい型（まだ割っていない）\n比較ランキング（第三者のふり）・カードをめくるゲーム型。次に kata-tsukuru で割る候補\n\n＋ 応援の記事（候補・実物1本: らでぃっしゅぼーや）: 社会の困りごと（ふぞろいで捨てられる野菜）→ 買って応援できる解決 → 値段 → アンケート3問。物語の記事と8段中4段・暴露と3段しか合わない",
-   "x": 2880,
-   "y": -1060,
-   "width": 330,
-   "height": 355,
-   "color": "2"
-  },
-  {
-   "id": "v_root",
-   "type": "text",
-   "text": "# VSL から始める\nVSL の組み立てで、次の記事の型が決まる。\n見る所は2つ:\n① VSL の話し方（誰が・どう話すか）\n② VSL が言い切った事と、名前だけで残した事",
-   "x": -1900,
-   "y": -2700,
-   "width": 560,
-   "height": 230,
-   "color": "6"
-  },
-  {
-   "id": "v_rule",
-   "type": "text",
-   "text": "## 決め方の芯\n記事は、VSL が名前だけで残した事（原因・成分・研究・保証・値段）を中身まで言う。\nVSL が全部言い切ったら、記事は挟まず商品ページへ。\n（広告の棚の勝ち広告 20本を、VSL と記事の両方で割った結果）",
-   "x": -1900,
-   "y": -2440,
-   "width": 560,
-   "height": 200,
-   "color": "3"
-  },
-  {
-   "id": "v1",
-   "type": "text",
-   "text": "**現場の人・ポッドキャスト・体の中の3D・時間で歩く・しゃべるキャラ・歌・街頭インタビュー**\nVSL が原因も商品も使い方も言い切った\n→ 記事を挟まず商品ページへ（20本中10本）",
-   "x": -1900,
-   "y": -2180,
-   "width": 560,
-   "height": 150
-  },
-  {
-   "id": "v2",
-   "type": "text",
-   "text": "**権威の1人しゃべり・クレイ（医者・獣医が話す）**\n原因は言うが、研究や成分は名前だけ\n→ 権威の暴露記事（例: Inno Glam・Chicken Health）。昨日の針マットもこれ",
-   "x": -1900,
-   "y": -2000,
-   "width": 560,
-   "height": 150
-  },
-  {
-   "id": "v3",
-   "type": "text",
-   "text": "**UGCの体験談・タブーの物語・創業者・Pixar風**\n体験と得する事（長持ち・節約・時短）を並べ、成分・保証・値段は言わない\n→ リスティクル。得する事を1つずつ理由にする（例: Mason Genie・Jade & Lotus・Novelia・Polar）",
-   "x": -1900,
-   "y": -1820,
-   "width": 560,
-   "height": 150
-  },
-  {
-   "id": "v4",
-   "type": "text",
-   "text": "**昔の権威（僧・伝統の治し方）**\n症状のチェック＋原因は名前だけ\n→ 物語の記事。3人称の主人公が原因にたどり着く（例: Calmwise）",
-   "x": -1900,
-   "y": -1640,
-   "width": 560,
-   "height": 150
-  },
-  {
-   "id": "v5",
-   "type": "text",
-   "text": "**第三者の証言（妻が夫の変化を話す）**\n変化と仕組みは言うが、成分は名前だけ\n→ 事前販売ページ。値引きの帯＋理由＋比較表（例: Mars Men）",
-   "x": -1900,
-   "y": -1460,
-   "width": 560,
-   "height": 150
-  },
-  {
-   "id": "v6",
-   "type": "text",
-   "text": "**予告編（72秒の短い動画）**\n中身を言わずに「続きを見て」で終わる\n→ 医者の VSL ページ。長い動画で全部言う（例: Miami MD）",
-   "x": -1900,
-   "y": -1280,
-   "width": 560,
-   "height": 150
-  },
-  {
-   "id": "v7",
-   "type": "text",
-   "text": "**ドラマ・寸劇**\n変化を見せて、値段と保証は言わない\n→ オファーページ（例: Ageless Beauty）",
-   "x": -1900,
-   "y": -1100,
-   "width": 560,
-   "height": 150
-  },
-  {
-   "id": "v8",
-   "type": "text",
-   "text": "**日本の広告（動画4本・static 2本）**\n悩みの名指し＋「原因がついに判明」とだけ言い、原因は言わない\n→ 型は権威の暴露記事（説明の語り口）か物語の記事（漫画で1人の物語）。フォーマットは日本版（会社の権威・アンケート3問）。作るのはスキル quiz-jp-copy",
-   "x": -1900,
-   "y": -920,
-   "width": 560,
-   "height": 150
-  },
-  {
-   "id": "v9",
-   "type": "text",
-   "text": "**悩みの発見を約束する広告**（「あなたの○○の原因は？」）\n商品が人で答えが違う（髪・肌・サプリ）\n→ 多問クイズ（例: Grüns・Seranova・Mars Men のクイズ）",
-   "x": -1900,
-   "y": -740,
-   "width": 560,
-   "height": 150
-  },
-  {
-   "id": "v10",
-   "type": "text",
-   "text": "**VSL が原因まで言い切り、客が解決策を比べている**\n→ 比較ランキング（X で見つけた。まだ割っていない）",
-   "x": -1900,
-   "y": -560,
-   "width": 560,
-   "height": 150
-  },
-  {
-   "id": "fmt_多問_日本診断",
-   "type": "text",
-   "x": 2520,
-   "y": 30,
-   "width": 330,
-   "height": 270,
-   "color": "5",
-   "text": "## 日本版（長い診断＋結果の後の解説）フォーマット（型ではない）\n多問クイズと同じ段の並びで、出し方が違う:\n① 問いは好み・暮らし・性格の7問（症状を聞かない）\n② 結果は褒めるタイプ名5つ（勧める物は1つ）\n③ 結果の後に12段の解説→値段2段\n④ 申込はチャット（残り時間・入力5つ・あと○問）\n例: YURiiRO 香り診断（49bq・49q）"
-  },
-  {
-   "id": "v11",
-   "type": "text",
-   "x": -1900,
-   "y": -380,
-   "width": 560,
-   "height": 170,
-   "text": "**診断そのものを見せる画像広告（日本）**\n「7つの質問で出会う\"私だけの○○\"」「無料診断スタート」。答えも商品の中身も言わず、診断を約束するだけ\n→ 多問クイズ。フォーマットは日本版（長い診断＋解説）。例: YURiiRO（日本20本・出て2日。勝ちの線にはまだ届かない）"
-  }
- ],
- "edges": [
-  {
-   "id": "e1",
-   "fromNode": "r1",
-   "fromSide": "right",
-   "toNode": "r2",
-   "toSide": "left"
-  },
-  {
-   "id": "e2",
-   "fromNode": "r2",
-   "fromSide": "right",
-   "toNode": "r3",
-   "toSide": "left"
-  },
-  {
-   "id": "e3",
-   "fromNode": "r3",
-   "fromSide": "right",
-   "toNode": "r4",
-   "toSide": "left"
-  },
-  {
-   "id": "e4",
-   "fromNode": "h_暴露",
-   "fromSide": "bottom",
-   "toNode": "f_暴露",
-   "toSide": "top"
-  },
-  {
-   "id": "e5",
-   "fromNode": "f_暴露",
-   "fromSide": "bottom",
-   "toNode": "s_暴露_0",
-   "toSide": "top"
-  },
-  {
-   "id": "e6",
-   "fromNode": "s_暴露_0",
-   "fromSide": "bottom",
-   "toNode": "s_暴露_1",
-   "toSide": "top"
-  },
-  {
-   "id": "e7",
-   "fromNode": "s_暴露_1",
-   "fromSide": "bottom",
-   "toNode": "s_暴露_2",
-   "toSide": "top"
-  },
-  {
-   "id": "e8",
-   "fromNode": "s_暴露_2",
-   "fromSide": "bottom",
-   "toNode": "s_暴露_3",
-   "toSide": "top"
-  },
-  {
-   "id": "e9",
-   "fromNode": "s_暴露_3",
-   "fromSide": "bottom",
-   "toNode": "s_暴露_4",
-   "toSide": "top"
-  },
-  {
-   "id": "e10",
-   "fromNode": "s_暴露_4",
-   "fromSide": "bottom",
-   "toNode": "s_暴露_5",
-   "toSide": "top"
-  },
-  {
-   "id": "e11",
-   "fromNode": "s_暴露_5",
-   "fromSide": "bottom",
-   "toNode": "s_暴露_6",
-   "toSide": "top"
-  },
-  {
-   "id": "e12",
-   "fromNode": "s_暴露_6",
-   "fromSide": "bottom",
-   "toNode": "s_暴露_7",
-   "toSide": "top"
-  },
-  {
-   "id": "e13",
-   "fromNode": "h_物語",
-   "fromSide": "bottom",
-   "toNode": "f_物語",
-   "toSide": "top"
-  },
-  {
-   "id": "e14",
-   "fromNode": "f_物語",
-   "fromSide": "bottom",
-   "toNode": "s_物語_0",
-   "toSide": "top"
-  },
-  {
-   "id": "e15",
-   "fromNode": "s_物語_0",
-   "fromSide": "bottom",
-   "toNode": "s_物語_1",
-   "toSide": "top"
-  },
-  {
-   "id": "e16",
-   "fromNode": "s_物語_1",
-   "fromSide": "bottom",
-   "toNode": "s_物語_2",
-   "toSide": "top"
-  },
-  {
-   "id": "e17",
-   "fromNode": "s_物語_2",
-   "fromSide": "bottom",
-   "toNode": "s_物語_3",
-   "toSide": "top"
-  },
-  {
-   "id": "e18",
-   "fromNode": "s_物語_3",
-   "fromSide": "bottom",
-   "toNode": "s_物語_4",
-   "toSide": "top"
-  },
-  {
-   "id": "e19",
-   "fromNode": "s_物語_4",
-   "fromSide": "bottom",
-   "toNode": "s_物語_5",
-   "toSide": "top"
-  },
-  {
-   "id": "e20",
-   "fromNode": "s_物語_5",
-   "fromSide": "bottom",
-   "toNode": "s_物語_6",
-   "toSide": "top"
-  },
-  {
-   "id": "e21",
-   "fromNode": "s_物語_6",
-   "fromSide": "bottom",
-   "toNode": "s_物語_7",
-   "toSide": "top"
-  },
-  {
-   "id": "e22",
-   "fromNode": "h_リスト",
-   "fromSide": "bottom",
-   "toNode": "f_リスト",
-   "toSide": "top"
-  },
-  {
-   "id": "e23",
-   "fromNode": "f_リスト",
-   "fromSide": "bottom",
-   "toNode": "s_リスト_0",
-   "toSide": "top"
-  },
-  {
-   "id": "e24",
-   "fromNode": "s_リスト_0",
-   "fromSide": "bottom",
-   "toNode": "s_リスト_1",
-   "toSide": "top"
-  },
-  {
-   "id": "e25",
-   "fromNode": "s_リスト_1",
-   "fromSide": "bottom",
-   "toNode": "s_リスト_2",
-   "toSide": "top"
-  },
-  {
-   "id": "e26",
-   "fromNode": "s_リスト_2",
-   "fromSide": "bottom",
-   "toNode": "s_リスト_3",
-   "toSide": "top"
-  },
-  {
-   "id": "e27",
-   "fromNode": "s_リスト_3",
-   "fromSide": "bottom",
-   "toNode": "s_リスト_4",
-   "toSide": "top"
-  },
-  {
-   "id": "e28",
-   "fromNode": "h_事前",
-   "fromSide": "bottom",
-   "toNode": "f_事前",
-   "toSide": "top"
-  },
-  {
-   "id": "e29",
-   "fromNode": "f_事前",
-   "fromSide": "bottom",
-   "toNode": "s_事前_0",
-   "toSide": "top"
-  },
-  {
-   "id": "e30",
-   "fromNode": "s_事前_0",
-   "fromSide": "bottom",
-   "toNode": "s_事前_1",
-   "toSide": "top"
-  },
-  {
-   "id": "e31",
-   "fromNode": "s_事前_1",
-   "fromSide": "bottom",
-   "toNode": "s_事前_2",
-   "toSide": "top"
-  },
-  {
-   "id": "e32",
-   "fromNode": "s_事前_2",
-   "fromSide": "bottom",
-   "toNode": "s_事前_3",
-   "toSide": "top"
-  },
-  {
-   "id": "e33",
-   "fromNode": "s_事前_3",
-   "fromSide": "bottom",
-   "toNode": "s_事前_4",
-   "toSide": "top"
-  },
-  {
-   "id": "e34",
-   "fromNode": "s_事前_4",
-   "fromSide": "bottom",
-   "toNode": "s_事前_5",
-   "toSide": "top"
-  },
-  {
-   "id": "e35",
-   "fromNode": "h_医者VSL",
-   "fromSide": "bottom",
-   "toNode": "f_医者VSL",
-   "toSide": "top"
-  },
-  {
-   "id": "e36",
-   "fromNode": "f_医者VSL",
-   "fromSide": "bottom",
-   "toNode": "s_医者VSL_0",
-   "toSide": "top"
-  },
-  {
-   "id": "e37",
-   "fromNode": "s_医者VSL_0",
-   "fromSide": "bottom",
-   "toNode": "s_医者VSL_1",
-   "toSide": "top"
-  },
-  {
-   "id": "e38",
-   "fromNode": "s_医者VSL_1",
-   "fromSide": "bottom",
-   "toNode": "s_医者VSL_2",
-   "toSide": "top"
-  },
-  {
-   "id": "e39",
-   "fromNode": "h_知ってる",
-   "fromSide": "bottom",
-   "toNode": "f_知ってる",
-   "toSide": "top"
-  },
-  {
-   "id": "e40",
-   "fromNode": "f_知ってる",
-   "fromSide": "bottom",
-   "toNode": "s_知ってる_0",
-   "toSide": "top"
-  },
-  {
-   "id": "e41",
-   "fromNode": "s_知ってる_0",
-   "fromSide": "bottom",
-   "toNode": "s_知ってる_1",
-   "toSide": "top"
-  },
-  {
-   "id": "e42",
-   "fromNode": "s_知ってる_1",
-   "fromSide": "bottom",
-   "toNode": "s_知ってる_2",
-   "toSide": "top"
-  },
-  {
-   "id": "e43",
-   "fromNode": "h_日本アンケ",
-   "fromSide": "bottom",
-   "toNode": "f_日本アンケ",
-   "toSide": "top"
-  },
-  {
-   "id": "e44",
-   "fromNode": "f_日本アンケ",
-   "fromSide": "bottom",
-   "toNode": "s_日本アンケ_0",
-   "toSide": "top"
-  },
-  {
-   "id": "e45",
-   "fromNode": "s_日本アンケ_0",
-   "fromSide": "bottom",
-   "toNode": "s_日本アンケ_1",
-   "toSide": "top"
-  },
-  {
-   "id": "e46",
-   "fromNode": "s_日本アンケ_1",
-   "fromSide": "bottom",
-   "toNode": "s_日本アンケ_2",
-   "toSide": "top"
-  },
-  {
-   "id": "e47",
-   "fromNode": "s_日本アンケ_2",
-   "fromSide": "bottom",
-   "toNode": "s_日本アンケ_3",
-   "toSide": "top"
-  },
-  {
-   "id": "e48",
-   "fromNode": "s_日本アンケ_3",
-   "fromSide": "bottom",
-   "toNode": "s_日本アンケ_4",
-   "toSide": "top"
-  },
-  {
-   "id": "e49",
-   "fromNode": "s_日本アンケ_4",
-   "fromSide": "bottom",
-   "toNode": "s_日本アンケ_5",
-   "toSide": "top"
-  },
-  {
-   "id": "e50",
-   "fromNode": "s_日本アンケ_5",
-   "fromSide": "bottom",
-   "toNode": "s_日本アンケ_6",
-   "toSide": "top"
-  },
-  {
-   "id": "e51",
-   "fromNode": "s_日本アンケ_6",
-   "fromSide": "bottom",
-   "toNode": "s_日本アンケ_7",
-   "toSide": "top"
-  },
-  {
-   "id": "e52",
-   "fromNode": "s_日本アンケ_7",
-   "fromSide": "bottom",
-   "toNode": "s_日本アンケ_8",
-   "toSide": "top"
-  },
-  {
-   "id": "e53",
-   "fromNode": "s_日本アンケ_8",
-   "fromSide": "bottom",
-   "toNode": "s_日本アンケ_9",
-   "toSide": "top"
-  },
-  {
-   "id": "e54",
-   "fromNode": "s_日本アンケ_9",
-   "fromSide": "bottom",
-   "toNode": "s_日本アンケ_10",
-   "toSide": "top"
-  },
-  {
-   "id": "e55",
-   "fromNode": "s_日本アンケ_10",
-   "fromSide": "bottom",
-   "toNode": "s_日本アンケ_11",
-   "toSide": "top"
-  },
-  {
-   "id": "e56",
-   "fromNode": "s_日本アンケ_11",
-   "fromSide": "bottom",
-   "toNode": "s_日本アンケ_12",
-   "toSide": "top"
-  },
-  {
-   "id": "e57",
-   "fromNode": "s_日本アンケ_12",
-   "fromSide": "bottom",
-   "toNode": "s_日本アンケ_13",
-   "toSide": "top"
-  },
-  {
-   "id": "e58",
-   "fromNode": "s_日本アンケ_13",
-   "fromSide": "bottom",
-   "toNode": "s_日本アンケ_14",
-   "toSide": "top"
-  },
-  {
-   "id": "e59",
-   "fromNode": "s_日本アンケ_14",
-   "fromSide": "bottom",
-   "toNode": "s_日本アンケ_15",
-   "toSide": "top"
-  },
-  {
-   "id": "e60",
-   "fromNode": "h_多問",
-   "fromSide": "bottom",
-   "toNode": "f_多問",
-   "toSide": "top"
-  },
-  {
-   "id": "e61",
-   "fromNode": "f_多問",
-   "fromSide": "bottom",
-   "toNode": "s_多問_0",
-   "toSide": "top"
-  },
-  {
-   "id": "e62",
-   "fromNode": "s_多問_0",
-   "fromSide": "bottom",
-   "toNode": "s_多問_1",
-   "toSide": "top"
-  },
-  {
-   "id": "e63",
-   "fromNode": "s_多問_1",
-   "fromSide": "bottom",
-   "toNode": "s_多問_2",
-   "toSide": "top"
-  },
-  {
-   "id": "e64",
-   "fromNode": "s_多問_2",
-   "fromSide": "bottom",
-   "toNode": "s_多問_3",
-   "toSide": "top"
-  },
-  {
-   "id": "e65",
-   "fromNode": "s_多問_3",
-   "fromSide": "bottom",
-   "toNode": "s_多問_4",
-   "toSide": "top"
-  },
-  {
-   "id": "e66",
-   "fromNode": "s_多問_4",
-   "fromSide": "bottom",
-   "toNode": "s_多問_5",
-   "toSide": "top"
-  },
-  {
-   "id": "e67",
-   "fromNode": "h_新しい",
-   "fromSide": "bottom",
-   "toNode": "s_新しい_0",
-   "toSide": "top"
-  },
-  {
-   "id": "e68",
-   "fromNode": "s_新しい_0",
-   "fromSide": "bottom",
-   "toNode": "s_新しい_1",
-   "toSide": "top"
-  },
-  {
-   "id": "e69",
-   "fromNode": "must1",
-   "fromSide": "right",
-   "toNode": "f_must",
-   "toSide": "left"
-  },
-  {
-   "id": "e70",
-   "fromNode": "must2",
-   "fromSide": "right",
-   "toNode": "f_must",
-   "toSide": "left"
-  },
-  {
-   "id": "e71",
-   "fromNode": "must1",
-   "fromSide": "top",
-   "toNode": "s_暴露_0",
-   "toSide": "bottom"
-  },
-  {
-   "id": "e72",
-   "fromNode": "must1",
-   "fromSide": "top",
-   "toNode": "s_物語_0",
-   "toSide": "bottom"
-  },
-  {
-   "id": "e73",
-   "fromNode": "must1",
-   "fromSide": "top",
-   "toNode": "s_リスト_0",
-   "toSide": "bottom"
-  },
-  {
-   "id": "e74",
-   "fromNode": "must1",
-   "fromSide": "top",
-   "toNode": "s_日本アンケ_0",
-   "toSide": "bottom"
-  },
-  {
-   "id": "e75",
-   "fromNode": "must1",
-   "fromSide": "top",
-   "toNode": "s_多問_0",
-   "toSide": "bottom"
-  },
-  {
-   "id": "e76",
-   "fromNode": "must2",
-   "fromSide": "top",
-   "toNode": "s_日本アンケ_8",
-   "toSide": "bottom"
-  },
-  {
-   "id": "e77",
-   "fromNode": "must2",
-   "fromSide": "top",
-   "toNode": "s_暴露_7",
-   "toSide": "bottom"
-  },
-  {
-   "id": "e78",
-   "fromNode": "must2",
-   "fromSide": "top",
-   "toNode": "s_物語_7",
-   "toSide": "bottom"
-  },
-  {
-   "id": "e79",
-   "fromNode": "must2",
-   "fromSide": "top",
-   "toNode": "s_リスト_4",
-   "toSide": "bottom"
-  },
-  {
-   "id": "e80",
-   "fromNode": "must2",
-   "fromSide": "top",
-   "toNode": "s_多問_5",
-   "toSide": "bottom"
-  },
-  {
-   "id": "ev_root_v1",
-   "fromNode": "v_root",
-   "toNode": "v1",
-   "fromSide": "left",
-   "toSide": "left"
-  },
-  {
-   "id": "ev_v1_h_知ってる",
-   "fromNode": "v1",
-   "toNode": "h_知ってる",
-   "fromSide": "right",
-   "toSide": "left"
-  },
-  {
-   "id": "ev_root_v2",
-   "fromNode": "v_root",
-   "toNode": "v2",
-   "fromSide": "left",
-   "toSide": "left"
-  },
-  {
-   "id": "ev_v2_h_暴露",
-   "fromNode": "v2",
-   "toNode": "h_暴露",
-   "fromSide": "right",
-   "toSide": "left"
-  },
-  {
-   "id": "ev_root_v3",
-   "fromNode": "v_root",
-   "toNode": "v3",
-   "fromSide": "left",
-   "toSide": "left"
-  },
-  {
-   "id": "ev_v3_h_リスト",
-   "fromNode": "v3",
-   "toNode": "h_リスト",
-   "fromSide": "right",
-   "toSide": "left"
-  },
-  {
-   "id": "ev_root_v4",
-   "fromNode": "v_root",
-   "toNode": "v4",
-   "fromSide": "left",
-   "toSide": "left"
-  },
-  {
-   "id": "ev_v4_h_物語",
-   "fromNode": "v4",
-   "toNode": "h_物語",
-   "fromSide": "right",
-   "toSide": "left"
-  },
-  {
-   "id": "ev_root_v5",
-   "fromNode": "v_root",
-   "toNode": "v5",
-   "fromSide": "left",
-   "toSide": "left"
-  },
-  {
-   "id": "ev_v5_h_事前",
-   "fromNode": "v5",
-   "toNode": "h_事前",
-   "fromSide": "right",
-   "toSide": "left"
-  },
-  {
-   "id": "ev_root_v6",
-   "fromNode": "v_root",
-   "toNode": "v6",
-   "fromSide": "left",
-   "toSide": "left"
-  },
-  {
-   "id": "ev_v6_h_医者VSL",
-   "fromNode": "v6",
-   "toNode": "h_医者VSL",
-   "fromSide": "right",
-   "toSide": "left"
-  },
-  {
-   "id": "ev_root_v7",
-   "fromNode": "v_root",
-   "toNode": "v7",
-   "fromSide": "left",
-   "toSide": "left"
-  },
-  {
-   "id": "ev_v7_h_知ってる",
-   "fromNode": "v7",
-   "toNode": "h_知ってる",
-   "fromSide": "right",
-   "toSide": "left"
-  },
-  {
-   "id": "ev_root_v8",
-   "fromNode": "v_root",
-   "toNode": "v8",
-   "fromSide": "left",
-   "toSide": "left"
-  },
-  {
-   "id": "ev_v8_h_日本アンケ",
-   "fromNode": "v8",
-   "toNode": "h_暴露",
-   "fromSide": "right",
-   "toSide": "left",
-   "label": "型は権威の暴露記事・フォーマットは日本版"
-  },
-  {
-   "id": "ev_root_v9",
-   "fromNode": "v_root",
-   "toNode": "v9",
-   "fromSide": "left",
-   "toSide": "left"
-  },
-  {
-   "id": "ev_v9_h_多問",
-   "fromNode": "v9",
-   "toNode": "h_多問",
-   "fromSide": "right",
-   "toSide": "left"
-  },
-  {
-   "id": "ev_root_v10",
-   "fromNode": "v_root",
-   "toNode": "v10",
-   "fromSide": "left",
-   "toSide": "left"
-  },
-  {
-   "id": "ev_v10_h_新しい",
-   "fromNode": "v10",
-   "toNode": "h_新しい",
-   "fromSide": "right",
-   "toSide": "left"
-  },
-  {
-   "id": "ef_h_暴露_jp",
-   "fromNode": "h_暴露",
-   "toNode": "h_日本アンケ",
-   "fromSide": "right",
-   "toSide": "top",
-   "label": "日本版のフォーマット"
-  },
-  {
-   "id": "ef_h_物語_jp",
-   "fromNode": "h_物語",
-   "toNode": "h_日本アンケ",
-   "fromSide": "right",
-   "toSide": "top",
-   "label": "日本版のフォーマット"
-  },
-  {
-   "id": "ef_多問_日本診断",
-   "fromNode": "s_多問_5",
-   "toNode": "fmt_多問_日本診断",
-   "fromSide": "right",
-   "toSide": "left",
-   "label": "フォーマット"
-  },
-  {
-   "id": "ev_root_v11",
-   "fromNode": "v_root",
-   "toNode": "v11",
-   "fromSide": "left",
-   "toSide": "left"
-  },
-  {
-   "id": "ev_v11_h_多問",
-   "fromNode": "v11",
-   "toNode": "h_多問",
-   "fromSide": "right",
-   "toSide": "left",
-   "label": "型は多問クイズ・フォーマットは日本版の長い診断"
-  }
- ]
+	"nodes": [
+		{
+			"id": "lv0",
+			"type": "group",
+			"label": "Unaware（悩みに気づいていない）",
+			"x": -30,
+			"y": 1119,
+			"width": 460,
+			"height": 2902
+		},
+		{
+			"id": "lv1",
+			"type": "group",
+			"label": "Problem Aware（悩みは知っているが、原因を知らない）",
+			"x": 510,
+			"y": 1119,
+			"width": 1840,
+			"height": 2902
+		},
+		{
+			"id": "lv2",
+			"type": "group",
+			"label": "Solution Aware（解決策を知っていて、比べている）",
+			"x": 2430,
+			"y": 1119,
+			"width": 1380,
+			"height": 2902
+		},
+		{
+			"id": "lv3",
+			"type": "group",
+			"label": "段階をまだ確かめていない",
+			"x": 3890,
+			"y": 1119,
+			"width": 460,
+			"height": 2902
+		},
+		{
+			"id": "title",
+			"type": "text",
+			"text": "# VSL を見た人が次に開くページの型\n2026-10-10 時点。上から読む。\n読み方: 上から下へ。大きな枠＝客の段階（Unaware・Problem Aware・Solution Aware）→ 緑＝VSLの種類 → 橙＝飛び先の型 → 白＝その型の段 → 青＝同じ型の出し方の違い（日本版）",
+			"x": 0,
+			"y": 0,
+			"width": 860,
+			"height": 199,
+			"color": "6"
+		},
+		{
+			"id": "v_root",
+			"type": "text",
+			"text": "# VSL から始める\nVSL の組み立てで、次の記事の型が決まる。\n見る所は2つ:\n① VSL の話し方（誰が・どう話すか）\n② VSL が言い切った事と、名前だけで残した事\n\n## 決め方の芯\n記事は、VSL が名前だけで残した事（原因・成分・研究・保証・値段）を中身まで言う。\nVSL が全部言い切ったら、記事は挟まず商品ページへ。\n（広告の棚の勝ち広告 20本を、VSL と記事の両方で割った結果）",
+			"x": 0,
+			"y": 674,
+			"width": 860,
+			"height": 345,
+			"color": "6"
+		},
+		{
+			"id": "pick",
+			"type": "text",
+			"text": "## どの型を選ぶか（客が VSL を見た後、どこにいるか）\n- 悩みはあるが理由を知らない → 権威の暴露記事・物語の記事・日本は記事＋アンケート\n- 自分ごとにしていない人 → 記事＋アンケート・診断\n- 解決策を知っていて比べている → リスティクル・比較ランキング\n- 商品が人で答えが違う（髪・肌・サプリ） → 多問クイズ\n- 商品をもう知っている → 事前販売・オファー・商品ページ直行\n出典: 構造/Funnel/_Xリサーチ_VSLの飛び先_2026-10-10.md の1章",
+			"x": 920,
+			"y": 0,
+			"width": 860,
+			"height": 250,
+			"color": "6"
+		},
+		{
+			"id": "how",
+			"type": "text",
+			"text": "## この図の作り方\n① 実物を集めた：広告の棚の勝ち広告 194本・日本の配信中 23本・英語のクイズ 12本・X の投稿 143本\n② 1本ずつ、上から段に割った：段ごとに「ビジュアル（絵）」と「コピー（文）」を分けて書いた\n③ 同じ型の実物を横に並べた：3本以上で同じ所 → 型の決まり・条件で違う所 → 分かれ道（例: 定期か買い切りか）\n④ 型ごとに作り方のノートにした：各列の見出しのすぐ下のファイルを開くと、段ごとの作り方が読める",
+			"x": 2760,
+			"y": 0,
+			"width": 860,
+			"height": 250,
+			"color": "6"
+		},
+		{
+			"id": "v8",
+			"type": "text",
+			"text": "**日本の広告（動画4本・static 2本）**\n悩みの名指し＋「原因がついに判明」とだけ言い、原因は言わない\n→ 型は権威の暴露記事（説明の語り口）か物語の記事（漫画で1人の物語）。フォーマットは日本版（会社の権威・アンケート3問）。作るのはスキル quiz-jp-copy",
+			"x": 1000,
+			"y": 1289,
+			"width": 400,
+			"height": 327,
+			"color": "4"
+		},
+		{
+			"id": "v2",
+			"type": "text",
+			"text": "**権威の1人しゃべり・クレイ（医者・獣医が話す）**\n原因は言うが、研究や成分は名前だけ\n→ 権威の暴露記事（例: Inno Glam・Chicken Health）。",
+			"x": 540,
+			"y": 1289,
+			"width": 400,
+			"height": 210,
+			"color": "4"
+		},
+		{
+			"id": "v12",
+			"type": "text",
+			"text": "**日本の広告・原因まで言うテロップの動画**（候補）\n悩みの名指し＋原因の名前までテロップで言い、会社と商品は言わない\n→ 型は権威の暴露記事・フォーマットは日本版。例: BODY-VO「かゆみを忘れた素肌」（3本・出て2日。勝ちの線にはまだ届かない）",
+			"x": 540,
+			"y": 1539,
+			"width": 400,
+			"height": 264,
+			"color": "4"
+		},
+		{
+			"id": "v4",
+			"type": "text",
+			"text": "**昔の権威（僧・伝統の治し方）**\n症状のチェック＋原因は名前だけ\n→ 物語の記事。3人称の主人公が原因にたどり着く（例: Calmwise）",
+			"x": 1460,
+			"y": 1289,
+			"width": 400,
+			"height": 156,
+			"color": "4"
+		},
+		{
+			"id": "v3",
+			"type": "text",
+			"text": "**UGCの体験談・タブーの物語・創業者・Pixar風**\n体験と得する事（長持ち・節約・時短）を並べ、成分・保証・値段は言わない\n→ リスティクル。得する事を1つずつ理由にする（例: Mason Genie・Jade & Lotus・Novelia・Polar）",
+			"x": 2460,
+			"y": 1289,
+			"width": 400,
+			"height": 264,
+			"color": "4"
+		},
+		{
+			"id": "v5",
+			"type": "text",
+			"text": "**第三者の証言（妻が夫の変化を話す）**\n変化と仕組みは言うが、成分は名前だけ\n→ 事前販売ページ。値引きの帯＋理由＋比較表（例: Mars Men）",
+			"x": 0,
+			"y": 1289,
+			"width": 400,
+			"height": 156,
+			"color": "4"
+		},
+		{
+			"id": "v6",
+			"type": "text",
+			"text": "**予告編（72秒の短い動画）**\n中身を言わずに「続きを見て」で終わる\n→ 医者の VSL ページ。長い動画で全部言う（例: Miami MD）",
+			"x": 1920,
+			"y": 1289,
+			"width": 400,
+			"height": 156,
+			"color": "4"
+		},
+		{
+			"id": "v1",
+			"type": "text",
+			"text": "**現場の人・ポッドキャスト・体の中の3D・時間で歩く・しゃべるキャラ・歌・街頭インタビュー**\nVSL が原因も商品も使い方も言い切った\n→ 記事を挟まず商品ページへ（20本中10本）\n（段階はばらばら: Unaware・Problem・Solution が混ざる。VSL が全部言い切ると、段階に関係なく商品ページへ）",
+			"x": 2920,
+			"y": 1289,
+			"width": 400,
+			"height": 270,
+			"color": "4"
+		},
+		{
+			"id": "v7",
+			"type": "text",
+			"text": "**ドラマ・寸劇**\n変化を見せて、値段と保証は言わない\n→ オファーページ（例: Ageless Beauty）",
+			"x": 2920,
+			"y": 1599,
+			"width": 400,
+			"height": 156,
+			"color": "4"
+		},
+		{
+			"id": "v9",
+			"type": "text",
+			"text": "**悩みの発見を約束する広告**（「あなたの○○の原因は？」）\n商品が人で答えが違う（髪・肌・サプリ）\n→ 多問クイズ（例: Grüns・Seranova・Mars Men のクイズ）",
+			"x": 3920,
+			"y": 1289,
+			"width": 400,
+			"height": 183,
+			"color": "4"
+		},
+		{
+			"id": "v11",
+			"type": "text",
+			"text": "**診断そのものを見せる画像広告（日本）**\n「7つの質問で出会う\"私だけの○○\"」「無料診断スタート」。答えも商品の中身も言わず、診断を約束するだけ\n→ 多問クイズ。フォーマットは日本版（長い診断＋解説）。例: YURiiRO（日本20本・出て2日。勝ちの線にはまだ届かない）",
+			"x": 3920,
+			"y": 1512,
+			"width": 400,
+			"height": 264,
+			"color": "4"
+		},
+		{
+			"id": "v10",
+			"type": "text",
+			"text": "**VSL が原因まで言い切り、客が解決策を比べている**\n→ 比較ランキング（X で見つけた。まだ割っていない）",
+			"x": 3380,
+			"y": 1289,
+			"width": 400,
+			"height": 156,
+			"color": "4"
+		},
+		{
+			"id": "h_暴露",
+			"type": "text",
+			"text": "## 権威の暴露記事\n専門家が「見落とされた原因」を明かす記事。\n例: 針マットで作った3本\n\n**参考にした記事（押すと開く）**\n- [Inno Glam（育毛ブラシ・医者の1人語り）](https://innoglam.com/pages/advert-2)\n- [Chicken Health Advice（鶏の羽抜け・獣医）](https://roostys.co/pages/feather-loss)",
+			"x": 540,
+			"y": 1903,
+			"width": 400,
+			"height": 233,
+			"color": "2"
+		},
+		{
+			"id": "h_物語",
+			"type": "text",
+			"text": "## 物語の記事\n本人や家族の体験談で読ませる。\n例: アルコットの父の記事\n\n**参考にした記事（押すと開く）**\n- [Calmwise Journal → Everly（3人称の Karen の物語）](https://shopeverly.shop/pages/tired-of-hair-shedding-sleepless-nights-sudden-urges-this-natural-seed-oil-is-quietly-transforming-womens-lives-in-just-weeks)",
+			"x": 1460,
+			"y": 1903,
+			"width": 400,
+			"height": 233,
+			"color": "2"
+		},
+		{
+			"id": "h_リスト",
+			"type": "text",
+			"text": "## リスティクル\n「〇〇な5つの理由」。比べている人向け\n\n**参考にした記事（押すと開く）**\n- [Mason Genie（10の理由）](https://masongenie.com/pages/mason-genie)\n- [Jade & Lotus Beauty（10の理由）](https://try.luxeresearchlab.com/adv-1-v2)\n- [Novelia（7つの理由）](https://mynovelia.com/pages/micro-needle-patches)\n- [Polar Haircare（5 Reasons）](https://polarhaircare.com/pages/instantly-reverse-grays)",
+			"x": 2460,
+			"y": 1903,
+			"width": 400,
+			"height": 206,
+			"color": "2"
+		},
+		{
+			"id": "h_事前",
+			"type": "text",
+			"text": "## 事前販売ページ\n買う直前の人に、値引きと証拠を並べる\n\n**参考にした記事（押すと開く）**\n- [Mars Men（妻が夫の変化を話す）](https://mengotomars.com/pages/boost-fb)",
+			"x": 0,
+			"y": 1903,
+			"width": 400,
+			"height": 206,
+			"color": "2"
+		},
+		{
+			"id": "h_医者VSL",
+			"type": "text",
+			"text": "## 医者のVSLページ\n長い動画1本で教えて、その下で売る\n\n**参考にした記事（押すと開く）**\n- [Miami MD](https://trymiamimd.com/vsl/v24/)",
+			"x": 1920,
+			"y": 1903,
+			"width": 400,
+			"height": 206,
+			"color": "2"
+		},
+		{
+			"id": "h_知ってる",
+			"type": "text",
+			"text": "## 商品を知っている人向け\n商品ページ直行。商品ページの型はまだ決めていないので、参考は置かない（2026-10-11 本人）",
+			"x": 2920,
+			"y": 1903,
+			"width": 400,
+			"height": 233,
+			"color": "2"
+		},
+		{
+			"id": "h_多問",
+			"type": "text",
+			"text": "## 多問クイズ・診断（英語・Lovy ほか12本）\n1画面1問で9〜13問。答えを「あなたの状態」に言い換えて、結果の後に値段\n\n**参考にした記事（押すと開く）**\n- [Lovy](https://secure.trylovy.com/quiz1)\n- [NeuroMD](https://getneuromd.com/pages/quiz)\n- [Kilgour MD（更年期）](https://kilgourmd.com/pages/meno-quiz)\n- [Necklo](https://necklo-app.com/quiz)\n- [Saphire（子どもグミ）](https://trysaphire.com/pages/gummies-kid-quiz)\n- [Miami MD のクイズ](https://offer.trymiamimd.com/quiz/v88/)\n- [V Shred](https://le.vshred.com/sp/survey/survey-ga)",
+			"x": 3920,
+			"y": 1903,
+			"width": 400,
+			"height": 247,
+			"color": "2"
+		},
+		{
+			"id": "h_新しい",
+			"type": "text",
+			"text": "## X で見つけた新しい型（まだ割っていない）\n比較ランキング（第三者のふり）・カードをめくるゲーム型。次に kata-tsukuru で割る候補\n\n＋ 応援の記事（候補・実物1本: らでぃっしゅぼーや）: 社会の困りごと（ふぞろいで捨てられる野菜）→ 買って応援できる解決 → 値段 → アンケート3問。物語の記事と8段中4段・暴露と3段しか合わない\n\n**参考にした記事（押すと開く）**\n- [応援の記事（候補）: Radish Boya](https://sb-radishboya.musthave-magazine.tokyo/ab/rdis-f3-03q)",
+			"x": 3380,
+			"y": 1903,
+			"width": 400,
+			"height": 422,
+			"color": "2"
+		},
+		{
+			"id": "steps_暴露",
+			"type": "text",
+			"text": "### 段の並び\n1. **専門家の名乗り（記事の頭）**\n   誰が言うかで信じさせる\n2. **見落とされた原因**\n   「あなたのせいではない」\n3. **今の物の失敗**\n   湿布・整体では足りない理由\n4. **専門家がすすめる物**\n5. **商品の働き**\n   仕組みを図で\n6. **時間で歩く**\n   使うと何日でどう変わる\n7. **サイン7つ**\n   自分ごとにさせる\n8. **値段と保証**",
+			"x": 540,
+			"y": 2335,
+			"width": 400,
+			"height": 466
+		},
+		{
+			"id": "steps_物語",
+			"type": "text",
+			"text": "### 段の並び\n1. **見出し**\n2. **物語**\n   困っていた場面\n3. **失敗**\n   試して駄目だった物\n4. **原因**\n   本当の理由に気づく\n5. **成分**\n6. **時間**\n   変わっていった日々\n7. **客の声**\n8. **値段と保証**",
+			"x": 1460,
+			"y": 2335,
+			"width": 400,
+			"height": 412
+		},
+		{
+			"id": "steps_リスト",
+			"type": "text",
+			"text": "### 段の並び\n1. **見出し**\n   数を言う\n2. **理由1**\n   読む人が自分ごとにする理由を先に\n3. **理由2〜N**\n   研究・人数\n4. **客の声**\n5. **値段と保証**",
+			"x": 2460,
+			"y": 2335,
+			"width": 400,
+			"height": 304
+		},
+		{
+			"id": "steps_事前",
+			"type": "text",
+			"text": "### 段の並び\n1. **値引きの帯**\n2. **調査と声**\n3. **成分**\n4. **比較表**\n5. **専門家**\n6. **FAQ**",
+			"x": 0,
+			"y": 2335,
+			"width": 400,
+			"height": 250
+		},
+		{
+			"id": "steps_医者VSL",
+			"type": "text",
+			"text": "### 段の並び\n1. **長い動画**\n   原因→研究→成分→商品\n2. **まとめ買い**\n3. **返金**",
+			"x": 1920,
+			"y": 2335,
+			"width": 400,
+			"height": 196
+		},
+		{
+			"id": "steps_知ってる",
+			"type": "text",
+			"text": "### 段の並び\n1. **オファー: 1本で全部→成分と研究→保証→人数**\n2. **商品ページ直行: 成分→声→FAQ→保証→使い方**\n3. **トップページ: 体を知る→向いている人→使い方→FAQ**",
+			"x": 2920,
+			"y": 2335,
+			"width": 400,
+			"height": 250
+		},
+		{
+			"id": "steps_多問",
+			"type": "text",
+			"text": "### 段の並び\n1. **1画面目**\n   最初の問い・特典\n2. **問い（重さ・期間・試した物）**\n   1画面1問・進み具合\n3. **幕間**\n   「あなただけじゃない」「なぜ効かなかったか」\n4. **待ち**\n   「計算しています」\n5. **レポート・結果**\n   あなたの状態・目標の日付\n6. **値段**\n   「診断で対象になったので」割引",
+			"x": 3920,
+			"y": 2335,
+			"width": 400,
+			"height": 439
+		},
+		{
+			"id": "steps_新しい",
+			"type": "text",
+			"text": "### 段の並び\n1. **比較ランキング**\n   3〜5商品を並べ、1位がうち\n2. **ゲーム型**\n   カードをめくると割引",
+			"x": 3380,
+			"y": 2335,
+			"width": 400,
+			"height": 196
+		},
+		{
+			"id": "h_日本アンケ",
+			"type": "text",
+			"text": "## 日本版のフォーマット（型ではない）\n権威の暴露記事・物語の記事と同じ段の並びで、出し方だけ違う:\n① 権威を人でなく会社で出す\n② 短い行・赤字・絵文字\n③ 値段を「アンケート3問に答えたお礼」で出す\n例: BODY-VO・てんらい・防風通聖散（暴露の日本版・説明の語り口）／YURiiRO（物語の日本版・漫画。8段中7段が物語の記事と同じ）\n\n**参考にした記事（押すと開く）**\n- [暴露記事の日本版: BODY-VO](https://sb.bodyvotw.com/ab/bdvo-f3-02q-fb60)\n- [暴露記事の日本版: てんらい黄望皇](https://sb.tenrai26-kibo.com/ab/kibo-f3-20aq-fk71)\n- [暴露記事の日本版: 生漢煎 防風通聖散](https://sb-jfd-beauty.discover-news.tokyo/ab/zOgaOVWaEuBOOUcSwisyg)\n- [物語の記事の日本版（漫画）: YURiiRO](https://sb-yuriiro-oil.newsanything.tokyo/ab/yuri-f3-83q-fk01)",
+			"x": 540,
+			"y": 2881,
+			"width": 1320,
+			"height": 287,
+			"color": "5"
+		},
+		{
+			"id": "jp_steps",
+			"type": "text",
+			"text": "### 日本版の段の並び（暴露の日本版・BODY-VO ほか）\n1. **1 頭の絵**\n   絵: 悩みの名前・権威・赤と黄の帯 文: 「繰り返す〇〇は“菌”が繁殖中!?」\n2. **2 共感の場面**\n   絵: 同じ年代の人の写真 文: 「うぅ...またこの〇〇💦」\n3. **3 敵の名前と仕組み**\n   絵: 断面図・年で下がるグラフ 文: 「実はそれ、異常のサイン！？」→✅最悪\n4. **4 今の対策を切る**\n   文: 「〇〇なんてもってのほか」\n5. **5 作った会社**\n   絵: 矢印3つ→会社・研究者の顔と名前\n6. **6 商品と効く理由**\n   絵: 手に持つ写真・成分の図\n7. **7 客の声3つ（年齢つき）**\n8. **8 完売→このページだけの道**\n9. **9 値段の札**\n   絵: クーポン券「約50%OFF」\n10. **10 不安つぶし**\n   縛りなし・後払い・返金保証\n11. **11 「タップするだけ！3問で完了！」**\n12. **12 Q1 悩みの長さ（ボタン4つ）**\n13. **13 Q2 商品のどこが魅力？（自分で選ばせる）**\n14. **14 Q3 早く治したい？ はい/いいえ**\n15. **15 「ご回答ありがとうございました」→申込ボタン**\n16. **16 「この記事は検索しても出ない」**",
+			"x": 540,
+			"y": 3245,
+			"width": 1320,
+			"height": 736,
+			"color": "5"
+		},
+		{
+			"id": "fmt_多問_日本診断",
+			"type": "text",
+			"text": "## 日本版（長い診断＋結果の後の解説）フォーマット（型ではない）\n多問クイズと同じ段の並びで、出し方が違う:\n① 問いは好み・暮らし・性格の7問（症状を聞かない）\n② 結果は褒めるタイプ名5つ（勧める物は1つ）\n③ 結果の後に12段の解説→値段2段\n④ 申込はチャット（残り時間・入力5つ・あと○問）\n例: YURiiRO 香り診断（49bq・49q）\n\n**参考にした記事（押すと開く）**\n- [YURiiRO 7問の香り診断](https://sb-yuriiro-oil.newsanything.tokyo/ab/yuri-f3-49bq-fk01)\n- [クラシエ からだかがみ（体質診断）](https://www.kracie.co.jp/ph/k-therapy/karadakagami/)",
+			"x": 3920,
+			"y": 2881,
+			"width": 400,
+			"height": 495,
+			"color": "5"
+		},
+		{
+			"id": "file_h_暴露",
+			"type": "file",
+			"file": "ec/構造/Funnel/ファネルの種類/アドバトリアルファネル/コンポーネント/02-記事（アドバトリアル）/型_権威の暴露記事.md",
+			"x": 540,
+			"y": 2146,
+			"width": 400,
+			"height": 60
+		},
+		{
+			"id": "file_h_物語",
+			"type": "file",
+			"file": "ec/構造/Funnel/ファネルの種類/アドバトリアルファネル/コンポーネント/02-記事（アドバトリアル）/型_物語の記事.md",
+			"x": 1460,
+			"y": 2146,
+			"width": 400,
+			"height": 60
+		},
+		{
+			"id": "file_h_リスト",
+			"type": "file",
+			"file": "ec/構造/Funnel/ファネルの種類/アドバトリアルファネル/コンポーネント/02-記事（アドバトリアル）/型_リスティクル.md",
+			"x": 2460,
+			"y": 2119,
+			"width": 400,
+			"height": 60
+		},
+		{
+			"id": "file_h_事前",
+			"type": "file",
+			"file": "ec/構造/Funnel/ファネルの種類/アドバトリアルファネル/コンポーネント/02-記事（アドバトリアル）/型_事前販売ページ.md",
+			"x": 0,
+			"y": 2119,
+			"width": 400,
+			"height": 60
+		},
+		{
+			"id": "file_h_医者VSL",
+			"type": "file",
+			"file": "ec/構造/Funnel/ファネルの種類/アドバトリアルファネル/コンポーネント/02-記事（アドバトリアル）/型_医者のVSLページ.md",
+			"x": 1920,
+			"y": 2119,
+			"width": 400,
+			"height": 60
+		},
+		{
+			"id": "file_h_知ってる",
+			"type": "file",
+			"file": "ec/構造/Funnel/ファネルの種類/アドバトリアルファネル/コンポーネント/02-記事（アドバトリアル）/型_オファーページ.md",
+			"x": 2920,
+			"y": 2146,
+			"width": 400,
+			"height": 60
+		},
+		{
+			"id": "file_h_多問",
+			"type": "file",
+			"file": "ec/構造/Funnel/ファネルの種類/クイズファネル/_foundation.md",
+			"x": 3920,
+			"y": 2160,
+			"width": 400,
+			"height": 60
+		},
+		{
+			"id": "file_h_日本アンケ",
+			"type": "file",
+			"file": "ec/構造/Funnel/ファネルの種類/クイズファネル/_日本の実物_2026-10-10.md",
+			"x": 540,
+			"y": 3178,
+			"width": 1320,
+			"height": 60
+		},
+		{
+			"id": "words",
+			"type": "text",
+			"text": "## 言葉の定義\n| 言葉 | この図での意味 |\n|---|---|\n| 見出し | 記事のいちばん上の大きな文 |\n| 原因 | 悩みが起きている本当の理由 |\n| 成分 | 商品の中身・作り（効く理由の元） |\n| 時間 | 使い始めてから変わっていく日々 |\n| 客の声 | 買った人の感想（年齢つき） |\n| 専門家 | 医者・研究者のように、言う事を信じてもらえる人 |\n| 値段 | 商品の売る値段と、その見せ方 |\n| 値段と保証 | 値段の段と、返金保証・縛りなしの段 |\n| FAQ | よくある質問と答え |\n| 長い動画 | ページの頭に置く、全部を説明する長いVSL |\n| 比較ランキング | 3〜5商品を並べて1位がうちになる記事 |\n| 返金 | 合わなければお金を返す約束 |\n| 日本版（漫画） | 日本版（漫画）＝物語の記事の8段を全部漫画で1人の物語として出し、値段をアンケート3問のお礼で出す日本の出し方（型でなくフォーマット） |",
+			"x": 3680,
+			"y": 0,
+			"width": 560,
+			"height": 590,
+			"color": "6"
+		},
+		{
+			"id": "must",
+			"type": "text",
+			"text": "## どの型にも足す物（全部の列に当てる）\n1. 最初の画面に、読まなかった時の最悪の結末（各列の最初の段に足す）\n2. 値段の見せ方（ここちドライの値段の段）：1日あたり→今のパッド代と比べる→価格の箱→縦長の値段画像（各列の値段の段に足す）",
+			"x": 1840,
+			"y": -169,
+			"width": 860,
+			"height": 169,
+			"color": "1"
+		},
+		{
+			"id": "file_must",
+			"type": "file",
+			"file": "ec/構造/型/_必ず入れる物.md",
+			"x": 1840,
+			"y": 20,
+			"width": 860,
+			"height": 60
+		},
+		{
+			"id": "lvt0",
+			"type": "text",
+			"text": "## Unaware（悩みに気づいていない）\n例: Mars（妻が夫の変化を話す）→ 事前販売ページ",
+			"x": 0,
+			"y": 1149,
+			"width": 400,
+			"height": 120,
+			"color": "3"
+		},
+		{
+			"id": "lvt1",
+			"type": "text",
+			"text": "## Problem Aware（悩みは知っているが、原因を知らない）\nVSL は原因を名前だけで残す → 記事が原因を中身まで言う。例: Inno Glam・Chicken Health・Calmwise・Miami MD・日本の広告",
+			"x": 540,
+			"y": 1149,
+			"width": 1780,
+			"height": 120,
+			"color": "3"
+		},
+		{
+			"id": "lvt2",
+			"type": "text",
+			"text": "## Solution Aware（解決策を知っていて、比べている）\nVSL は体験と得する事を並べる → 記事は理由を1つずつ・オファー・比べる。例: Mason Genie・Novelia・Polar・Ageless Beauty",
+			"x": 2460,
+			"y": 1149,
+			"width": 1320,
+			"height": 120,
+			"color": "3"
+		},
+		{
+			"id": "lvt3",
+			"type": "text",
+			"text": "## 段階をまだ確かめていない\nGrüns・Seranova のクイズの VSL の段階はまだ割っていない",
+			"x": 3920,
+			"y": 1149,
+			"width": 400,
+			"height": 120,
+			"color": "3"
+		},
+		{
+			"id": "fmt_物語_漫画",
+			"type": "text",
+			"x": 1960,
+			"y": 2335,
+			"width": 440,
+			"height": 300,
+			"text": "**日本版（漫画）フォーマット**\n物語の記事と同じ8段を、全部漫画で1人の物語として出す（縦長2:3・正方形・横長3:2の3種類、吹き出しは画像の中で縦書き、主人公の心の声は顔アイコンつきの青い吹き出し）。後ろ3分の1で値段 → アンケート3問 → お礼の値段 → チャットの申込\n受ける広告: 記事の漫画のコマを切った正方形の static\n作り方: `型_物語の記事.md` の「日本版（漫画）」の枝・スキル `quiz-jp-copy`\n実物: YURiiRO 83q → ここちドライ「同窓会の恋」"
+		}
+	],
+	"edges": [
+		{
+			"id": "e_v2_h_暴露",
+			"fromNode": "v2",
+			"fromSide": "left",
+			"toNode": "h_暴露",
+			"toSide": "left"
+		},
+		{
+			"id": "e_v12_h_暴露",
+			"fromNode": "v12",
+			"fromSide": "bottom",
+			"toNode": "h_暴露",
+			"toSide": "top"
+		},
+		{
+			"id": "e_v4_h_物語",
+			"fromNode": "v4",
+			"fromSide": "bottom",
+			"toNode": "h_物語",
+			"toSide": "top"
+		},
+		{
+			"id": "e_v3_h_リスト",
+			"fromNode": "v3",
+			"fromSide": "bottom",
+			"toNode": "h_リスト",
+			"toSide": "top"
+		},
+		{
+			"id": "e_v5_h_事前",
+			"fromNode": "v5",
+			"fromSide": "bottom",
+			"toNode": "h_事前",
+			"toSide": "top"
+		},
+		{
+			"id": "e_v6_h_医者VSL",
+			"fromNode": "v6",
+			"fromSide": "bottom",
+			"toNode": "h_医者VSL",
+			"toSide": "top"
+		},
+		{
+			"id": "e_v1_h_知ってる",
+			"fromNode": "v1",
+			"fromSide": "left",
+			"toNode": "h_知ってる",
+			"toSide": "left"
+		},
+		{
+			"id": "e_v7_h_知ってる",
+			"fromNode": "v7",
+			"fromSide": "bottom",
+			"toNode": "h_知ってる",
+			"toSide": "top"
+		},
+		{
+			"id": "e_v9_h_多問",
+			"fromNode": "v9",
+			"fromSide": "left",
+			"toNode": "h_多問",
+			"toSide": "left"
+		},
+		{
+			"id": "e_v11_h_多問",
+			"fromNode": "v11",
+			"fromSide": "bottom",
+			"toNode": "h_多問",
+			"toSide": "top"
+		},
+		{
+			"id": "e_v10_h_新しい",
+			"fromNode": "v10",
+			"fromSide": "bottom",
+			"toNode": "h_新しい",
+			"toSide": "top"
+		},
+		{
+			"id": "e_v8_h_暴露",
+			"fromNode": "v8",
+			"fromSide": "bottom",
+			"toNode": "h_暴露",
+			"toSide": "top"
+		},
+		{
+			"id": "e_v8_h_物語",
+			"fromNode": "v8",
+			"fromSide": "bottom",
+			"toNode": "h_物語",
+			"toSide": "top"
+		},
+		{
+			"id": "e_h_暴露_steps_暴露",
+			"fromNode": "file_h_暴露",
+			"fromSide": "bottom",
+			"toNode": "steps_暴露",
+			"toSide": "top"
+		},
+		{
+			"id": "e_h_物語_steps_物語",
+			"fromNode": "file_h_物語",
+			"fromSide": "bottom",
+			"toNode": "steps_物語",
+			"toSide": "top"
+		},
+		{
+			"id": "e_h_リスト_steps_リスト",
+			"fromNode": "file_h_リスト",
+			"fromSide": "bottom",
+			"toNode": "steps_リスト",
+			"toSide": "top"
+		},
+		{
+			"id": "e_h_事前_steps_事前",
+			"fromNode": "file_h_事前",
+			"fromSide": "bottom",
+			"toNode": "steps_事前",
+			"toSide": "top"
+		},
+		{
+			"id": "e_h_医者VSL_steps_医者VSL",
+			"fromNode": "file_h_医者VSL",
+			"fromSide": "bottom",
+			"toNode": "steps_医者VSL",
+			"toSide": "top"
+		},
+		{
+			"id": "e_h_知ってる_steps_知ってる",
+			"fromNode": "file_h_知ってる",
+			"fromSide": "bottom",
+			"toNode": "steps_知ってる",
+			"toSide": "top"
+		},
+		{
+			"id": "e_h_多問_steps_多問",
+			"fromNode": "file_h_多問",
+			"fromSide": "bottom",
+			"toNode": "steps_多問",
+			"toSide": "top"
+		},
+		{
+			"id": "e_h_新しい_steps_新しい",
+			"fromNode": "h_新しい",
+			"fromSide": "bottom",
+			"toNode": "steps_新しい",
+			"toSide": "top"
+		},
+		{
+			"id": "e_steps_暴露_h_日本アンケ",
+			"fromNode": "steps_暴露",
+			"fromSide": "bottom",
+			"toNode": "h_日本アンケ",
+			"toSide": "top",
+			"label": "日本版で出す"
+		},
+		{
+			"id": "e_steps_物語_h_日本アンケ",
+			"fromNode": "steps_物語",
+			"fromSide": "bottom",
+			"toNode": "h_日本アンケ",
+			"toSide": "top",
+			"label": "日本版で出す"
+		},
+		{
+			"id": "e_h_日本アンケ_jp_steps",
+			"fromNode": "file_h_日本アンケ",
+			"fromSide": "bottom",
+			"toNode": "jp_steps",
+			"toSide": "top"
+		},
+		{
+			"id": "e_steps_多問_fmt_多問_日本診断",
+			"fromNode": "steps_多問",
+			"fromSide": "bottom",
+			"toNode": "fmt_多問_日本診断",
+			"toSide": "top",
+			"label": "日本版で出す"
+		},
+		{
+			"id": "e_h_暴露_file_h_暴露",
+			"fromNode": "h_暴露",
+			"fromSide": "bottom",
+			"toNode": "file_h_暴露",
+			"toSide": "top"
+		},
+		{
+			"id": "e_h_物語_file_h_物語",
+			"fromNode": "h_物語",
+			"fromSide": "bottom",
+			"toNode": "file_h_物語",
+			"toSide": "top"
+		},
+		{
+			"id": "e_h_リスト_file_h_リスト",
+			"fromNode": "h_リスト",
+			"fromSide": "bottom",
+			"toNode": "file_h_リスト",
+			"toSide": "top"
+		},
+		{
+			"id": "e_h_事前_file_h_事前",
+			"fromNode": "h_事前",
+			"fromSide": "bottom",
+			"toNode": "file_h_事前",
+			"toSide": "top"
+		},
+		{
+			"id": "e_h_医者VSL_file_h_医者VSL",
+			"fromNode": "h_医者VSL",
+			"fromSide": "bottom",
+			"toNode": "file_h_医者VSL",
+			"toSide": "top"
+		},
+		{
+			"id": "e_h_知ってる_file_h_知ってる",
+			"fromNode": "h_知ってる",
+			"fromSide": "bottom",
+			"toNode": "file_h_知ってる",
+			"toSide": "top"
+		},
+		{
+			"id": "e_h_多問_file_h_多問",
+			"fromNode": "h_多問",
+			"fromSide": "bottom",
+			"toNode": "file_h_多問",
+			"toSide": "top"
+		},
+		{
+			"id": "e_h_日本アンケ_file_h_日本アンケ",
+			"fromNode": "h_日本アンケ",
+			"fromSide": "bottom",
+			"toNode": "file_h_日本アンケ",
+			"toSide": "top"
+		},
+		{
+			"id": "e_物語_漫画",
+			"fromNode": "h_物語",
+			"fromSide": "right",
+			"toNode": "fmt_物語_漫画",
+			"toSide": "left",
+			"label": "日本版（漫画）"
+		},
+		{
+			"id": "e_日本アンケ_漫画",
+			"fromNode": "h_日本アンケ",
+			"fromSide": "right",
+			"toNode": "fmt_物語_漫画",
+			"toSide": "bottom",
+			"label": "物語の記事に当てた形"
+		}
+	]
 }
