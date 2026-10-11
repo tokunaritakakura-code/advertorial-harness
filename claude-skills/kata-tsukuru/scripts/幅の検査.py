@@ -51,10 +51,17 @@ JS = r"""async () => {
     const last = lines[lines.length - 1].filter(c => !P.test(c));
     if (last.length > 0 && last.length <= 2) orphans.push(lines.slice(-2).map(l => l.join('')).join('｜').slice(-30));
   }
+  // 文がはみ出して切れている要素（中身の幅が枠の幅より4px以上広い・画面の右端より外に字がある）。2026-10-10 nowrap の枠で「ます。」が切れたのを拾えなかった
+  const clipped = [...document.querySelectorAll('p,h1,h2,h3,h4,li,div,span,b,strong')].filter(e => {
+    if (![...e.childNodes].some(n => n.nodeType === 3 && n.textContent.trim())) return false;
+    const s = getComputedStyle(e); if (s.display === 'none' || s.visibility === 'hidden') return false;
+    const r = e.getBoundingClientRect(); if (!r.width) return false;
+    return e.scrollWidth > e.clientWidth + 4 && s.overflowX !== 'auto' && s.overflowX !== 'scroll' || r.right > W + 2;
+  }).slice(0, 5).map(e => e.textContent.trim().slice(0, 24));
   // 必ず入れる物2: 値段の段（data-tasu=2）の中の縦長の画像は 幅÷高さ 0.67〜0.75
   const price = [...document.querySelectorAll('[data-tasu="2"] img')].filter(i => i.naturalWidth && i.naturalHeight > i.naturalWidth)
     .map(i => i.naturalWidth / i.naturalHeight).filter(q => q < 0.67 || q > 0.75).map(q => q.toFixed(3));
-  return {scrollW: document.documentElement.scrollWidth, W, over, broken, thin, orphans: [...new Set(orphans)], price};
+  return {scrollW: document.documentElement.scrollWidth, W, over, broken, thin, orphans: [...new Set(orphans)], price, clipped};
 }"""
 
 STATE = r"""() => {
@@ -94,10 +101,10 @@ def main(a):
                         print(f"開けない（{w}）: {e}", file=sys.stderr); return 2
                     r = pg.evaluate(JS)
                     wide = r["scrollW"] > r["W"] + 1
-                    cnt = int(wide) + len(r["broken"]) + len(r["thin"]) + len(r["orphans"]) + len(r["price"])
+                    cnt = int(wide) + len(r["broken"]) + len(r["thin"]) + len(r["orphans"]) + len(r["price"]) + len(r["clipped"])
                     bad += cnt
-                    print(f"幅{w}: はみ出し{'あり ' + str(r['over']) if wide else '0'}・画像の抜け{len(r['broken'])}・細長い画像{len(r['thin'])}・行末の1〜2文字落ち{len(r['orphans'])}・値段の縦長画像の比の外れ{len(r['price'])}")
-                    for k in ("broken", "thin", "orphans", "price"):
+                    print(f"幅{w}: はみ出し{'あり ' + str(r['over']) if wide else '0'}・画像の抜け{len(r['broken'])}・細長い画像{len(r['thin'])}・行末の1〜2文字落ち{len(r['orphans'])}・値段の縦長画像の比の外れ{len(r['price'])}・はみ出して切れた文{len(r['clipped'])}")
+                    for k in ("broken", "thin", "orphans", "price", "clipped"):
                         for s in r[k]:
                             print(f"   {k}: {s}")
                     if presses:

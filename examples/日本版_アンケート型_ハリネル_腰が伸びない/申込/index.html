@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>ハリネル　お得な公式ページ ご注文</title>
+<!-- テスト用のページ: 値段・プラン・支払い方法はテスト用に決めた値（../テスト用に決めた値.md・../予測した事.md）。送信はしない -->
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:#ffeeef;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;color:#222;-webkit-text-size-adjust:100%}
+.wrap{max-width:480px;margin:0 auto;position:relative;min-height:100vh}
+.head{position:fixed;top:0;left:0;right:0;z-index:20;background:#cc4444;color:#fff;height:60px}
+.head .in{max-width:480px;margin:0 auto;display:flex;align-items:center;height:60px;padding:0 4px;position:relative}
+.head .lab{background:#fff200;color:#e3001b;font-weight:900;font-size:13.5px;line-height:1.25;text-align:center;width:34%;padding:4px 2px;flex:none}
+.head .tm{flex:1;text-align:center;line-height:1}
+.head .tm .c{font-size:15px;font-weight:700;white-space:nowrap}
+.head .tm .c b{font-size:32px;font-weight:500;letter-spacing:-1px;margin:0 1px;font-family:"Helvetica Neue",Arial,sans-serif}
+.head .tm p{margin:3px 0 0;font-size:10px}
+.head .x{position:absolute;right:8px;top:6px;font-size:18px}
+.view{padding:72px 10px 90px}
+.ml{display:flex;align-items:flex-end;gap:8px;margin:14px 0}
+.ml .av{width:44px;height:44px;border-radius:50%;overflow:hidden;flex:none;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.ml .av img{width:100%;height:100%;object-fit:cover;display:block}
+.ml .bd{background:#e4f6e8;border-radius:14px;padding:10px 12px;font-size:15px;line-height:1.6;box-shadow:2px 3px 4px rgba(0,0,0,.12);max-width:84%}
+.ml .bd.img{background:#fff;padding:6px}
+.ml .bd img{width:100%;display:block}
+.ml .bd.er{color:#e5007f}
+.mr{background:#fff;border-radius:12px;margin:12px 0 12px 22px;padding:16px 16px 18px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.mr .t{font-size:13.5px;font-weight:700;margin:0 0 8px}
+.mr .t i{font-style:normal;color:#e3001b;font-size:12px;margin-left:8px}
+.mr input[type=text],.mr input[type=tel],.mr select{width:100%;font-size:17px;padding:12px 10px;border:1.5px solid #e66;border-radius:2px;background:#fff;color:#222;font-family:inherit}
+.mr input.done,.mr select.done{background:#fff0f2}
+.mr .info{font-size:11px;color:#555;margin:6px 0 0}
+.mr .sub{margin-top:14px}
+.mr .out{font-size:16px;margin:2px 0 0}
+.mr .zl{float:right;font-size:11.5px;color:#222;text-decoration:underline}
+.nx{text-align:right;margin-top:14px}
+.nx a{display:inline-block;min-width:140px;text-align:center;background:#ff9a00;color:#fff;font-size:16px;font-weight:700;padding:11px 20px;border-radius:30px;text-decoration:none}
+.nx a.off{background:#e3e3e3;color:#fff;pointer-events:none}
+.plan{margin:-6px -6px 0}
+.plan .ph{width:100%;display:block;border-radius:6px}
+.plan .it{display:flex;align-items:center;gap:8px;margin-top:10px}
+.plan .it input{width:20px;height:20px;flex:none;accent-color:#2c6fd6}
+.plan .it label{flex:1;display:block;border-radius:8px;cursor:pointer}
+.plan .best{background:linear-gradient(90deg,#f3a9c9,#ffd6e6);border:2px solid #e8558f;padding:8px 10px;position:relative}
+.plan .best .bd1{position:absolute;left:-6px;top:-10px;background:#e3001b;color:#fff;font-size:11px;font-weight:900;border-radius:50%;width:46px;height:46px;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.15;transform:rotate(-12deg)}
+.plan .best .nm{padding-left:42px;font-weight:900;color:#c2185b;font-size:16px;line-height:1.35}
+.plan .best .pr{padding-left:42px;font-size:13px;margin-top:2px}
+.plan .best .pr s{color:#777}
+.plan .best .pr b{color:#e3001b;font-size:20px}
+.plan .gray{background:#8c8c8c;color:#fff;text-align:center;font-weight:700;padding:12px 6px;font-size:15px;border:2px solid #ddd}
+.plan .gray small{display:block;font-size:12px;font-weight:400}
+.plan .ms{color:#e3001b;font-size:12px;font-weight:700;margin:8px 0 0}
+.pay{display:flex;justify-content:space-between;gap:12px}
+.pay a{flex:1;display:block;text-align:center;border-radius:6px;padding:14px 6px 10px;color:#fff;font-weight:700;font-size:13px;text-decoration:none;position:relative}
+.pay a .fee{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:10px;padding:2px 8px;border-radius:10px;white-space:nowrap}
+.pay .cv{background:#f5a300}.pay .cv .fee{background:#fff;color:#0a7fd0;border:1px solid #0a7fd0}
+.pay .ap{background:#232f3e}.pay .ap .fee{background:#e3001b;color:#fff}
+.pay a .ic{font-size:30px;display:block;line-height:1.1;margin-bottom:4px}
+.pay a.sel{outline:3px solid #2c6fd6}
+.mr .ln{font-size:12px;color:#5a2d82;text-decoration:underline;display:inline-block;margin-top:12px}
+.foot{position:fixed;bottom:12px;left:0;right:0;z-index:15}
+.foot .in{max-width:470px;margin:0 auto;background:#f4f4f4;height:26px;position:relative;box-shadow:0 1px 2px rgba(0,0,0,.2);margin-left:auto;margin-right:auto;width:calc(100% - 16px)}
+.foot .bar{position:absolute;left:0;top:0;bottom:0;background:#ffd9a6;width:0;transition:width .4s}
+.foot .lb{position:relative;font-size:13px;font-weight:700;line-height:26px;padding-left:10px}
+.hide{display:none!important}
+.roll{animation:roll .45s ease-out}
+@keyframes roll{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:30;display:flex;align-items:flex-start;justify-content:center;padding:92px 10px 40px;overflow:auto}
+.modal .bx{background:#fff;width:100%;max-width:440px;padding:12px 12px 16px;position:relative}
+.modal .cl{position:absolute;right:-4px;top:-40px;width:32px;height:32px;border-radius:50%;background:#1a5ad7;color:#fff;font-size:20px;line-height:32px;text-align:center}
+.modal .lim{border:2px solid #4a7fd6;padding:8px 10px;font-weight:900;font-size:16px;line-height:1.5}
+.modal .lim u{text-decoration-thickness:2px}
+.modal .nt{font-size:12.5px;margin:8px 0}
+.modal .od{border:1px solid #9ab3e8;height:200px;overflow-y:scroll;padding:8px 10px;font-size:14px;line-height:1.65}
+.modal .od dl{display:flex;justify-content:space-between;margin:0}
+.modal .od dt,.modal .od dd{margin:0}
+.modal .ag{display:flex;align-items:center;gap:10px;margin:14px 6px 6px;font-size:14px;font-weight:700}
+.modal .ag input{width:24px;height:24px;accent-color:#e3001b;flex:none}
+.modal .wr{color:#e3001b;font-size:14px;margin:4px 6px 10px;display:flex;align-items:center;gap:6px}
+.modal .wr i{font-style:normal;background:#e3001b;color:#fff;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:13px}
+.kakutei{display:block;width:100%;border:0;border-radius:40px;padding:12px 10px 14px;background:linear-gradient(180deg,#ff6fa5,#e8337a);color:#fff;font-family:inherit;font-weight:900;font-size:22px;box-shadow:0 4px 0 #b81c5c;cursor:pointer}
+.kakutei small{display:block;font-size:12px;font-weight:700;color:#fff6a8;margin-bottom:2px}
+.kakutei.off{opacity:.45}
+.stop{margin:12px 0 0;border:2px dashed #e3001b;color:#e3001b;font-weight:900;text-align:center;padding:10px;font-size:15px;background:#fff7f9}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="head"><div class="in">
+  <div class="lab">本日受付終了まで<br>(最短出荷日で対応)</div>
+  <div class="tm"><div class="c" id="timer">あと<b id="hh">05</b>時間<b id="mm">00</b>分<b id="ss">00</b>秒</div><p>※次回発送に間に合うようお示ししています</p></div>
+  <span class="x">⌄</span>
+</div></div>
+
+<div class="view" id="view">
+  <div class="ml roll"><div class="av"><img src="img/staff.jpg" alt="受付の係"></div><div class="bd img"><img src="../img/s23_b.jpg" alt="ご回答ありがとうございました！アンケートに答えていただいた方へ 特別価格でご案内！"></div></div>
+  <div class="ml roll"><div class="av"><img src="img/staff.jpg" alt="受付の係"></div><div class="bd"><b>アンケートの特別価格</b>にて承りました。<br><b>入力項目はたった5つだけ！90秒で完了します！</b>メールアドレスの入力も必要ありません。<br>フォームの入力をもって個人情報を取得いたします。</div></div>
+
+  <!-- 1 お名前 -->
+  <div class="mr roll" data-step="1">
+    <p class="t">お名前（フルネームで入力して下さい）<i>※必須</i></p>
+    <input type="text" id="f_name" placeholder="例）山田花子" autocomplete="off">
+    <div class="nx"><a href="#" data-next="1">次へ</a></div>
+  </div>
+</div>
+
+<div class="foot"><div class="in"><div class="bar" id="bar"></div><div class="lb">あと<span id="left">4</span>問</div></div></div>
+
+<div class="modal hide" id="modal" data-step="last">
+  <div class="bx">
+    <span class="cl" id="close">×</span>
+    <div class="lim">■販売個数制限のお知らせ<br>ハリネルは好評につきご購入は<u>1世帯一回限り</u>とさせていただいております。</div>
+    <p class="nt">内容確認（ボックス内をスクロールして最後までご確認下さい）注文情報の訂正は×ボタンを押して行ってください。</p>
+    <div class="od" id="order"></div>
+    <label class="ag"><input type="checkbox" id="agree">上記の注文内容と個人情報の取り扱いに同意する</label>
+    <p class="wr" id="agreeWarn"><i>!</i>同意してください。</p>
+    <button type="button" class="kakutei off" id="kakutei" data-cta="order-confirm"><small>＼ アンケートに答えた方だけ ／</small>ご注文を確定する</button>
+    <div class="stop hide" id="stop" data-stop="送信">ここで送信（テスト用のページなので、ここで止めます）</div>
+  </div>
+</div>
+
+</div>
+
+<script>
+(function(){
+  // 本日受付終了までの残り時間（今日の24時まで）
+  function tick(){
+    var n=new Date(),e=new Date(n.getFullYear(),n.getMonth(),n.getDate()+1,0,0,0),d=Math.max(0,Math.floor((e-n)/1000));
+    var p=function(x){return (x<10?'0':'')+x};
+    document.getElementById('hh').textContent=p(Math.floor(d/3600));
+    document.getElementById('mm').textContent=p(Math.floor(d%3600/60));
+    document.getElementById('ss').textContent=p(d%60);
+  }
+  tick(); setInterval(tick,1000);
+
+  var view=document.getElementById('view'), st={};
+  var AV='<div class="av"><img src="img/staff.jpg" alt="受付の係"></div>';
+  function say(html,cls){var d=document.createElement('div');d.className='ml roll';d.innerHTML=AV+'<div class="bd'+(cls?' '+cls:'')+'">'+html+'</div>';view.appendChild(d);return d}
+  function card(html,step){var d=document.createElement('div');d.className='mr roll';d.setAttribute('data-step',step);d.innerHTML=html;view.appendChild(d);return d}
+  function down(){setTimeout(function(){window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})},60)}
+  function left(n){document.getElementById('left').textContent=n;document.getElementById('bar').style.width=((4-n)/4*100)+'%'}
+  function lock(c){c.querySelectorAll('input,select').forEach(function(i){i.classList.add('done')});var a=c.querySelector('.nx a');if(a){a.textContent='OK';a.classList.add('off')}}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  var PREF='北海道 青森県 岩手県 宮城県 秋田県 山形県 福島県 茨城県 栃木県 群馬県 埼玉県 千葉県 東京都 神奈川県 新潟県 富山県 石川県 福井県 山梨県 長野県 岐阜県 静岡県 愛知県 三重県 滋賀県 京都府 大阪府 兵庫県 奈良県 和歌山県 鳥取県 島根県 岡山県 広島県 山口県 徳島県 香川県 愛媛県 高知県 福岡県 佐賀県 長崎県 熊本県 大分県 宮崎県 鹿児島県 沖縄県'.split(' ');
+  var PLANS={set:{nm:'マット＋枕のセット（収納バッグつき）',was:54980,pr:27490},mat:{nm:'マットだけ',pr:35890},pil:{nm:'枕だけ',pr:25890}};
+  function yen(n){return n.toLocaleString('ja-JP')+'円'}
+
+  function step2(){
+    say('次に「電話番号」を入力して下さい。');
+    card('<p class="t">電話番号<i>※必須</i></p><input type="tel" id="f_tel" placeholder="例）09012345678" maxlength="11" autocomplete="off"><p class="info">「-」ハイフンを除いて番号のみを入力ください</p><div class="nx"><a href="#" data-next="2">次へ</a></div>',2);
+    left(3); down();
+  }
+  function step3(){
+    say(esc(st.name)+'様の「配送先のご住所」を教えてください。');
+    var opts='<option value="">都道府県</option>'+PREF.map(function(p){return '<option>'+p+'</option>'}).join('');
+    card('<p class="t">郵便番号<i>※必須</i><a href="#" class="zl" id="zl">郵便番号が分からない方はこちら</a></p><input type="tel" id="f_zip" placeholder="例）1040061" maxlength="7" autocomplete="off"><p class="info">「-」ハイフンを除いて番号のみを入力ください</p>'+
+      '<div id="addr" class="hide"><div class="sub"><p class="t">都道府県</p><select id="f_pref">'+opts+'</select></div><div class="sub"><p class="t">市区町村</p><input type="text" id="f_city" placeholder="中央区銀座" autocomplete="off"></div><div class="sub"><p class="t">番地・建物名</p><input type="text" id="f_st" placeholder="例）1-22-11 銀座大竹ビジデンス2階" autocomplete="off"></div></div>'+
+      '<div class="nx"><a href="#" data-next="3">次へ</a></div>',3);
+    var z=document.getElementById('f_zip');
+    function open(){document.getElementById('addr').classList.remove('hide')}
+    document.getElementById('zl').onclick=function(e){e.preventDefault();open();down()};
+    z.addEventListener('input',function(){
+      z.value=z.value.replace(/\D/g,'');
+      if(z.value.length!==7)return;
+      open();
+      var ctl=window.AbortController?new AbortController():null; if(ctl)setTimeout(function(){ctl.abort()},4000);
+      fetch('https://zipcloud.ibsnet.co.jp/api/search?zipcode='+z.value,ctl?{signal:ctl.signal}:{}).then(function(r){return r.json()}).then(function(j){
+        var r=j&&j.results&&j.results[0]; if(!r)return;
+        document.getElementById('f_pref').value=r.address1; document.getElementById('f_city').value=r.address2+r.address3;
+      }).catch(function(){});
+      down();
+    });
+    left(2); down();
+  }
+  function step4(){
+    var c=card('<div class="plan"><img class="ph" src="../img/s17_d.jpg" alt="針マット1枚 枕1個 収納バッグ1個 使い方ガイド">'+
+      '<p class="ms">※必須</p>'+
+      '<div class="it"><input type="radio" name="plan" id="p_set" value="set"><label for="p_set" class="best"><span class="bd1">一番<br>人気!!</span><div class="nm">マット＋枕のセット<br>（収納バッグつき）に申し込む</div><div class="pr"><s>'+yen(54980)+'</s> → <b>'+yen(27490)+'</b>（税込・50%OFF）</div></label></div>'+
+      '<div class="it"><input type="radio" name="plan" id="p_mat" value="mat"><label for="p_mat" class="gray">マットだけで申し込む<small>'+yen(35890)+'（税込）</small></label></div>'+
+      '<div class="it"><input type="radio" name="plan" id="p_pil" value="pil"><label for="p_pil" class="gray">枕だけで申し込む<small>'+yen(25890)+'（税込）</small></label></div>'+
+      '<p class="info">※50%OFFは、アンケートに答えた方のマット＋枕のセットだけです。送料は全国どこでも無料。90日間の返金保証つき。</p></div>',4);
+    c.querySelectorAll('input[name=plan]').forEach(function(r){r.addEventListener('change',function(){
+      if(st.plan)return; st.plan=r.value; c.querySelectorAll('input').forEach(function(x){x.disabled=true});step5();})});
+    down();
+  }
+  function step5(){
+    say('それでは「<b>配送方法</b>」と「<b>お届け希望時間帯</b>」を選択してください。');
+    card('<p class="t">配送方法</p><select id="f_ship"><option>ゆうパック：置き配を利用しない</option><option>ゆうパック置き配：玄関前</option><option>ゆうパック置き配：宅配ボックス</option><option>ゆうパック置き配：ガスメーターボックス</option></select><p class="info" style="color:#e3001b">※「ゆうパック置き配」をご希望の場合はお届け希望時間帯指定は出来ません。あらかじめご了承ください。</p>'+
+      '<div class="sub"><p class="t">お届け希望時間帯</p><select id="f_time"><option>指定なし</option><option>午前中</option><option>12～14時</option><option>14～16時</option><option>16～18時</option><option>18～20時</option><option>19～21時</option></select></div><div class="nx"><a href="#" data-next="5">次へ</a></div>',5);
+    left(1); down();
+  }
+  function step6(){
+    say('最後に「<b>お支払い方法</b>」を選んでください。');
+    card('<div class="pay"><a href="#" class="cv" data-pay="コンビニ後払い（手数料330円）"><span class="fee">手数料330円</span><span class="ic">🏪</span>コンビニ後払い</a><a href="#" class="ap" data-pay="Amazon Pay（手数料無料）"><span class="fee">手数料無料</span><span class="ic">a</span>Amazon Pay</a></div><a href="#" class="ln" onclick="return false">後払いとは</a>',6);
+    left(0); down();
+  }
+  function confirm(){
+    var p=PLANS[st.plan];
+    document.getElementById('order').innerHTML='◆ご注文内容◆<br>コース名　【ハリネル】'+p.nm+(p.was?'　アンケートに答えた方の特別価格（通常'+yen(p.was)+'から50%OFF）':'')+
+      '<br>商品：　針マット ハリネル '+p.nm+'<dl><dt>金額:</dt><dd>¥'+p.pr.toLocaleString('ja-JP')+'</dd></dl><dl><dt>個数:</dt><dd>1点</dd></dl><dl><dt>配送料:</dt><dd>¥0</dd></dl>'+
+      '<dl><dt>お支払い:</dt><dd>'+esc(st.pay)+'</dd></dl><br>◆お届け先◆<br>'+esc(st.name)+' 様<br>〒'+esc(st.zip)+' '+esc(st.pref)+esc(st.city)+esc(st.st)+'<br>電話番号: '+esc(st.tel)+'<br>配送方法: '+esc(st.ship)+'<br>お届け希望時間帯: '+esc(st.time)+
+      '<br><br>◆返金保証◆<br>届いてから90日以内のご連絡で代金をお返しします。<br><br>◆個人情報の取り扱い◆<br>いただいた個人情報は、商品のお届けとご連絡にだけ使います。';
+    document.getElementById('modal').classList.remove('hide');
+  }
+  document.getElementById('close').onclick=function(){document.getElementById('modal').classList.add('hide')};
+  document.getElementById('agree').onchange=function(){var k=document.getElementById('kakutei');k.classList.toggle('off',!this.checked);document.getElementById('agreeWarn').classList.toggle('hide',this.checked)};
+  document.getElementById('kakutei').onclick=function(){
+    if(!document.getElementById('agree').checked){document.getElementById('agreeWarn').classList.remove('hide');return}
+    document.getElementById('stop').classList.remove('hide');   // ここで送信（テスト用のページなので送らない）
+  };
+
+  function err(c,msg){var e=c.querySelector('.er-m');if(!e){e=document.createElement('p');e.className='info er-m';e.style.color='#e5007f';c.insertBefore(e,c.firstChild)}e.textContent=msg}
+  view.addEventListener('click',function(ev){
+    var pay=ev.target.closest('[data-pay]');
+    if(pay){ev.preventDefault();if(st.pay)return;st.pay=pay.getAttribute('data-pay');pay.classList.add('sel');confirm();return}
+    var a=ev.target.closest('[data-next]'); if(!a)return; ev.preventDefault();
+    var c=a.closest('.mr'), n=a.getAttribute('data-next'); if(a.classList.contains('off'))return;
+    if(n==='1'){var v=document.getElementById('f_name').value.trim(); if(!v)return err(c,'お名前を入力してください。'); st.name=v; lock(c); step2();}
+    else if(n==='2'){var t=document.getElementById('f_tel').value.replace(/\D/g,''); if(!/^0\d{9,10}$/.test(t))return err(c,'電話番号にお間違いがないか、今一度ご確認下さい。'); st.tel=t; lock(c); step3();}
+    else if(n==='3'){var z=document.getElementById('f_zip').value; st.zip=z; st.pref=document.getElementById('f_pref').value; st.city=document.getElementById('f_city').value.trim(); st.st=document.getElementById('f_st').value.trim();
+      if(!/^\d{7}$/.test(z))return err(c,'郵便番号にお間違いがないか、今一度ご確認下さい。');
+      if(!st.pref||!st.city||!st.st)return err(c,'都道府県・市区町村・番地・建物名は必須項目です。入力してください。');
+      lock(c); step4();}
+    else if(n==='5'){st.ship=document.getElementById('f_ship').value; st.time=document.getElementById('f_time').value; lock(c); step6();}
+  });
+})();
+</script>
+</body>
+</html>

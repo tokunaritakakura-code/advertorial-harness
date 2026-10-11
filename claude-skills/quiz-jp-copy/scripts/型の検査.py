@@ -15,6 +15,7 @@
   A2 型の固定16段（data-dan="1"〜"16"）が全部ある。段8（完売）は型.md の誤差なので無くてよい
   A4 割引率（○%OFF）と保証の日数（○日間）が、ページの中でそれぞれ1種類だけ
   B4 --店 を付けた時: 店の今の値段が1つ以上載っている・1万円以上の値段で店に無い物は、年・か月・比べる・代 の言葉のそばだけ
+  計算 「1日あたり約N円」がページの値段÷日数（365・180・90・60・30）に±15%で合う
   T1 T2 必ず入れる物の印 data-tasu="1"（本文の12%まで）・"2"
   その他 noindex あり・他社の計測タグ（gtag fbq klaviyo tiktok clarity）0
 画像の中の文字は alt の文で数える（参考の実物は alt が空なので、段15・16 は参考では×になる。これは測定の限界）
@@ -93,6 +94,8 @@ def main(a):
     days = set(re.findall(r"(\d{2,3})\s*日間", t))
     ok("A4 割引率が1種類", len(offs) <= 1, f"割引率が{len(offs)}種類: {sorted(offs)}")
     ok("A4 保証の日数が1種類", len(days) <= 1, f"日数が{len(days)}種類: {sorted(days)}")
+    sales = sorted({m.group(0) for m in re.finditer(r"[一-龥ぁ-んァ-ヶー]{1,6}セール", t)})
+    ok("A4 割引の理由（○○セール）が1種類まで", len(sales) <= 1, f"セールの名前が{len(sales)}種類: {sales}（オファーの表の理由1つにそろえる）")
     # B4 店の値段
     if "--店" in a:
         shop = a[a.index("--店") + 1].rstrip("/")
@@ -113,6 +116,25 @@ def main(a):
             ok("B4 店に無い1万円以上の値段が無い", not odd, f"店に無い値段: {sorted(set(odd))}")
         except Exception as e:     # 店が取れない時は×にして理由を出す（○にしない）
             ok("B4 店の値段を取れた", False, f"取れなかった: {type(e).__name__}: {e}")
+    # D5 申込ボタンの先: data-cta の行き先が手元のページで、そのページがある（2026-10-10 本人「その後のファネルがコピーできてない」）
+    import os
+    base = os.path.dirname(os.path.abspath(a[0]))
+    hrefs = re.findall(r'(?is)<a[^>]*data-cta[^>]*href="([^"]*)"|<a[^>]*href="([^"]*)"[^>]*data-cta', src)
+    hrefs = [x or y for x, y in hrefs]
+    bad = [h for h in hrefs if not h or h.startswith("#") or (not h.startswith("http") and not os.path.exists(os.path.join(base, h.split("#")[0].split("?")[0] or "index.html")))]
+    ok("D5 申込ボタンの行き先が手元の申込のページ", hrefs and not bad, f"ボタン{len(hrefs)}個のうち行き先が無い・#: {len(bad)}個（例: {bad[0] if bad else 'ボタンが無い'}）")
+    # 1日あたりの値段の計算: 「1日あたり約N円」の N が、ページの値段÷日数（365・90・60・30）か÷枚数のどれかに±15%で合うか（2026-10-10 本番の advertorial-05 で 1枚あたりの額を1日あたりと書いていた）
+    perday = [int(m.group(1).replace(",", "")) for m in re.finditer(r"1日(?:あたり|当たり)\s*(?:約|たった|わずか)?\s*(\d[\d,]*)\s*円", t)]
+    if perday:
+        prices = {int(m.group(1).replace(",", "")) for m in re.finditer(r"(\d{1,3}(?:,\d{3})+|\d{4,})\s*円", t)}
+        def fits(v):
+            for p_ in prices:
+                for d in (365, 180, 90, 60, 30):
+                    if abs(p_ / d - v) <= max(1, v * 0.15):
+                        return True
+            return False
+        wrong = sorted({v for v in perday if not fits(v)})
+        ok("1日あたりの値段の計算", not wrong, f"ページのどの値段を日数で割っても合わない: {wrong}円（1枚あたりの額と取り違えていないか）")
     ok("noindex あり", re.search(r"noindex", src, re.I) is not None, "noindex が無い")
     scripts = " ".join(re.findall(r"(?is)<script[^>]*>.*?</script>", src))
     hit = TRACK.search(scripts)

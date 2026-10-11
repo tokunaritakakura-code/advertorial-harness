@@ -36,8 +36,10 @@ def main(a):
     shop = a[a.index("--店") + 1] if "--店" in a else None
 
     src = open(html, encoding="utf-8").read()
-    checks = [["python3", f"{SK}/quiz-jp-copy/scripts/型の検査.py", html] + (["--店", shop] if shop else [])] if "data-q=" in src else []
-    checks.append(["python3", f"{SK}/kata-tsukuru/scripts/幅の検査.py", html] + (["--押す", "3"] if "data-answer" in src else []))
+    # 型の検査はアンケート3〜5問の型の物。問いが6問以上（長い診断）の時は当てない（2026-10-10 7問の診断で落ちて手で上げた）
+    nq = len(set(re.findall(r'data-q="(\d+)"', src)))
+    checks = [["python3", f"{SK}/quiz-jp-copy/scripts/型の検査.py", html] + (["--店", shop] if shop else [])] if 1 <= nq <= 5 else []
+    checks.append(["python3", f"{SK}/kata-tsukuru/scripts/幅の検査.py", html] + (["--押す", str(max(3, nq))] if "data-answer" in src else []))
     for c in checks:
         code, out = run(c)
         if code != 0:
@@ -50,6 +52,11 @@ def main(a):
     if bare:
         print(f"上げない: 最終確認.md に理由の無い × が {len(bare)}行（例: {bare[0].strip()[:60]}）"); return 1
 
+    # 上げるのはページと画像だけ。作業用・参考の物・書類は上げない（2026-10-11 作業用 844MB まで上げようとして時間切れ）
+    ig = os.path.join(d, ".vercelignore")
+    if not os.path.exists(ig):
+        with open(ig, "w") as f:
+            f.write("作業/\n参考/\n参考の画像/\n生成/\n*.bak*\n*.md\n*.py\n*.json\n!vercel.json\n*.mp4\n*.mov\n")
     code, out = run(["vercel", "whoami"], timeout=30)
     if code != 0:
         print(f"Vercel にログインしていない: {out.strip()[:120]}", file=sys.stderr); return 2

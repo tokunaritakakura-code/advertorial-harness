@@ -29,6 +29,7 @@ BOXES = [
     ("G4", "子スキルを書いた（SKILL.md 500行以内・掘り残し0・書式0・最終確認の箱あり）"),
     ("G5", "子スキルを本物の入力で、別の参考か別の商品で2本、端まで通し、2本とも子の最終確認が全部○（e2e/結果_1.json・結果_2.json）"),
     ("G6", "別の AI の審査が2本とも PASS（審査は基準ごとに理由→○×・受け取った物の一覧つき）と、参考を見せない読み手の目が2本とも PASS"),
+    ("G8", "飛び先へ飛ばしている広告を割り、「この広告の組み立て → この型」の線を出した（広告と型のつながり.md に5本以上の広告と、その組み立て・飛び先）"),
     ("G7", "直しは手順の中に入れ、止める検査か見本を名指しした（直しの記録.md の各行に『手順N』と『止める検査:』・しない一覧の節が無い）"),
 ]
 
@@ -210,7 +211,7 @@ def g5_one(d, st, name):
     return True, f"箱{len(want)}個: ○{len(good)}・理由つき×{len(why_x)}", os.path.expanduser(out)
 
 
-REVIEW_KEYS = ["前の回の直し", "段ごとの効果", "型の固定", "分かりやすさ"]
+REVIEW_KEYS = ["前の回の直し", "段ごとの効果", "質", "分かりやすさ"]   # 2026-10-10 18:20 審査の頼み方で「型の固定」を「質」に替えた（型は機械の検査が見る）
 REVIEW_GOT = ["参考の段の表", "参考の画面", "出来た物の画面", "移植表", "最終確認"]
 
 
@@ -273,7 +274,21 @@ def g7(d, st):
     return True, f"直し{len(rows)}行すべて手順に入れた"
 
 
-CHECKS = dict(G1=g1, G2=g2, G3=g3, G4=g4, G5=g5, G6=g6, G7=g7)
+def g8(d, st):
+    t = read(os.path.join(d, "広告と型のつながり.md"))
+    if t is None:
+        return False, "広告と型のつながり.md が無い（飛び先へ飛ばしている広告を割っていない）"
+    rows = [l for l in t.splitlines() if re.match(r"^\|\s*\d+\s*\|", l)]
+    with_ad = [l for l in rows if re.search(r"ads/library/\?id=\d+|広告ライブラリ|https?://", l)]
+    if len(with_ad) < 5:
+        return False, f"広告の行が{len(with_ad)}本（出どころの URL つきで5本以上要る）"
+    for need in ("組み立て", "飛び先"):
+        if need not in t:
+            return False, f"「{need}」の列が無い"
+    return True, f"広告{len(with_ad)}本"
+
+
+CHECKS = dict(G1=g1, G2=g2, G3=g3, G4=g4, G5=g5, G6=g6, G7=g7, G8=g8)
 
 
 def write_goal(d, name, child):
@@ -313,6 +328,7 @@ def main(a):
         if len(a) < 4:
             print("使い方: goal.py fail <型> <箱> \"<理由>\"", file=sys.stderr); return 2
         box, why = a[2], a[3]
+        st["round"] += 1
         st["fails"].append({"round": st["round"], "box": box, "why": why, "at": time.strftime("%H:%M")})
         save_state(d, st)
         same = [f for f in st["fails"] if f["box"] == box]
@@ -337,10 +353,8 @@ def main(a):
             ok, why = False, f"判定で例外: {type(e).__name__}: {e}"
         allok &= ok
         res.append((k, label, ok, why))
-    # 周回は「作った物があるのに×」（理由が『無い』でない×）がある時だけ進める。
-    # まだ作っていない箱の×や、全部○の判定は数えない（2026-10-10 まだ何も無い時の判定で上限8を使い切った）
-    if any((not ok) and "無い" not in why for _, _, ok, why in res):
-        st["round"] += 1
+    # 周回は check では進めない。やり直しを決めて理由を記録した時（fail）だけ1周と数える
+    # （2026-10-10 2回目: 作業の途中で何度も check を走らせ、そのたびに数えて上限8に当たった）
     # 同じ箱が、作った物があるのに続けて×（「無い」以外の理由）なら数える
     streak = st.setdefault("streak", {})
     for k, _, ok, why in res:

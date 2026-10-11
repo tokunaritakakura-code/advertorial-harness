@@ -1,0 +1,11 @@
+作業/
+参考/
+参考の画像/
+生成/
+*.bak*
+*.md
+*.py
+*.json
+!vercel.json
+*.mp4
+*.mov

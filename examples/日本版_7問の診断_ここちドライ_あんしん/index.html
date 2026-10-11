@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>ここちさんと見つける 私のための安心診断｜ここちドライ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<!-- テスト用のページ（値・人・期限の一部はテスト用に決めた値。テスト用に決めた値.md と 予測した事.md） -->
+<style>
+:root{--bg:#24122f;--bg2:#2e1a3d;--box:#33204a;--gold:#c9a96e;--gold2:#e2c99a;--ink:#f4ecf6;--sub:#bfa9c9;--rose:#e2477f;--line:rgba(201,169,110,.32)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;line-height:1.8;-webkit-font-smoothing:antialiased}
+.app{max-width:390px;margin:0 auto;min-height:100vh;position:relative;overflow:hidden}
+.scr{display:none;min-height:100vh;position:relative;animation:fade .6s ease}
+.scr.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.photo{background:linear-gradient(180deg,rgba(36,18,47,.35),rgba(36,18,47,.82) 62%,var(--bg)),url(img/bg.jpg) center/cover no-repeat}
+.en{font-family:"Cormorant Garamond",serif;letter-spacing:.32em;color:var(--gold);font-size:11px;text-transform:uppercase}
+.c{text-align:center}
+.nw{white-space:nowrap}
+/* 入口 */
+#s-intro{padding:26px 22px 18px}
+.card{width:132px;margin:12px auto 10px;border:1px solid var(--gold);padding:5px}
+.card div{border:1px dashed rgba(201,169,110,.6);height:172px;display:flex;align-items:flex-end;justify-content:center;background:rgba(255,255,255,.04)}
+.card img{height:164px;width:auto}
+h1{font-weight:600;font-size:21px;letter-spacing:.12em;line-height:1.6}
+h1 span{display:block;font-size:19px}
+.ask{font-size:13px;color:var(--sub);margin-top:4px;letter-spacing:.06em}
+.worst{border:1px solid var(--gold);margin:12px auto 0;padding:8px 12px;text-align:left;font-size:12.5px;line-height:1.7;background:rgba(0,0,0,.18)}
+.worst .ck{filter:grayscale(1) sepia(1) saturate(1.6) brightness(1.05);font-size:11px;margin-right:3px}
+.worst p:first-child{color:var(--gold2);font-size:12px;margin-bottom:2px;text-align:center;letter-spacing:.06em}
+.rule{width:56%;height:1px;background:var(--line);margin:12px auto 8px}
+.time{color:var(--gold);font-size:12px;letter-spacing:.14em}
+.promise{font-size:12.5px;line-height:1.75;margin-top:4px;letter-spacing:.04em}
+.note{font-size:9.5px;color:var(--sub);text-align:right;letter-spacing:.04em}
+.gbtn{display:block;width:76%;margin:12px auto 0;border:1px solid var(--gold);padding:3px;background:none;cursor:pointer}
+.gbtn span{display:block;border:1px solid rgba(201,169,110,.7);padding:12px 0;color:var(--ink);font-family:inherit;font-size:15px;letter-spacing:.3em;background:rgba(255,255,255,.04)}
+.wide{width:100%}
+.copy{font-size:9px;color:rgba(191,169,201,.6);text-align:center;margin-top:16px;letter-spacing:.06em}
+/* 問い */
+#s-q{padding:22px 22px 18px}
+.qtop{display:flex;justify-content:space-between;align-items:flex-end}
+.cat{font-style:italic;color:var(--gold);font-size:12px;letter-spacing:.2em}
+.qnum{font-family:"Cormorant Garamond",serif;color:var(--sub);font-size:13px;letter-spacing:.14em}
+.bar{height:1px;background:rgba(201,169,110,.18);margin-top:6px}
+.bar i{display:block;height:1px;background:var(--gold);width:0;transition:width .5s}
+.rem{text-align:right;font-size:10.5px;color:var(--sub);letter-spacing:.2em;margin-top:6px}
+.qt{font-size:20px;font-weight:600;text-align:center;line-height:1.75;margin-top:40px;letter-spacing:.06em}
+.hint{text-align:center;color:var(--sub);font-size:12px;letter-spacing:.3em;margin-top:6px}
+.qnote{text-align:right;font-size:9.5px;color:var(--sub);margin-top:4px;min-height:14px}
+.ans{position:relative;margin-top:44px;border-top:1px solid var(--line);animation:fade .5s ease}
+.a{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);color:var(--ink);font-family:inherit;font-size:13.5px;line-height:1.75;padding:17px 92px 17px 10px;cursor:pointer;letter-spacing:.05em;border-left:1px solid transparent}
+.a.sel{background:rgba(255,255,255,.07);border:1px solid var(--gold)}
+.kq{position:absolute;right:-6px;bottom:0;height:150px;width:auto;pointer-events:none}
+.kq.hop{animation:hop .45s ease}
+@keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-16px)}}
+.back{display:block;margin:22px auto 0;background:none;border:0;color:var(--sub);font-family:inherit;font-size:12px;letter-spacing:.12em;cursor:pointer}
+/* 待ち */
+#s-wait{padding:170px 22px 30px;text-align:center}
+#s-wait img.k{height:150px;width:auto}
+.wt{font-style:italic;font-size:16px;font-weight:600;letter-spacing:.1em;margin-top:18px;line-height:1.7}
+.ws{font-size:13px;color:var(--sub);margin-top:10px;letter-spacing:.1em}
+.dots{margin-top:22px;color:var(--gold2);font-size:24px;letter-spacing:.3em}
+.dots i{animation:blink 1.2s infinite;font-style:normal}.dots i:nth-child(2){animation-delay:.2s}.dots i:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,100%{opacity:.2}50%{opacity:1}}
+.wf{font-size:10px;color:var(--sub);margin-top:46px;letter-spacing:.06em}
+/* 結果 */
+#s-r{padding:0 0 30px;background:var(--bg)}
+.rhead{margin:22px 18px 0;padding:24px 18px 26px;background:linear-gradient(180deg,#3b2453,var(--bg));text-align:center}
+.tag{display:inline-block;border:1px solid var(--gold);padding:2px 16px}
+.tname{font-size:26px;font-weight:600;letter-spacing:.16em;margin-top:12px}
+.thead{color:var(--sub);font-size:14px;letter-spacing:.12em;margin-top:6px;line-height:1.8}
+.lim{display:inline-block;border:1px solid var(--gold);color:var(--gold);font-size:11.5px;letter-spacing:.2em;padding:5px 16px;margin-top:14px}
+.tcard{width:140px;margin:18px auto 0;border:1px solid var(--gold);padding:4px;background:#2a1838}
+.tcard div{border:1px dashed rgba(201,169,110,.7);padding:3px;background:#fff}
+.tcard img{display:block;width:100%;height:auto}
+.pad{padding:0 30px}
+.desc{font-size:14px;line-height:2.1;letter-spacing:.06em;margin-top:24px}
+.hr{height:1px;background:var(--line);margin:22px 0}
+.kh{color:var(--gold);font-size:13px;letter-spacing:.2em;text-align:center;font-weight:600}
+.kt{font-size:14px;line-height:2.1;letter-spacing:.06em;margin-top:6px;text-align:center}
+.mean{text-align:center;font-size:14px;line-height:2;letter-spacing:.04em}
+.mean em{font-style:normal;color:var(--gold2);display:block}
+.pframe{position:relative;width:236px;margin:26px auto 0;border:1px solid var(--gold);padding:6px}
+.pframe img.p{display:block;width:100%;height:auto;background:#fff}
+.pframe img.peek{position:absolute;right:-34px;bottom:-14px;height:112px;width:auto}
+.pcap{text-align:center;font-size:13px;margin-top:12px;letter-spacing:.06em}
+.tiny{font-size:9.5px;color:var(--sub);line-height:1.6;letter-spacing:.02em;text-align:center;margin-top:4px}
+.box{background:var(--box);margin:26px 22px 0;padding:24px 22px;text-align:center;border:1px solid rgba(201,169,110,.12)}
+.box .t{font-size:13.5px;line-height:2.1;letter-spacing:.06em;margin-top:12px}
+.pyr{margin:30px 26px 0}
+.pyr h3{font-family:"Cormorant Garamond",serif;font-weight:500;font-size:24px;letter-spacing:.04em}
+.pyr p{font-size:13px;color:var(--sub);line-height:1.9;letter-spacing:.04em}
+.pyr svg{display:block;width:100%;height:auto;margin-top:14px}
+.fn{margin:0 26px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0}
+.fn p{font-size:12.5px;line-height:2;letter-spacing:.06em;margin-top:4px}
+.pills{display:flex;gap:8px;justify-content:center;margin:20px 26px 0}
+.pills span{border:1px solid var(--gold);color:var(--gold2);font-size:11.5px;padding:6px 12px;letter-spacing:.14em}
+.about{margin:34px 22px 0;text-align:center;border-top:1px solid var(--line);padding-top:30px}
+.about h3{font-style:italic;color:var(--gold);font-weight:500;font-size:17px;line-height:1.8;letter-spacing:.1em;margin-top:14px}
+.ab{border:1px solid rgba(201,169,110,.35);margin-top:16px;padding:22px 16px;text-align:center}
+.ab p{font-size:13px;line-height:1.95;letter-spacing:.06em;margin-top:10px}
+.who{font-size:12.5px;text-align:center;color:var(--sub);line-height:1.9;margin:30px 22px 0;letter-spacing:.06em}
+.price{margin:24px 22px 0}
+.lead{font-size:13.5px;line-height:2;letter-spacing:.04em;text-align:center}
+.lead b{color:var(--gold2);font-weight:600}
+.pbox{border:1px solid rgba(201,169,110,.45);padding:22px 18px 16px;margin-top:16px;text-align:center}
+.prow{display:flex;justify-content:space-between;align-items:flex-start;text-align:left;padding:16px 0;border-bottom:1px solid var(--line)}
+.prow:last-of-type{border-bottom:0}
+.prow .nm{font-size:13px;letter-spacing:.06em;line-height:1.7}
+.prow .nm small{display:block;font-size:10.5px;color:var(--sub)}
+.prow .yen{text-align:right}
+.prow s{font-size:11px;color:var(--sub)}
+.prow .big{display:block;color:var(--rose);font-size:27px;font-weight:600;letter-spacing:.02em;line-height:1.3}
+.prow .big small{font-size:12px;color:var(--ink);font-weight:400}
+.pimg{display:block;width:100%;height:auto;margin-top:16px}
+.gua{font-size:13.5px;color:var(--ink);letter-spacing:.08em;border-top:1px solid var(--line);padding-top:12px;margin-top:4px}
+.pg{display:grid;grid-template-columns:40px 1fr 66px;row-gap:4px;margin-top:16px;align-items:end}
+.pg .l{font-family:"Cormorant Garamond",serif;color:var(--sub);font-size:13px;letter-spacing:.1em;padding-bottom:10px}
+.pg .r{color:var(--sub);font-size:12px;text-align:right;padding-bottom:10px;line-height:1.4}
+.pg .b{height:60px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:9px;color:#f4ecf6;font-size:13px;letter-spacing:.04em;text-align:center}
+.pg .b1{clip-path:polygon(50% 0,72% 100%,28% 100%);background:linear-gradient(#c79bd0,#9d6fae);font-size:12px}
+.pg .b2{clip-path:polygon(27% 0,73% 0,90% 100%,10% 100%);background:linear-gradient(#8f5fa3,#6e4384)}
+.pg .b3{clip-path:polygon(9% 0,91% 0,100% 100%,0 100%);background:linear-gradient(#5f3874,#43264f)}
+.ja{font-size:11px;color:var(--sub);letter-spacing:.14em;margin-top:2px}
+.retry{display:block;margin:26px auto 0;background:none;border:0;border-bottom:1px solid var(--sub);color:var(--sub);font-family:inherit;font-size:13px;letter-spacing:.2em;padding-bottom:2px;cursor:pointer}
+@media (min-width:700px){.app{box-shadow:0 0 0 1px rgba(201,169,110,.08)}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+<!-- 入口（参考の段: 入口の1画面） -->
+<section class="scr on photo c" id="s-intro" data-dan="1">
+  <p class="en">KOKOCHI DRY</p>
+  <p class="en">PERSONAL DIAGNOSIS</p>
+  <p class="ja" style="color:var(--gold2);margin-top:2px">尿もれに備える 吸水ショーツ</p>
+  <div class="card"><div><img src="img/k_intro.png" alt="ここちさん（投げキス）"></div></div>
+  <h1>ここちさんと見つける<span>・私のための安心診断・</span></h1>
+  <p class="ask">あなたのやさしさと品のよさを、<br>どんな下着が守ってくれる？</p>
+  <div class="worst" data-tasu="1">
+    <p>守られないままだと、少しずつ…</p>
+    <p><span class="ck">✅</span>ムレでかぶれ、かゆみが続く</p>
+    <p><span class="ck">✅</span>ニオイが気になり、人の輪から一歩引く</p>
+    <p><span class="ck">✅</span>旅行も孫との外出も、あきらめていく</p>
+  </div>
+  <p class="promise" style="margin-top:8px">だから、あなたの毎日に合う吸水ショーツを<br>7つの質問で見つけます。</p>
+  <div class="rule"></div>
+  <p class="time" style="margin-top:6px">所要時間：約1分</p>
+  <button class="gbtn" id="b-start" data-cta="start" data-answer="start"><span>診断をはじめる</span></button>
+  <p class="copy">© 2026 ここちドライ</p>
+</section>
+
+<!-- 問い（7問。中身は下の JS の Q） -->
+<section class="scr photo" id="s-q" data-dan="2">
+  <div class="qtop"><span class="cat" id="q-cat"></span><span class="qnum" id="q-num"></span></div>
+  <div class="bar"><i id="q-bar"></i></div>
+  <p class="rem" id="q-rem"></p>
+  <p class="qt" id="q-t"></p>
+  <p class="hint" id="q-h"></p>
+  <p class="qnote" id="q-n"></p>
+  <div class="ans" id="q-a" data-q="1"></div>
+  <button class="back" id="b-back">← 最初の画面に戻る</button>
+  <p class="copy">© 2026 ここちドライ</p>
+</section>
+
+<!-- 待ち -->
+<section class="scr photo" id="s-wait" data-dan="3">
+  <img class="k" src="img/k_wait.png" alt="ご回答をもとに、ここちさんが仕立て中">
+  <p class="wt">あなたの安心を、<br>ここちさんが仕立て中…</p>
+  <p class="ws">やさしさと、品のよさと、<br>ほんの少しの自由。</p>
+  <p class="dots"><i>・</i><i>・</i><i>・</i></p>
+  <p class="wf">綿80%のプレミアムコットン ｜ XSから4XLの8サイズ</p>
+  <p class="copy">© 2026 ここちドライ</p>
+</section>
+
+<!-- 結果と結果の後の解説 -->
+<section class="scr" id="s-r" data-dan="4">
+  <div class="rhead">
+    <span class="tag en">YOUR TYPE</span><p class="ja">あなたのタイプ</p>
+    <p class="tname" id="r-name"></p>
+    <p class="thead" id="r-head"></p>
+    <span class="lim">✦ あなたのための1枚</span>
+    <div class="tcard"><div><img id="r-img" src="img/type_tenshi.jpg" alt="タイプの絵"></div></div>
+  </div>
+  <div class="pad">
+    <p class="desc" id="r-desc"></p>
+    <div class="hr"></div>
+    <p class="kh">ここちドライをはくと</p>
+    <p class="kt" id="r-kasane"></p>
+    <div class="hr"></div>
+  </div>
+
+  <!-- 解説1 診断の意味の言い直し -->
+  <p class="mean" data-dan="5">診断でわかったのは、タイプの名前だけじゃない。<em>この1枚が、あなたの毎日でどう安心に変わるか。</em></p>
+
+  <!-- 解説2 商品の写真 -->
+  <div data-dan="6">
+    <div class="pframe"><img class="p" src="img/product.jpg" alt="ここちドライ 吸水ショーツ"><img class="peek" src="img/k_q1.png" alt="ここちさん"></div>
+    <p class="pcap">あなたの毎日に、そっと寄りそう1枚。</p>
+  </div>
+
+  <!-- 解説3 肌と重なる約束 -->
+  <div class="box" data-dan="7">
+    <p class="en">FEMCARE + DAILY SHORTS</p><p class="ja">肌にやさしい、毎日の下着</p>
+    <p class="t">あなたの肌に触れる面はさらっと、<br>ここちドライは"あなただけの安心"になる。<br>XSから4XLの8サイズから、体に合う1枚を。</p>
+    <p class="t">外出も、夜も。<br>はくほどに、パッドのことを忘れていく。</p>
+  </div>
+
+  <!-- 解説4 仕組みの図 -->
+  <div class="pyr" data-dan="8">
+    <h3>Layer Pyramid</h3><p class="ja" style="text-align:left">吸水の層のしくみ</p>
+    <p>肌から外側まで、3つの働きで守る。<br>時間がたっても、肌はさらっとしたまま。</p>
+    <div class="pg" role="img" aria-label="TOP 肌面 はいてすぐ／MID 吸水の層・コップ1杯分 数時間たっても／BASE もれを止める層 一日の終わりまで">
+      <span class="l">TOP</span><div class="b b1">肌面</div><span class="r">はいて<br>すぐ</span>
+      <span class="l">MID</span><div class="b b2">吸水の層・コップ1杯分</div><span class="r">数時間<br>たっても</span>
+      <span class="l">BASE</span><div class="b b3">もれを止める層</div><span class="r">一日の<br>終わりまで</span>
+    </div>
+  </div>
+  <div class="fn" style="margin-top:18px">
+    <p class="en">LAYER NOTE</p>
+    <p>肌面：さらっと速乾 ／ 吸水の層：コップ1杯分を<span class="nw">受け止める</span> ／ もれを止める層：外へ出さない ／ <span class="nw">外側の生地：</span>綿80%のプレミアムコットン</p>
+  </div>
+
+  <!-- 解説6 限定と1つ目の申込 -->
+  <div class="pills"><span>診断を受けた方だけ</span><span>※ なくなり次第終了</span></div>
+  <div style="margin:18px 22px 0">
+    <a class="gbtn wide" href="申込/index.html" data-cta="result-1" id="cta1" style="text-decoration:none"><span class="c">私の安心を受け取る</span></a>
+    <p class="tiny" style="margin-top:10px">※在庫がなくなり次第終了します。サイズ・色は申込の中で選べます。</p>
+  </div>
+
+  <!-- 解説7 商品の約束 -->
+  <div class="about" data-dan="9">
+    <p class="en">ABOUT KOKOCHI DRY</p><p class="ja">ここちドライのこと</p>
+    <h3>普段の下着と変わらない薄さで、<br>あなただけの安心になる。</h3>
+    <div class="ab"><p class="en">LAYERS</p><p class="ja">重なるつくり</p><p>吸水部は、肌面から外側まで<br>重なるつくり。<br>受け止めた水分を内側へ引き込み、<br>肌はさらっと。</p></div>
+    <div class="ab"><p class="en">DESIGNED WITH EXPERTS</p><p class="ja">専門家と一緒に</p><p>泌尿器科の専門機関と<br>共同で開発。<br>XSから4XLまで8サイズ。</p></div>
+    <div class="ab"><p class="en">ALL DAY ONE</p><p class="ja">一日これ1枚</p><p>外出から眠る時まで<br>これ1枚。<br>洗って何度でもはける。</p></div>
+  </div>
+
+  <!-- 解説8 人の証拠 -->
+  <p class="who" data-dan="10">★4.7・2,657件のレビュー。累計10,000件をこえて、<br>多くの女性に選ばれています。</p>
+  <p class="note" style="margin:4px 22px 0">※ストアの表示（2026年10月時点）</p>
+
+  <!-- 解説9 値段（必ず入れる物2: 1日あたり→比べる物→価格の箱→縦長の値段画像） -->
+  <div class="price" data-dan="11" data-tasu="2">
+    <p class="lead">10枚セットなら、1年はき回して<br><b>1日あたり約65円※</b>。</p>
+    <p class="lead">使い捨てパッドは1日約160円※なので、<br>毎日のパッド代の半分以下です。</p>
+    <div class="pbox">
+      <span class="tag en" style="letter-spacing:.2em">診断を受けた方だけ</span>
+      <div class="prow"><p class="nm">5枚セット<small>洗濯ネット1個つき</small></p><p class="yen"><s>通常29,890円</s><span class="big">17,890<small>円（税込）</small></span></p></div>
+      <div class="prow"><p class="nm">10枚セット<small>洗濯ネット2個つき</small></p><p class="yen"><s>通常39,890円</s><span class="big">23,890<small>円（税込）</small></span></p></div>
+      <p class="gua">30日間の返金保証・全国送料無料</p>
+      <p class="tiny">※1日あたりは23,890円÷365日。パッドは1枚40円×1日4枚で計算</p>
+    </div>
+    <img class="pimg" src="img/price_day.jpg" alt="診断を受けた方だけ 10枚セット 23,890円（税込） 1日あたり 約65円 ※23,890円÷365日で計算">
+  </div>
+
+  <!-- 解説10 2つ目の申込 -->
+  <div style="margin:22px 22px 0" data-dan="12">
+    <a class="gbtn wide" href="申込/index.html" data-cta="result-2" id="cta2" style="text-decoration:none"><span class="c">私の安心を受け取る</span></a>
+    <button class="retry" id="b-retry">もう一度診断する</button>
+  </div>
+  <p class="copy">© 2026 ここちドライ</p>
+</section>
+</div>
+
+<script>
+/* 設問7問（参考 yrQ と同じ順・同じ形。y=やすらぎ k=きちんと o=おでかけ h=ひそか） */
+var Q=[
+ {c:"わたしらしさ",q:"いちばん“自分らしい”と\n感じる服は？",h:"直感で選んで",a:[["ふわっとやわらかい素材の、\nゆったりした服","y"],["体のラインがきれいに見える、\nすっきりした服","k"],["差し色や小物で、\nちょっと遊びたい","o"],["表はシンプル。\nでも下着や肌着にはこだわる","h"],["その日の予定で、\nがらっと変わる","o"]]},
+ {c:"素肌の時間",q:"お風呂上がりのひととき。\nいちばん近いのは？",h:"今夜を思い出して",a:[["お気に入りの寝間着に着替えて、\nぬくぬくする","y"],["鏡の前で、\n今日の肌をちょっと確かめる","k"],["お手入れそこそこに、\nお茶とテレビへ一直線","o"],["締めつけのない格好でいる時間が、\n実はいちばん好き","h"],["好きなクリームで、\nゆっくり手入れする","y"]]},
+ {c:"安心の本音",q:"本音を言うと、\n下着にいちばん求めるのは？",h:"本音で選んで",a:[["自分がほっとできること","y"],["服の上から、\nすっきり見えること","k"],["一日中、出かける予定を\n気にせずいられること","o"],["理由はない。でも、\n守られていないと心細い","h"],["近くの人に、\n何も気づかれないこと","k"]]},
+ {c:"近い距離",q:"気を許した人の前で、\nふと見せる私は？",h:"思い浮かべて",a:[["声がワントーン上がって、\nよく笑う","y"],["沈黙が平気になる。\n隣にいるだけでいい","k"],["ちょっとからかって、\n反応を楽しむ","o"],["ふだん言わない本音が、\nぽろっとこぼれる","h"],["昔のあだ名で呼んだり、\nふざけ合える","o"]]},
+ {c:"ご褒美の夜",q:"がんばった日の夜、\n自分へのご褒美は？",h:"想像するだけで幸せなものを",a:[["甘いものと、\nふかふかの毛布","y"],["お花や音楽で、\n部屋の空気ごと変える","k"],["次の旅行の行き先を、\nこっそり調べる","o"],["誰にも言わず、\nちょっといいお茶と長風呂","h"],["録りためたドラマと、\nあたたかい飲み物","y"]]},
+ {c:"わたしのギャップ",q:"「イメージと違うね」って\n言われるとしたら、どこ？",h:"言われてうれしい方で",a:[["しっかりして見えるけど、\n実は甘えん坊","h"],["明るく見えるけど、\nひとりの時間が何より好き","k"],["おとなしく見えるけど、\n好きなことには一直線","o"],["きちんとして見えるけど、\n家ではのんびりの達人","y"],["「イメージ通り」と言われがち。\nでも、全部は見せていない","h"]]},
+ {c:"仕上げの願い",q:"はく下着が、\n毎日の肌に寄りそうなら＊\nどんな私で過ごしたい？",h:"目を閉じて、想像して",n:"※肌に触れる面が、さらっとしたまま寄りそうこと",a:[["ふわっとやさしく、\nそばにいると安心する私","y"],["背すじを伸ばして、\nすっと人前に立てる私","k"],["思い立ったら、\nどこへでも出かけられる私","o"],["いつも通りの私。\nでも、心の中はずっと軽い","h"],["何も気にせず、\n笑って人と会える私","k"]]}
+];
+var K=["k_q1","k_q2","k_q3","k_q4","k_q5","k_q6","k_q7"];
+/* 5タイプ（参考 bbT と同じ5つ・同じ並びの言葉） */
+var T={
+ tenshi:{n:"陽だまりの天使",hd:"やわらかなやさしさが、\nまわりをほどく。",d:"ウサギみたいに、そばにいるだけで力が抜ける人。がんばった日の夜は、甘いものとふかふかの毛布。あなたのやわらかさは、一緒にいる人の肩の力までほどいていきます。",k:"肌に触れる面がさらっとして、ふわっとした安心が一日続く。綿の肌ざわりが、あなたのやわらかさをそのまま守る。はくなら、くつろぐ時間と眠る前に。"},
+ masei:{n:"不意打ちの宝石",hd:"ふわっとやさしく、\nふと凛とする。",d:"黒ネコみたいに、ふとした瞬間だけ見とれてしまう人。ふだんはよく笑う甘えん坊。なのに、本音がぽろっとこぼれた瞬間の顔に、まわりはドキッとします。",k:"やさしい肌ざわりで始まって、出先ではすっと背すじが伸びる。安心の切り替わりが、あなたのギャップと同じ動きをする。はくなら、人と会う日の朝に。"},
+ majo:{n:"凛とした白百合",hd:"静かな品のよさに、\nやさしさがほどける。",d:"白百合みたいに、しゃべらなくても目を引く人。服は表はシンプル、でも見えないところにこだわる。見せる相手を選ぶあなたの品のよさは、そっと持っているもの。近づいた人だけが、その奥のやさしさに気づきます。",k:"服の上から輪郭が出にくく、すっきりした立ち姿がそのまま続く。普段の下着と変わらない薄さが、あなたの“見えないこだわり”の側に働く。はくなら、細身のパンツやスカートの日に。"},
+ koakuma:{n:"きまぐれな渡り鳥",hd:"軽やかに、自由に、\n気の向くままに。",d:"万華鏡みたいに、会うたび見え方が変わる人。思い立って旅に出るのも、今日の気分で行き先を決めるのも、ぜんぶあなたの魅力のうち。",k:"コップ1杯分を受け止めるから、出かける時間の長さで迷わない。今日のあなたが、今日の行き先を決める。はくなら、旅行や長いお出かけの日に。"},
+ megami:{n:"よくばり女神",hd:"やさしさも品のよさも、\n私らしく。",d:"やわらかいも、きちんとも、ぜんぶ自分のものにする人。かわいいと言われる日も、すてきと言われる日も、どちらも本物のあなたです。",k:"昼はすっきりした見た目で、夜はやわらかい肌ざわりで。1枚で、あなたの両方に追いつく下着。昼と夜で、はき替えるのも似合います。"}
+};
+/* 判定（参考 bbJudge と同じ並び） */
+function judge(s){
+ if(s.o>s.y&&s.o>s.k&&s.o>s.h)return"koakuma";
+ if(s.h>s.y&&s.h>s.k&&s.h>s.o)return"megami";
+ if(s.y>s.k)return s.h>=2?"masei":"tenshi";
+ if(s.k>s.y)return"majo";
+ return"megami";
+}
+var cq=0,sc={y:0,k:0,o:0,h:0},hist=[],vt=null,$=function(i){return document.getElementById(i)};
+function show(id){document.querySelectorAll('.scr').forEach(function(e){e.classList.remove('on')});var el=$(id);el.classList.add('on');}
+function br(s){return s.replace(/\n/g,'<br>')}
+function nw(s){var i=s.lastIndexOf('、')+1,n=(i>0&&s.length-i<=14)?s.length-i:5;return s.slice(0,-n)+'<span class="nw">'+s.slice(-n)+'</span>'}
+function draw(){
+ var q=Q[cq];$('q-cat').textContent=q.c;$('q-num').textContent='Q'+(cq+1)+' / '+Q.length;
+ $('q-bar').style.width=((cq+1)/Q.length*100)+'%';var r=Q.length-cq-1;$('q-rem').textContent=r>0?'あと '+r+' 問':'ラスト！';
+ $('q-t').innerHTML=br(q.q);$('q-h').textContent=q.h;$('q-n').textContent=q.n||'';
+ var g=$('q-a');g.setAttribute('data-q',cq+1);g.innerHTML='';g.style.animation='none';void g.offsetHeight;g.style.animation='';
+ q.a.forEach(function(a){var b=document.createElement('button');b.className='a';b.innerHTML=br(a[0]);b.setAttribute('data-answer',a[1]);b.onclick=pick;g.appendChild(b)});
+ var k=document.createElement('img');k.className='kq';k.src='img/'+K[cq]+'.png';k.alt='ここちさん';g.appendChild(k);
+ $('b-back').textContent=cq===0?'← 最初の画面に戻る':'← ひとつ前の質問に戻る';
+}
+function pick(e){
+ var b=e.currentTarget,key=b.getAttribute('data-answer');
+ document.querySelectorAll('#q-a .a').forEach(function(x){x.onclick=null;x.removeAttribute('data-answer');x.style.pointerEvents='none'});
+ b.classList.add('sel');var k=document.querySelector('#q-a .kq');if(k){k.classList.remove('hop');void k.offsetWidth;k.classList.add('hop')}
+ setTimeout(function(){sc[key]++;hist.push(key);
+  if(cq<Q.length-1){cq++;draw()}else{vt=judge(sc);show('s-wait');window.scrollTo(0,0);setTimeout(function(){result(vt);show('s-r');window.scrollTo(0,0)},2400)}
+ },400);
+}
+function result(t){
+ var x=T[t];$('r-name').textContent=x.n;$('r-head').innerHTML=br(x.hd);$('r-desc').innerHTML=nw(x.d);$('r-kasane').innerHTML=nw(x.k);
+ var im=$('r-img');im.src='img/type_'+t+'.jpg';im.alt='ご回答から出たタイプ「'+x.n+'」の絵';
+ ['cta1','cta2'].forEach(function(id){$(id).href='申込/index.html?type='+t});
+ try{sessionStorage.setItem('kd_type',t)}catch(e){}
+ document.body.setAttribute('data-type',t);
+}
+$('b-start').onclick=function(){show('s-q');draw();window.scrollTo(0,0)};
+$('b-back').onclick=function(){if(cq>0){var p=hist.pop();sc[p]--;cq--;draw()}else{show('s-intro');window.scrollTo(0,0)}};
+$('b-retry').onclick=function(){cq=0;sc={y:0,k:0,o:0,h:0};hist=[];vt=null;show('s-intro');window.scrollTo(0,0)};
+</script>
+</body>
+</html>
