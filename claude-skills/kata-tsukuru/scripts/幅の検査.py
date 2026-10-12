@@ -5,7 +5,9 @@
   --押す N: アンケートの答えのボタン（[data-answer]）を N 回押し、押すたびに次の問いが出るか、
             最後に「ご回答」の画面が出るかを確かめる（既定 0）
 見る物: 文の最後の行に1〜2文字だけ落ちた所（句読点は数えない）・横のはみ出し（ページ幅より広い）・画像の抜け（読めなかった img。小さな画像も数える）・
-        細長い画像（幅40pxより大きい物で、縦÷横 0.4未満・2.5超）・押した後の画面の進み
+        細長い画像（幅40pxより大きい物で、縦÷横 0.4未満・2.5超）・押した後の画面の進み・
+        最初の画面の最初の写真（本文の最初の画像か動画（幅80px以上）の上端が 画面の高さ−100px より上。1280×800 と 390×844。
+        申込のページ（パスに /申込/）には当てない。2026-10-11 本人「最初の写真が入るぐらいに」。正本は Vault ec/構造/型/_必ず入れる物.md の 1）
 終了コード: 0=全部0 / 1=どれかが1以上 / 2=道具が動かない・開けない（ページの見た目のせいではない）
 本人のブラウザ（Dia）には繋がない。手元の Playwright の Chromium を裏で立てる。
 """
@@ -15,7 +17,8 @@ JS = r"""async () => {
   // 遅れて読む画像も読ませるため、一番下まで送ってから戻す
   for (let y = 0; y < document.body.scrollHeight; y += 700) { window.scrollTo(0, y); await new Promise(r => setTimeout(r, 60)); }
   window.scrollTo(0, 0);
-  await Promise.all([...document.images].map(i => i.decode ? i.decode().catch(() => {}) : null));
+  // 隠した箱の中の遅れて読む画像は読み込まれず decode が返らない。1枚3秒で待つのをやめる（2026-10-12 申込のページで止まった）
+  await Promise.all([...document.images].map(i => i.decode ? Promise.race([i.decode().catch(() => {}), new Promise(r => setTimeout(r, 3000))]) : null));
   const W = document.documentElement.clientWidth;
   const over = [...document.querySelectorAll('body *')].filter(e => {
     const r = e.getBoundingClientRect(); const s = getComputedStyle(e);
@@ -30,7 +33,7 @@ JS = r"""async () => {
   await document.fonts.ready;
   const P = /[、。？！「」『』（）()・…\s!?]/;
   const orphans = [];
-  for (const el of document.querySelectorAll('p,h1,h2,h3,h4,li,td,dd,span,div,strong,b')) {
+  for (const el of document.querySelectorAll('p,h1,h2,h3,h4,li,td,dd,span,div,strong,b,a,button')) {  // a・button はボタンの「›」だけが落ちるのを拾う（2026-10-11 睡眠イヤホン）
     if (![...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim())) continue;
     const r0 = el.getBoundingClientRect(); if (!r0.width || getComputedStyle(el).display === 'none') continue;
     const chars = [];
@@ -55,13 +58,26 @@ JS = r"""async () => {
   const clipped = [...document.querySelectorAll('p,h1,h2,h3,h4,li,div,span,b,strong')].filter(e => {
     if (![...e.childNodes].some(n => n.nodeType === 3 && n.textContent.trim())) return false;
     const s = getComputedStyle(e); if (s.display === 'none' || s.visibility === 'hidden') return false;
+    if (e.closest('[data-marquee],.marquee')) return false;  // 流れる帯は横に長いのが正しい（はみ出しの判定と同じ除外。2026-10-11 ranking-static の申込の帯）
     const r = e.getBoundingClientRect(); if (!r.width) return false;
-    return e.scrollWidth > e.clientWidth + 4 && s.overflowX !== 'auto' && s.overflowX !== 'scroll' || r.right > W + 2;
+    // 横に送る箱（overflow-x が auto か scroll。客の声の横送りなど）の中で画面の右へ出ている物は、送れば見えるので切れではない（2026-10-12 arukoto-listicle の声の横送り）
+    let 送る箱 = false; for (let p = e.parentElement; p && p !== document.body; p = p.parentElement) { const o = getComputedStyle(p).overflowX; if (o === 'auto' || o === 'scroll') { 送る箱 = true; break; } }
+    return e.scrollWidth > e.clientWidth + 4 && s.overflowX !== 'auto' && s.overflowX !== 'scroll' || (!送る箱 && r.right > W + 2);
   }).slice(0, 5).map(e => e.textContent.trim().slice(0, 24));
   // 必ず入れる物2: 値段の段（data-tasu=2）の中の縦長の画像は 幅÷高さ 0.67〜0.75
   const price = [...document.querySelectorAll('[data-tasu="2"] img')].filter(i => i.naturalWidth && i.naturalHeight > i.naturalWidth)
     .map(i => i.naturalWidth / i.naturalHeight).filter(q => q < 0.67 || q > 0.75).map(q => q.toFixed(3));
-  return {scrollW: document.documentElement.scrollWidth, W, over, broken, thin, orphans: [...new Set(orphans)], price, clipped};
+  // 最初の画面に最初の写真（2026-10-11 本人）: 本文の最初の画像か動画（幅80px以上・浮く帯や隠れた窓の中は数えない）の上端（ページの頭から）
+  const media = [...document.querySelectorAll('img,video')].find(e => {
+    const r = e.getBoundingClientRect(); if (r.width < 80 || r.height < 10) return false;
+    for (let p = e; p && p !== document.body; p = p.parentElement) {
+      const ps = getComputedStyle(p);
+      if (ps.position === 'fixed' || ps.display === 'none' || ps.visibility === 'hidden' || ps.opacity === '0') return false;
+    }
+    return true;
+  });
+  const first = media ? {top: Math.round(media.getBoundingClientRect().top + window.scrollY), src: (media.currentSrc || media.src || media.poster || '').split('/').pop().slice(0, 40)} : null;
+  return {scrollW: document.documentElement.scrollWidth, W, over, broken, thin, orphans: [...new Set(orphans)], price, clipped, first};
 }"""
 
 STATE = r"""() => {
@@ -81,6 +97,8 @@ def main(a):
     except (IndexError, ValueError):
         print("使い方: --押す の後に回数（数字）", file=sys.stderr); return 2
     url = target if target.startswith("http") else "file://" + os.path.abspath(os.path.expanduser(target))
+    from urllib.parse import unquote
+    申込 = "/申込/" in unquote(url) or unquote(url).rstrip("/").endswith("/申込")  # 申込のページ（商品の申込）は最初の写真の検査を当てない
     try:
         from playwright.sync_api import sync_playwright
     except ImportError:
@@ -102,8 +120,18 @@ def main(a):
                     r = pg.evaluate(JS)
                     wide = r["scrollW"] > r["W"] + 1
                     cnt = int(wide) + len(r["broken"]) + len(r["thin"]) + len(r["orphans"]) + len(r["price"]) + len(r["clipped"])
+                    # 最初の画面に最初の写真: 上端が 画面の高さ−100px より上（申込のページには当てない）
+                    first_txt = "申込のページなので見ない"
+                    if not 申込:
+                        lim = h - 100
+                        if not r["first"]:
+                            cnt += 1; first_txt = "×（本文に幅80px以上の画像・動画が無い）"
+                        elif r["first"]["top"] >= lim:
+                            cnt += 1; first_txt = f"×（上端 {r['first']['top']}px・画面の中に入る線は {lim}px より上。頭の文を縮める: {r['first']['src']}）"
+                        else:
+                            first_txt = f"○（上端 {r['first']['top']}px < {lim}px）"
                     bad += cnt
-                    print(f"幅{w}: はみ出し{'あり ' + str(r['over']) if wide else '0'}・画像の抜け{len(r['broken'])}・細長い画像{len(r['thin'])}・行末の1〜2文字落ち{len(r['orphans'])}・値段の縦長画像の比の外れ{len(r['price'])}・はみ出して切れた文{len(r['clipped'])}")
+                    print(f"幅{w}: はみ出し{'あり ' + str(r['over']) if wide else '0'}・画像の抜け{len(r['broken'])}・細長い画像{len(r['thin'])}・行末の1〜2文字落ち{len(r['orphans'])}・値段の縦長画像の比の外れ{len(r['price'])}・はみ出して切れた文{len(r['clipped'])}・最初の画面の最初の写真{first_txt}")
                     for k in ("broken", "thin", "orphans", "price", "clipped"):
                         for s in r[k]:
                             print(f"   {k}: {s}")

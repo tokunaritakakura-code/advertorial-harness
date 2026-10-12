@@ -2,7 +2,8 @@
 """参考の記事とうちの記事の画像を、置き場所と大きさまで突き合わせる（工程5・6の出口）。
 2026-10-06 本人「イメージが置かれてる場所を完全にコピーする。そうすれば大きさがおかしいことに気づける」。
 
-使い方: python3 画像の置き方.py <参考のURL> <うちの記事（index.html のパスかURL）> [--移植表 <01 移植表.md>] [--測った <参考.json> <うち.json>]
+使い方: python3 画像の置き方.py <参考のURL> <うちの記事（index.html のパスかURL）> [--移植表 <01 移植表.md>] [--測った <参考.json> <うち.json>] [--見た目は日本風]
+  --見た目は日本風: 字の大きさ・太さ・色・後ろの箱・寄せを参考と比べない（日本風・ここちドライに寄せる記事。2026-10-12）。章・段の数・画像は比べる
   --測った: 裏用 Dia が立てられない時、内蔵ブラウザで LOAD_ALL と JS を同じ幅で当てた結果（JSON）を渡して判定だけする
 裏用 Dia（9333）の同じ窓で両方を開き（同じ幅になる）、本文の画像（幅80px以上）を上から順に測る。裏用が立たない時は dia-agent（9223）に切り替える。
 参考は本番の URL を渡す（保存した 焼き込み.html は Next.js 等の JS が file:// で失敗して本文が空になり、参考0枚と出る。2026-10-11）。
@@ -97,8 +98,9 @@ def 色(c):
     v = [int(x) for x in re.findall(r"\d+", c or "")[:3]]
     return v if len(v) == 3 else None
 
-def 段の突き合わせ(R, O):
-    """章ごとの段の数と、型ごとの見た目（字の大きさ・太さ・色・後ろの箱・寄せ）を比べる"""
+def 段の突き合わせ(R, O, 日本風=False):
+    """章ごとの段の数と、型ごとの見た目（字の大きさ・太さ・色・後ろの箱・寄せ）を比べる。
+    日本風=True の時は見た目を比べない（2026-10-12 本人「文字とデザインは全部日本風・ここちドライに寄せる。英語の参考の見た目は写さない」。数と画像の置き方は比べる）"""
     bad = []
     rn, on = max([x["章"] for x in R] + [0]), max([x["章"] for x in O] + [0])
     if rn != on: bad.append(f"章（h2）の数: 参考 {rn} / うち {on}")
@@ -106,7 +108,7 @@ def 段の突き合わせ(R, O):
         for t in ("p", "li", "blockquote", "h3", "ボタン"):
             a = sum(1 for x in R if x["章"] == k and x["型"] == t); b = sum(1 for x in O if x["章"] == k and x["型"] == t)
             if abs(a - b) > (max(1, round(a * 0.25)) if t == "p" else 0): bad.append(f"{k}番目の章: {t} の数 参考 {a} / うち {b}")
-    for t in ("h1", "h2", "h3", "p", "li", "blockquote", "ボタン"):
+    for t in (() if 日本風 else ("h1", "h2", "h3", "p", "li", "blockquote", "ボタン")):
         a = [x for x in R if x["型"] == t]; b = [x for x in O if x["型"] == t]
         if not a or not b: continue
         ma, mb = sorted(x["字"] for x in a)[len(a) // 2], sorted(x["字"] for x in b)[len(b) // 2]
@@ -211,7 +213,7 @@ def main(argv):
     except Exception as e:
         print(f"測れなかった: {e}"); return 2
     移植表 = argv[argv.index("--移植表") + 1] if "--移植表" in argv else None
-    bad = 段の突き合わせ(ref["段"], ours["段"])  # 分かりやすさは字数・漢字では測れない（2026-10-07 本人）。編集長が客の目で読んで決める
+    bad = 段の突き合わせ(ref["段"], ours["段"], 日本風="--見た目は日本風" in argv)  # 分かりやすさは字数・漢字では測れない（2026-10-07 本人）。編集長が客の目で読んで決める
     if 移植表: bad += 木の照らし(移植表) + 訳の照らし(ref["文"], 移植表) + 絵の照らし(ref["画像"], 移植表)
     参考の文 = ref["文"]
     ref, ours = ref["画像"], ours["画像"]
