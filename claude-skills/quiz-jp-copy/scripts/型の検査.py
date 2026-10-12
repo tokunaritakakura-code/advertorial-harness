@@ -3,7 +3,7 @@
 
 使い方: python3 型の検査.py <index.html> [--店 <店のURL（例 https://kokochidry.shop）>]
 見る物（型.md の固定の段の番号）:
-  段1  頭の 2,000字以内に「PR」の表記
+  段1  広告の表示（「PR」「広告を含みます」）がページに無い（2026-10-12 本人「全部のフォーマットで止めて」。前は頭の2,000字に PR を求めていた）
   段9  値段の札（割引の「OFF」か「%」）が Q1 より前
   段11 アンケートの入口（「問」「アンケート」）が Q1 より前
   段12〜14 問いが3〜5問（data-q の枠の「Q1.」〜）。各問いの枠に data-answer のボタンが2つ以上
@@ -21,6 +21,7 @@
 画像の中の文字は alt の文で数える（参考の実物は alt が空なので、段15・16 は参考では×になる。これは測定の限界）
 終了コード: 0=全部通った / 1=落ちた / 2=開けない
 """
+import re
 import html, re, sys
 
 TRACK = re.compile(r"gtag\(|fbq\(|googletagmanager|gtm\.js|ytag\(|_lt\(|line-scdn|criteo|connect\.facebook|analytics\.tiktok|klaviyo|clarity\.ms", re.I)
@@ -48,7 +49,7 @@ def main(a):
     def ok(name, cond, why=""):
         res.append((name, bool(cond), why))
 
-    ok("段1 PR の表記が頭にある", "PR" in t[:2000], "頭の2,000字に「PR」が無い")
+    ok("段1 広告の表示が無い", not re.search(r"(?<![A-Za-z])PR(?![A-Za-z])|広告を含み", t), "「PR」か「広告を含みます」がある（決めたこと 2026-10-12 で全部やめた）")
     # 問いは、答えのボタン（data-answer）を持つ枠の Q だけを数える（よくある質問の Q1. を数えない）
     qblocks = re.findall(r"(?is)<[^>]+data-q=\"(\d+)\"", src)
     qs = [m.start() for m in re.finditer(r"Q\s*[1-5]\s*[.．]", t)]
