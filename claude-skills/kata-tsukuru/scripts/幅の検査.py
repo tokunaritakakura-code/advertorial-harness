@@ -77,7 +77,10 @@ JS = r"""async () => {
     return true;
   });
   const first = media ? {top: Math.round(media.getBoundingClientRect().top + window.scrollY), src: (media.currentSrc || media.src || media.poster || '').split('/').pop().slice(0, 40)} : null;
-  return {scrollW: document.documentElement.scrollWidth, W, over, broken, thin, orphans: [...new Set(orphans)], price, clipped, first};
+  // 最悪の結末の箱（data-tasu="1"）の下端（仕掛けの棚 B5: 最初の画面に全部入れる。2026-10-12 本人）
+  const t1 = [...document.querySelectorAll('[data-tasu="1"]')].find(e => e.getBoundingClientRect().height > 0);  // 幅で出し分ける2つの箱のうち見えている方
+  const box1 = t1 ? Math.round(t1.getBoundingClientRect().bottom + window.scrollY) : null;
+  return {scrollW: document.documentElement.scrollWidth, W, over, broken, thin, orphans: [...new Set(orphans)], price, clipped, first, box1};
 }"""
 
 STATE = r"""() => {
@@ -130,6 +133,11 @@ def main(a):
                             cnt += 1; first_txt = f"×（上端 {r['first']['top']}px・画面の中に入る線は {lim}px より上。頭の文を縮める: {r['first']['src']}）"
                         else:
                             first_txt = f"○（上端 {r['first']['top']}px < {lim}px）"
+                    if not 申込 and r.get("box1") is not None:
+                        if r["box1"] > h:
+                            cnt += 1; first_txt += f"・最悪の結末の箱×（下端 {r['box1']}px が最初の画面 {h}px の外。箱を短くするか上に寄せる。仕掛けの棚 B5）"
+                        else:
+                            first_txt += f"・最悪の結末の箱○（下端 {r['box1']}px）"
                     bad += cnt
                     print(f"幅{w}: はみ出し{'あり ' + str(r['over']) if wide else '0'}・画像の抜け{len(r['broken'])}・細長い画像{len(r['thin'])}・行末の1〜2文字落ち{len(r['orphans'])}・値段の縦長画像の比の外れ{len(r['price'])}・はみ出して切れた文{len(r['clipped'])}・最初の画面の最初の写真{first_txt}")
                     for k in ("broken", "thin", "orphans", "price", "clipped"):

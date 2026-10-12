@@ -33,6 +33,11 @@
   "画像の後": [文]（無ければ1つあたりの値段の比べを出す）  "セットの後": [文]
   "お知らせ帯": {"頭": "● お知らせ：", "文": "…", "リンク": "▶ 在庫を見る", "行き先": URL}
   "固定帯": {"文": "…", "出す所": "CSSの選び方"} か false（無ければボタンの文で出す）
+  "3年": {"呼びかけ", "今の対策"*, "月の額"*（今の対策に毎月払う額）, "うちの名", "うちの年の追加", "写真": {"今", "うち"}}  3年で払う額を並べる（今の対策の積み上がり vs いちばん高いセット）
+  "1つあたりの比べ": {"物": "整体1回", "値段": 5000}  いちばん高いセットの1つあたりを今の対策の1回と比べる
+  "小さいセット": {"理由"*, "場面"*, "選ばせる"*}  いちばん小さいセットに反対する（本当に言える理由がある時だけ）
+  "一押し": {"セール"*, "結果", "声", "文": [文]}  最後の一押し（第三者の目線・名前のあるセール）   "前提の注": "※…で計算"
+  （この4つの正本は Vault ec/構造/型/_仕掛けの棚.md。2026-10-12 本人）
   "段の印": "9"（data-dan に入れる）   "外枠の属性": {"id": "thanks", "hidden": true}（記事の側の出し入れの印を外枠に残す）
 文の中の <b> と <wbr> はそのまま通す。それ以外の字は HTML として逃がす。
 """
@@ -295,7 +300,8 @@ def 組む(d, 出す="全部"):
         return {int(x.replace(",", "")) for x in re.findall(r"(?:¥|￥)\s*([\d,]+)|([\d,]+)\s*円", str(t)) for x in x if x}
     gi0 = d.get("値段画像") or {}
     手書き = [*d.get("前振り", []), *d.get("画像の後", []), *d.get("セットの後", []), d.get("比べる前の一文", ""), d.get("ボタンの下", ""),
-            gi0.get("上の一言", ""), gi0.get("見出し", ""), gi0.get("前提", ""), gi0.get("比べ", ""), gi0.get("締め", "")]
+            gi0.get("上の一言", ""), gi0.get("見出し", ""), gi0.get("前提", ""), gi0.get("比べ", ""), gi0.get("締め", ""),
+            *((d.get("一押し") or {}).get("文") or []), (d.get("小さいセット") or {}).get("理由", ""), (d.get("小さいセット") or {}).get("場面", "")]
     ほか = {int(round(v)) for s in sets if s is not 大 for v in (s["値段"], s["通常"], s.get("登録後"), 一つ(s)) if v} - {int(round(v)) for v in (大["値段"], 大["通常"], 大.get("登録後"), 一つ(大)) if v}
     for t in 手書き:
         for m in re.finditer(r"1日あたり\s*(?:約|およそ)?\s*([\d,]+)\s*円", str(t)):  # 比べる物の「1日160円」は他の物の値段なので見ない
@@ -376,6 +382,64 @@ def 組む(d, 出す="全部"):
         固定 = f'<div class="nd-stick off"{frm}><a data-cta href="{行き先(fx.get("行き先") or href0)}">{文(fx.get("文") or d["ボタン"]["文"])}</a></div>'
     ボタン下 = d.get("ボタンの下") or f"{セット名(大)}が一番人気・{割引}・{保証}日間の返金保証つき"
 
+    # ---- 仕掛けの棚の値段の部品（正本 Vault ec/構造/型/_仕掛けの棚.md。2026-10-12 本人） ----
+    # 3年で並べる: 今の対策を続けて払う額の積み上がり vs いちばん高いセット（最初だけ・追加0円）→ 3年で浮くお金
+    三年 = ""; 浮く = None
+    約 = lambda n: f"約{int(round(n, -3 if n >= 10000 else -2)):,}円"  # 3年の表と一押しで同じ丸め方にする（食い違わせない）
+    y3 = d.get("3年")
+    if y3:
+        月 = int(y3.get("月の額") or 0)
+        if 月 <= 0:
+            err("「3年」の「月の額」（今の対策に毎月払う額）が無い")
+        追加 = int(y3.get("うちの年の追加", 0))
+        浮く = 月 * 36 - (大["値段"] + 追加 * 3)
+        if 浮く <= 0:
+            err("3年で並べても、今の対策の方が安い。3年の部品は使えない（月の額か値段を見直す）")
+        左 = "".join(f'<div class="nd-y3-r"><small>{k}</small><b>{約(月 * m)}</b></div>' for k, m in (("6か月", 6), ("1年", 12), ("2年", 24), ("3年", 36)))
+        右 = (f'<div class="nd-y3-r"><small>最初に</small><b>{円(大["値段"]).replace("¥", "")}円</b></div>'
+              + "".join(f'<div class="nd-y3-r"><small>{k}</small><b>追加 {追加 * n:,}円</b></div>' for k, n in (("1年", 1), ("2年", 2), ("3年", 3))))
+        pic = y3.get("写真") or {}
+        pa = f'<img class="nd-y3-pic" src="{行き先(pic["今"], 画像=True)}" alt="{E(y3["今の対策"])}" loading="lazy">' if pic.get("今") else ""
+        pb = f'<img class="nd-y3-pic" src="{行き先(pic["うち"], 画像=True)}" alt="{E(y3.get("うちの名") or セット名(大))}" loading="lazy">' if pic.get("うち") else ""
+        三年 = (f'<div class="nd-y3" data-sannen="{浮く}">'
+               + (f'<p class="nd-y3-to">{文(y3["呼びかけ"])}</p>' if y3.get("呼びかけ") else "")
+               + '<p class="nd-y3-h">3年で払う額を、<br><em>並べてみました</em></p>'
+               + '<div class="nd-y3-cols">' + ('<span class="nd-y3-vs">VS</span>' if pa and pb else "")
+               + f'<div class="nd-y3-col them">{pa}<p class="nd-y3-nm">{文(y3["今の対策"])}</p><p class="nd-y3-sub">ずっと払い続ける</p>{左}</div>'
+               + f'<div class="nd-y3-col us">{pb}<p class="nd-y3-nm">{文(y3.get("うちの名") or セット名(大))}</p><p class="nd-y3-sub">払うのは最初だけ</p>{右}</div></div>'
+               + f'<div class="nd-y3-save"><small>3年で浮くお金</small><b>{約(浮く)}</b></div></div>')
+    # 1つあたりを、今の対策の1回と比べる（いちばん高いセットの1つあたり）
+    一つ比べ = ""
+    oc = d.get("1つあたりの比べ")
+    if oc:
+        u1 = 一つ(大); v = int(oc["値段"]); r = u1 / v
+        比 = "約半分" if .4 <= r <= .6 else (f"約{round(1 / r)}分の1" if r < .4 else f"約{round(r * 100)}%")
+        一つ比べ = (f'<div class="nd-know"><small>知っていましたか</small><p>{E(名(大))}で選ぶと、1{E(単位)}あたり <b>{円(u1).replace("¥", "")}円</b></p>'
+                  f'<p class="nd-know-s">{円(大["値段"]).replace("¥", "")}円÷{大["数"]}{E(単位)}。{文(oc["物"])}（{v:,}円）の、{比}です。</p></div>')
+    # いちばん小さいセットに反対する（本当に言える理由がある時だけ。2026-10-12 本人）
+    小 = ""
+    sm = d.get("小さいセット")
+    if sm:
+        for k in ("理由", "場面", "選ばせる"):
+            if not sm.get(k):
+                err(f"「小さいセット」の「{k}」が無い（本当に言える理由がある時だけ使う）")
+        最小 = min(sets, key=lambda x: x["数"])
+        小 = (f'<div class="nd-small"><p class="nd-small-h">⚠️ {E(名(最小))}だけは、おすすめしません</p><p>{文(sm["理由"])}</p>'
+             f'<p class="nd-small-scene">{文(sm["場面"])}</p><p class="nd-small-go"><b class="nd-small-pick">{文(sm["選ばせる"])}</b>を選んでください。</p></div>')
+    # 最後の一押し（第三者の目線・名前のあるセールの文脈。買ってくださいと言わない。2026-10-12 本人）
+    押し = ""
+    ps = d.get("一押し")
+    if ps:
+        if not ps.get("セール"):
+            err("「一押し」の「セール」（今ちょうどのセールの名前）が無い")
+        文s = ps.get("文") or [
+            f"今ちょうど{ps['セール']}の最中で、{名(大)}が{割引}になっています。",
+            f"1日あたりにすると約{日}円です。" + (f"3年で見ると、今の対策より{約(浮く)}浮きます。" if 浮く else ""),
+            f"この値段で{ps.get('結果', 'あの悩みから離れられる')}なら、私は{名(大)}を選ぶことを勧めます。",
+        ]
+        押し = '<div class="nd-push">' + "".join(f"<p>{文(x)}</p>" for x in 文s) + (f'<p class="nd-push-who">{文(ps["声"])}</p>' if ps.get("声") else "") + "</div>"
+    注前提 = f'<p class="nd-basis">{文(d["前提の注"])}</p>' if d.get("前提の注") else ""
+
     外枠 = ""
     for k, v in (d.get("外枠の属性") or {}).items():  # 例 {"id": "thanks", "hidden": true}。記事の側で段を出し入れする印をそのまま残す
         if not re.fullmatch(r"[a-z][a-z0-9-]*", k) or k.startswith("on") or k in ("class", "style", "data-tasu", "data-nedan", "data-dan"):
@@ -397,6 +461,7 @@ def 組む(d, 出す="全部"):
         "1日あたりの文": "</p>\n<p>".join(区切る(x) for x in 一日文.split("</p>\n<p>")), "値段画像": src, "値段画像の説明": f"1日あたり約{日}円",
         "画像の後": 後, "セットの数": str(len(sets)), "セット": "\n".join(cards), "セットの後": セット後,
         "行き先": 行き先(href0), "ボタンの文": 文(d["ボタン"]["文"]), "ボタンの下": 文(ボタン下), "固定帯": 固定,
+        "三年": 三年, "一つの比べ": 一つ比べ, "小さいセット": 小, "一押し": 押し, "注の前提": 注前提,
     }
     for k, v in sub.items():
         t = t.replace("{{" + k + "}}", v)
