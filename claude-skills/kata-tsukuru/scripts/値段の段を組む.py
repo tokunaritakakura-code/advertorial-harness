@@ -151,6 +151,17 @@ def 収める(s, size, maxw):
     return size if w <= maxw else size * maxw / w
 
 
+_硬貨の絵 = {}
+def 硬貨の絵(c):
+    """硬貨/<額>.png（本物の硬貨の写真を丸く切り抜いた透過 PNG）を data URI で返す"""
+    if c not in _硬貨の絵:
+        f = os.path.join(HERE, "硬貨", f"{c}.png")
+        if not os.path.exists(f):
+            err(f"硬貨の画像が無い: {f}")
+        _硬貨の絵[c] = "data:image/png;base64," + base64.b64encode(open(f, "rb").read()).decode()
+    return _硬貨の絵[c]
+
+
 def 硬貨(n):
     out, rest = [], int(n)
     for c in (500, 100, 50, 10, 5, 1):
@@ -185,22 +196,18 @@ def 値段画像(o, 色):
     p.append(f'<rect x="64" y="285" width="688" height="870" rx="36" fill="{soft}"/>')
     dy = {0: 110, 1: 55}.get(bool(o.get("比べ")) + bool(o.get("締め")), 0)  # 下の2行が無い分だけ中身を下げて、箱の中の空きを上下に分ける
     p.append(一行(W / 2, 378 + dy * .6, o["前提"], 収める(o["前提"], 34, 600), ink)[0])
-    # 硬貨の並び（1日あたりを硬貨で数えられる時だけ）
+    # 硬貨の並び（1日あたりを硬貨で数えられる時だけ）。本物の日本の硬貨の見た目（硬貨/<額>.png）を、本物の直径の比で並べる
+    # （2026-10-12 本人「おもちゃの丸は安く見える。実際のお金のデザインに」）
     cs = 硬貨(o["日"]) if o["日"] <= 2000 else []
     if 0 < len(cs) <= 10:
-        r = min(62, 300 / len(cs)); gap = r * 0.12
-        tot = len(cs) * 2 * r + (len(cs) - 1) * gap; x = W / 2 - tot / 2 + r
-        for k, c in enumerate(cs):
-            hi, lo, label, hole = COIN[c]
-            gid = f"c{k}"
-            p.append(f'<defs><radialGradient id="{gid}" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="{hi}"/><stop offset="1" stop-color="{lo}"/></radialGradient></defs>')
-            p.append(f'<circle cx="{x:.0f}" cy="{530 + dy:.0f}" r="{r:.0f}" fill="url(#{gid})" stroke="{lo}" stroke-width="2"/>')
-            p.append(f'<circle cx="{x:.0f}" cy="{530 + dy:.0f}" r="{r * .82:.0f}" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="2"/>')
-            if hole:
-                p.append(f'<circle cx="{x:.0f}" cy="{530 + dy:.0f}" r="{r * .22:.0f}" fill="{soft}" stroke="{lo}" stroke-width="2"/>')
-            if label:
-                ly = 530 + dy - r * .38 if hole else 530 + dy + r * .2
-                p.append(f'<text x="{x:.0f}" y="{ly:.0f}" font-family="Arial,sans-serif" font-size="{r * (.5 if len(label) < 3 else .4):.0f}" font-weight="700" fill="#fff" fill-opacity=".9" text-anchor="middle">{label}</text>')
+        直径 = {1: 20.0, 5: 22.0, 10: 23.5, 50: 21.0, 100: 22.6, 500: 26.5}
+        r0 = min(66, 330 / len(cs)); rs = [r0 * 直径[c] / 23.5 for c in cs]; gap = r0 * 0.10
+        tot = sum(2 * r for r in rs) + (len(cs) - 1) * gap; x = W / 2 - tot / 2
+        p.append('<defs><radialGradient id="cs" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#000" stop-opacity=".22"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient></defs>')
+        for c, r in zip(cs, rs):
+            cy = 530 + dy
+            p.append(f'<ellipse cx="{x + r + 4:.0f}" cy="{cy + r * .92:.0f}" rx="{r * 1.02:.0f}" ry="{r * .22:.0f}" fill="url(#cs)"/>')
+            p.append(f'<image href="{硬貨の絵(c)}" x="{x:.0f}" y="{cy - r:.0f}" width="{2 * r:.0f}" height="{2 * r:.0f}"/>')
             x += 2 * r + gap
     # 大きい数字
     num = f"{o['日']:,}"; ns = 収める(num, 230, 470)
@@ -275,6 +282,20 @@ def 組む(d, 出す="全部"):
     保証 = int(d["保証の日数"])
     送料 = d.get("送料無料", True)
 
+    # 値段の比べは毎回いちばん高いセットで出す（2026-10-12 本人）。手で書いた文に、ほかのセットの値段や、違う1日あたりが出たら止める
+    def _値(t):
+        return {int(x.replace(",", "")) for x in re.findall(r"(?:¥|￥)\s*([\d,]+)|([\d,]+)\s*円", str(t)) for x in x if x}
+    gi0 = d.get("値段画像") or {}
+    手書き = [*d.get("前振り", []), *d.get("画像の後", []), *d.get("セットの後", []), d.get("比べる前の一文", ""), d.get("ボタンの下", ""),
+            gi0.get("上の一言", ""), gi0.get("見出し", ""), gi0.get("前提", ""), gi0.get("比べ", ""), gi0.get("締め", "")]
+    ほか = {int(round(v)) for s in sets if s is not 大 for v in (s["値段"], s["通常"], s.get("登録後"), 一つ(s)) if v} - {int(round(v)) for v in (大["値段"], 大["通常"], 大.get("登録後"), 一つ(大)) if v}
+    for t in 手書き:
+        for m in re.finditer(r"1日あたり\s*(?:約|およそ)?\s*([\d,]+)\s*円", str(t)):  # 比べる物の「1日160円」は他の物の値段なので見ない
+            if int(m.group(1).replace(",", "")) != 日:
+                err(f"文の1日あたり（{m.group(0)}）が、いちばん高いセット（{名(大)}）の1日あたり約{日}円と違う。値段の比べは毎回いちばん高いセットで出す: 「{str(t)[:30]}」")
+        bad = _値(t) & ほか
+        if bad:
+            err(f"文に、いちばん高いセット以外のセットの値段（{'・'.join(円(x) for x in sorted(bad))}）が出ている。値段の比べは毎回いちばん高いセット（{名(大)}）で出す: 「{str(t)[:30]}」")
     # 前振り・比べる物
     見出し = d.get("見出し") or f"いまは{割引}。1日あたり約{日}円です"
     前振り = "\n".join(f"<p>{文(x)}</p>" for x in d.get("前振り", []))
@@ -300,7 +321,8 @@ def 組む(d, 出す="全部"):
         src = 行き先(gi["ファイル"], 画像=True)
     else:
         gi.setdefault("見出し", f"{円(base)}は、高いでしょうか。")
-        gi.setdefault("前提", f"{名(大)}を{('1年' if 日数 == 365 else f'{日数}日')}で見ると、1日あたり")
+        # 「1825日で見ると」のような日数そのままにしない（2026-10-12 本人）。言い方があればそれで、無ければ年で言う
+        gi.setdefault("前提", f"{one['言い方']}、1日あたり" if one.get("言い方") else f"{名(大)}を{(str(日数 // 365) + '年') if 日数 % 365 == 0 else f'{日数}日'}で見ると、1日あたり")
         gi["日"] = 日
         src = 値段画像(gi, 色)
     # 画像の後: 1つあたりの比べ（嘘にならない時だけ「いちばん安い」）
@@ -358,7 +380,7 @@ def 組む(d, 出す="全部"):
     css = re.sub(r"/\*.*?\*/", "", open(os.path.join(HERE, "値段の段.css"), encoding="utf-8").read(), flags=re.S)
     js = re.sub(r"/\*.*?\*/", "", open(os.path.join(HERE, "値段の段.js"), encoding="utf-8").read(), flags=re.S)
     sub = {
-        "段の印": (f' data-dan="{html.escape(str(d["段の印"]))}"' if d.get("段の印") else "") + 外枠 + (' data-nedan-part="札だけ"' if 出す == "札だけ" else ""),
+        "段の印": (f' data-dan="{html.escape(str(d["段の印"]))}"' if d.get("段の印") else "") + f' data-ichinichi="{日}" data-ookii="{大["値段"]}"' + 外枠 + (' data-nedan-part="札だけ"' if 出す == "札だけ" else ""),
         "色": html.escape(style, quote=True), "CSS": re.sub(r"\n\s*", "", css), "JS": js.strip(),
         "お知らせ帯": 帯, "見出し": 文(見出し), "前振り": 前振り,
         "比べる前の一文": 文(d.get("比べる前の一文") or "まず、今使っている物の値段と比べてみてください。"),

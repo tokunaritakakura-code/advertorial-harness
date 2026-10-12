@@ -24,6 +24,8 @@
   10. 値段の段（data-tasu="2"）が ここちドライ型の部品で組まれている: 同じ外枠に data-nedan="ここちドライ型"、中に価格の箱（nd-box）と最初から選ばれたセット（nd-set is-sel）。
      組むのは ~/.claude/skills/kata-tsukuru/scripts/値段の段を組む.py。漫画（data-format="漫画"）にも当てる（漫画は段16が必ず入れる物2の HTML の値段の段で、絵で語るのは物語の段だけ。型_物語の記事.md の日本版の枝）。申込のページには当てない
      （2026-10-11 本人「値段のデザインをここちドライに寄せる。色ではなく見せ方とエフェクト」）
+  11. 値段の比べは毎回いちばん高いセットで出す: 本文の「1日あたり約N円」が値段の段の1日あたりと同じ・いちばん高いセット以外の値段が値段の段の外に0。
+     値段の段が古い形（硬貨の絵が本物でない頃の物）なら組み直すように出す。申込のページには当てない（2026-10-12 本人）
 """
 import html, os, re, sys
 
@@ -322,6 +324,41 @@ def ここちドライ型(s):
             bad.append(f"ここちドライ型の値段の段に無い: {'・'.join(無い)}（手で写さず 値段の段を組む.py の出力をそのまま貼る）")
     return bad
 
+def いちばん高いセット(s, t):
+    """11. 値段の比べは毎回いちばん高いセットで出す（2026-10-12 本人）。値段の段の外枠の data-ichinichi・data-ookii と、セットのカード（nd-set）の値段から、
+    ページの字の「1日あたり約N円」が N と違う物・いちばん高いセット以外のセットの値段（¥N・N円）が値段の段の外に出ている物を落とす。
+    値段の段が古い（data-ichinichi が無い）時は、値段の段を組む.py で組み直すように出す"""
+    m = re.search(r'data-nedan="ここちドライ型"[^>]*', s) or re.search(r'<[^>]*data-nedan="ここちドライ型"[^>]*>', s)
+    if not m:
+        return []
+    tag = s[s.rfind("<", 0, m.start()):s.find(">", m.start()) + 1]
+    a = re.search(r'data-ichinichi="(\d+)"', tag); o = re.search(r'data-ookii="(\d+)"', tag)
+    if not (a and o):
+        return ['値段の段が古い形（data-ichinichi・data-ookii が無い）。値段の段を組む.py で組み直す（硬貨の絵と、いちばん高いセットで比べる決まりが入る）']
+    日, 大 = int(a.group(1)), int(o.group(1))
+    bad = []
+    for x in re.finditer(r"1日あたり\s*(?:約|およそ)?\s*([\d,]+)\s*円", t):
+        if int(x.group(1).replace(",", "")) != 日:
+            bad.append(f"「{x.group(0)}」がいちばん高いセットの1日あたり約{日}円と違う（値段の比べは毎回いちばん高いセットで出す）")
+    cards = re.findall(r'<a class="nd-set(?: is-sel)?"[^>]*>.*?<div class="nd-y">[¥￥]([\d,]+)</div>', s, flags=re.S)
+    ほか = {int(c.replace(",", "")) for c in cards} - {大}
+    # セットのカードの「1つあたり」も見る。いちばん高いセット（選ばれたカード is-sel）の1つあたりは本文に出てよい
+    for card in re.finditer(r'<a class="nd-set( is-sel)?"[^>]*>(.*?)</a>', s, flags=re.S):
+        u = re.search(r"あたり\s*[¥￥]([\d,]+)", card.group(2))
+        if u and not card.group(1):
+            ほか.add(int(u.group(1).replace(",", "")))
+    for card in re.finditer(r'<a class="nd-set is-sel"[^>]*>(.*?)</a>', s, flags=re.S):
+        u = re.search(r"あたり\s*[¥￥]([\d,]+)", card.group(1))
+        if u:
+            ほか.discard(int(u.group(1).replace(",", "")))
+    外 = re.sub(r'<div class="nd-sets".*?</div>\s*</div>|<a class="nd-set.*?</a>', " ", s, flags=re.S)
+    外字 = 画面の字(外)
+    for v in sorted(ほか):
+        hit = re.search(r"(?:¥|￥)\s*" + f"{v:,}".replace(",", ",?") + r"(?!\d)|(?<![\d,])" + f"{v:,}".replace(",", ",?") + r"\s*円", 外字)
+        if hit:
+            bad.append(f"いちばん高いセット以外の値段「{hit.group(0)}」が本文に出ている（値段の比べは毎回いちばん高いセット ¥{大:,} で出す。並べるのはセットのカードだけ）")
+    return list(dict.fromkeys(bad))
+
 def main(argv):
     if len(argv) < 2:
         print(__doc__); return 2
@@ -335,7 +372,7 @@ def main(argv):
     if n:
         bad.append(f"画面に「未定」が {n}か所")
     申込 = os.path.basename(os.path.dirname(os.path.abspath(f))) == "申込"
-    bad += 画像の縦横(f, s) + 数字の食い違い(t) + 文の書き方(s, t) + テストの印(s) + 寄り添い(s, t, 申込) + 一番人気(f) + 商品の切れ(f, s) + ([] if 申込 else 値段の段(f, s) + ここちドライ型(s)) + ボタンの文(s)
+    bad += 画像の縦横(f, s) + 数字の食い違い(t) + 文の書き方(s, t) + テストの印(s) + 寄り添い(s, t, 申込) + 一番人気(f) + 商品の切れ(f, s) + ([] if 申込 else 値段の段(f, s) + ここちドライ型(s) + いちばん高いセット(s, t)) + ボタンの文(s)
     if bad:
         print("\n".join("- " + x for x in bad)); return 1
     print("通った"); return 0
